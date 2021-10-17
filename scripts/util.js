@@ -86,6 +86,7 @@ module.exports = function() {
     this.ask = (message) => {
         let ask = Prompt(message);
         while (true) {
+            if(ask == 'exit' || ask == 'stop') process.exit(0);
             if(ask && ask != null) {
                 break;
             }
