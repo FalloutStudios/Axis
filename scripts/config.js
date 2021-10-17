@@ -1,8 +1,10 @@
 const Yml = require('yaml');
 const Fs = require('fs');
-const Prompt = require('prompt-sync')();
 const Commander = require('commander');
 const Version = require('./version');
+const Util = require('./util');
+
+const util = new Util();
 
 module.exports = function() {
     this.location = null;
@@ -19,7 +21,7 @@ module.exports = function() {
         return config;
     }
     this.prefill = function() {
-        
+        if(!this.config.token || this.config.token == null) this.config.token = util.ask('Bot Token >>> ');
     }
     this.testmode = function() {
 

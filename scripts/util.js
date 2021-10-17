@@ -1,3 +1,5 @@
+const Prompt = require('prompt-sync')();
+
 module.exports = function() {
     this.loop = (num = 0, str = '') => {
         var returnVal = '';
@@ -85,5 +87,15 @@ module.exports = function() {
         response.command = args.shift().toLowerCase().trim();
 
         return response;
+    }
+    this.ask = (message) => {
+        let ask = Prompt(message);
+        while (true) {
+            if(ask && ask != null) {
+                break;
+            }
+            ask = Prompt(message);
+        }
+        return ask;
     }
 }
