@@ -25,7 +25,7 @@ module.exports = function() {
 
         if(config.version != Version) throw new Error('Config version isn\'t compatible. Version: ' + config.version + '; Supported: ' + Version);
         
-        if(config.token -= 'TOKEN') config.token = null;
+        if(config.token == 'TOKEN') config.token = null;
 
         this.config = config;
         return config;
