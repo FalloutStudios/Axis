@@ -15,6 +15,7 @@ const prompt = require('prompt-sync')();
 const parseConfig = new Config();
 parseConfig.location = './config/config.yml';
 parseConfig.parse();
+parseConfig.testmode();
 parseConfig.prefill();
 
 console.log(parseConfig.config);

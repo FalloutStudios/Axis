@@ -1,8 +1,11 @@
+// Modules
 const Logger = require('./logger');
-module.exports = () => {
-    let log = new Logger();
+
+let log = new Logger();
         log.defaultPrefix = 'Startup';
 
+// Export
+module.exports = () => {
     log.log(' ▄▄▄      ▒██   ██▒ ██▓  ██████ ');
     log.log('▒████▄    ▒▒ █ █ ▒░▓██▒▒██    ▒ ');
     log.log('▒██  ▀█▄  ░░  █   ░▒██▒░ ▓██▄   ');

@@ -1,15 +1,18 @@
+// Modules
 const Util = require('./util');
 const util = new Util();
 
+// Export
 module.exports = function() {
     this.defaultPrefix = null;
 
-    this.log = function (message = null, prefix = this.defaultPrefix) { return logger(message, prefix, 0); };
-    this.warn = function (message = null, prefix = this.defaultPrefix) { return logger(message, prefix, 1); };
-    this.error = function (message = null, prefix = this.defaultPrefix) { return logger(message, prefix, 2); };
+    this.log = function(message = null, prefix = this.defaultPrefix) { return logger(message, prefix, 0); };
+    this.warn = function(message = null, prefix = this.defaultPrefix) { return logger(message, prefix, 1); };
+    this.error = function(message = null, prefix = this.defaultPrefix) { return logger(message, prefix, 2); };
 }
 
-function logger (message, prefix = null, level = 0) {
+// Functions
+function logger(message, prefix = null, level = 0) {
     if(level < 0 || level > 2) throw new Error("Invalid level number");
 
     prefix = prefix != null ? "[%prefix% - " + prefix + "] " : "[%prefix%]";
