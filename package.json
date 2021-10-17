@@ -1,0 +1,13 @@
+{
+  "engines": {
+    "node": ">=16.6.0"
+  },
+  "engineStrict": true,
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^8.2.0",
+    "discord.js": "^13.2.0",
+    "prompt-sync": "^4.1.6",
+    "yaml": "^1.10.2"
+  }
+}
