@@ -1,3 +1,7 @@
 # Invite: https://discord.com/oauth2/authorize?client_id=<id>&permissions=8&scope=bot%20applications.commands
-token: TOKEN
-version: 1.0.0
+
+token: TOKEN # Bot token
+
+langauge: 'config/language.yml' # Langage file
+
+version: 1.0.0 # Version (don't modify this value)
