@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "node index.js",
-    "test": "node index.js --testmode -D DISCORD_TOKEN"
+    "test": "node index.js --testmode -D GITHUB_DISCORD_TOKEN"
   },
   "engines": {
     "node": ">=16.6.0"
