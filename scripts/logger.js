@@ -1,6 +1,5 @@
 // Modules
-const Util = require('./util');
-const util = new Util();
+const util = require('fallout-utility');
 
 // Export
 module.exports = function() {

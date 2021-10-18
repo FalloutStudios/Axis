@@ -3,9 +3,8 @@ const Yml = require('yaml');
 const Fs = require('fs');
 const Commander = require('commander');
 const Version = require('./version');
-const Util = require('./util');
+const util = require('fallout-utility');
 
-const util = new Util();
 const commands = new Commander.Command;
     
     commands
