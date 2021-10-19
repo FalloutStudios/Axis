@@ -56,7 +56,6 @@ Client.on('ready', function() {
 
 function reload(message) {
     parseConfig.parse();
-    parseConfig.prefill();
     config = parseConfig.config;
 
     language.parse();
