@@ -42,8 +42,8 @@ const Client = new Discord.Client({
 Client.login(config.token);
 
 Client.on('ready', function() {
-    log.log('Client connected!', 'Status');
-    log.log(`\nInvite: ${ createInvite(Client) }\n`, 'Invite');
+    log.warn('Client connected!', 'Status');
+    log.warn(`\nInvite: ${ createInvite(Client) }\n`, 'Invite');
 
     Client.on('messageCreate', async function (message) {
         log.log(message.author.username + ': ' + message.content, 'Message');
@@ -58,6 +58,9 @@ function reload(message) {
     parseConfig.parse();
     parseConfig.prefill();
     config = parseConfig.config;
+
+    language.parse();
+    lang = language.language;
     
     try {
         Client.destroy();
