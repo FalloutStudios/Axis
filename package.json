@@ -11,7 +11,7 @@
   "dependencies": {
     "commander": "^8.2.0",
     "discord.js": "^13.2.0",
-    "fallout-utility": "^1.0.1-2",
+    "fallout-utility": "^1.0.2",
     "prompt-sync": "^4.1.6",
     "yaml": "^1.10.2"
   }
