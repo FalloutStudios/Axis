@@ -8,11 +8,11 @@
 **/
 
 // Modules
+const Util = require('fallout-utility');
 const Startup = require('./scripts/startup')();
-const Logger = require('./scripts/logger');
 const Config = require('./scripts/config');
 
-const log = new Logger();
+const log = Util.logger;
 const parseConfig = new Config();
 parseConfig.location = './config/config.yml';
 parseConfig.parse();
@@ -20,4 +20,4 @@ parseConfig.testmode();
 parseConfig.prefill();
 
 // Functions
-console.log(parseConfig.config);
+log.log(parseConfig.config);

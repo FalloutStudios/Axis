@@ -1,7 +1,7 @@
 // Modules
-const Logger = require('./logger');
+const { logger } = require('fallout-utility');
 
-let log = new Logger();
+let log = logger;
         log.defaultPrefix = 'Startup';
 
 // Export
