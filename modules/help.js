@@ -21,7 +21,9 @@ for (const file of modulesList) {
         name = Util.replaceAll(name, ' ', '_');
         commands[name] = importModule.command;
 
-        if(typeof commands[name] !== 'undefined' && Object.keys(commands[name]).length > 0) { log.warn('Help ready for command: ' + name, file); } else { commands[name] = null; }
+        if(typeof commands[name] === 'undefined' || Object.keys(commands[name]).length <= 0){ commands[name] = null; }
+
+        log.warn('Help is ready for command: ' + name, file);
     } catch (e) {
         console.log(e);
     }
