@@ -1,6 +1,7 @@
 const Fs = require('fs');
 const Yml = require('yaml');
 const Version = require('./version');
+const { getRandomKey } = require('fallout-utility');
 
 module.exports = function() {
     this.location = null;
@@ -15,4 +16,7 @@ module.exports = function() {
         this.language = language;
         return language;
     };
+    this.get = (language) => {
+        return getRandomKey(language);
+    }
 }
