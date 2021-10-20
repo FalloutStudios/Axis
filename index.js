@@ -42,27 +42,16 @@ const Client = new Discord.Client({
 });
 
 Client.login(config.token);
+const Actions = new actions();
+
+var modulesList = {};
+var commands = {};
 
 Client.on('ready', function() {
     log.warn('Client connected!', 'Status');
-    log.warn(`\nInvite: ${ createInvite(Client) }\n`, 'Invite');
+    log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
 
-    const modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
-    let commands = {};
-    for (const file of modulesList) {
-        let name = Path.parse(file).name;
-
-        let importModule = require(__dirname + '/modules/' + file);
-        
-        try {
-            name = Util.replaceAll(name, ' ', '_');
-            commands[name] = importModule;
-
-            commands[name].start(config, language);
-        } catch (e) {
-            log.error(`Coudln't load ${file}: ${e.message}`, 'Modules');
-        }
-    }
+    Actions.loadCommands();
 
     Client.on('messageCreate', async function (message) {
         if(message.author.id === Client.user.id || message.author.bot) return;
@@ -74,34 +63,68 @@ Client.on('ready', function() {
             const args = commandConstructor.args;
 
             if(commands.hasOwnProperty(command)){
-                commands[command].execute(args, message);
+                log.warn(message.author.username + ' executed ' + command)
+                commands[command].execute(args, message, Actions, Client).catch(err => {
+                    log.error(err, commands[command] + '.js');
+                    message.channel.send(err.message);
+                });
             }
         }
     });
 });
 
-function reload(message) {
-    parseConfig.parse();
-    config = parseConfig.config;
-
-    language.parse();
-    lang = language.language;
+function actions() {
+    this.reload = (message) => {
+        parseConfig.parse();
+        config = parseConfig.config;
     
-    try {
-        Client.destroy();
-    } catch (e) {
-        message.reply(e.message);
+        language.parse();
+        lang = language.language;
+        
+        try {
+            Client.destroy();
+        } catch (e) {
+            message.reply(e.message);
+        }
+    
+        Client.login(config.token).then(function () {
+            message.reply(language.get(lang.reload.success));
+        });
+        
+        this.loadCommands();
+
+        return {
+            language: lang,
+            config: config
+        };
     }
+    this.loadCommands = () => {
+        modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
 
-    Client.login(config.token).then(function () {
-        message.reply(language.get(lang.reload.success));
-    });
-
-    return {
-        language: lang,
-        config: config
-    };
-}
-function createInvite(bot) {
-    return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
+        for (const file of modulesList) {
+            let name = Path.parse(file).name;
+    
+            let importModule = require(__dirname + '/modules/' + file);
+            
+            try {
+                name = Util.replaceAll(name, ' ', '_');
+                commands[name] = importModule;
+    
+                if(commands[name].start(config, lang, Client)) log.log('Ready! command: ' + name, file);
+            } catch (e) {
+                log.error(`Coudln't load ${file}: ${e.message}`, file);
+            }
+        }
+    }
+    this.createInvite = (bot) => {
+        return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
+    }
+    this.get = (object) => {
+        return language.get(object);
+    }
+    this.admin = (message) => {
+        if(message.member && message.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) return true;
+        
+        return false;
+    }
 }
