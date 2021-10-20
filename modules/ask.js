@@ -33,11 +33,12 @@ function create(){
         chatbot.chat(sentence, message.author.username).then((response) => {
             response = Util.replaceAll(response, 'Udit', this.config.owner);
             response = Util.replaceAll(response, 'March 18, 2012', 'April 20, 2021');
+            response = Util.replaceAll(response, 'Samik', message.author.username);
 
             createMessage.edit(response);
-        }).catch(e => {
-            console.error(e);
-            createMessage.edit(action.get(this.language.error) + '\n```\n'+ e.message +'\n```')
+        }).catch(err=> {
+            console.error(err);
+            createMessage.edit(action.get(this.language.error) + '\n```\n'+ err.message +'\n```')
         });
     }
 }
