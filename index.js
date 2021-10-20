@@ -80,15 +80,12 @@ function actions() {
     
         language.parse();
         lang = language.language;
-        
-        try {
-            Client.destroy();
-        } catch (e) {
-            message.reply(e.message);
-        }
     
         Client.login(config.token).then(function () {
-            message.reply(language.get(lang.reload.success));
+            message.reply(language.get(lang.error));
+        }).catch(err => {
+            log.error(err, 'Reload');
+            message.reply(language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
         
         this.loadCommands();

@@ -1,4 +1,4 @@
-const AI = require("discord-chatbot");
+const AI = require("discord-chatbot/");
 const Util = require('fallout-utility');
 
 module.exports = new create();
@@ -19,7 +19,7 @@ function create(){
         this.config = config;
         this.language = language;
 
-        chatbot = new AI({name: client.user.username, gender: "Male"});
+        chatbot = new AI({name: client.user.username, gender: "male"});
 
         // Command ready
         return true;
@@ -31,11 +31,12 @@ function create(){
         let createMessage = await message.reply(action.get(this.language.thinking));
 
         chatbot.chat(sentence, message.author.username).then((response) => {
-            response = Util.replaceAll(response, 'Udit', 'Ghexter based on Udit');
+            response = Util.replaceAll(response, 'Udit', this.config.owner);
             response = Util.replaceAll(response, 'March 18, 2012', 'April 20, 2021');
 
             createMessage.edit(response);
         }).catch(e => {
+            console.error(e);
             createMessage.edit(action.get(this.language.error) + '\n```\n'+ e.message +'\n```')
         });
     }
