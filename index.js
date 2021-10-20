@@ -65,7 +65,7 @@ Client.on('ready', function() {
             if(commands.hasOwnProperty(command)){
                 log.warn(message.author.username + ' executed ' + command)
                 commands[command].execute(args, message, Actions, Client).catch(err => {
-                    log.error(err, commands[command] + '.js');
+                    log.error(err, command + '.js');
                     message.channel.send(err.message);
                 });
             }
