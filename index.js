@@ -18,7 +18,7 @@ const Discord = require('discord.js');
 const log = Util.logger;
     log.defaultPrefix = 'Bot';
 const parseConfig = new Config();
-    parseConfig.location = './config/config.yml';
+    parseConfig.location = './config/config.dev.yml';
     parseConfig.parse();
     parseConfig.testmode();
     parseConfig.prefill();
@@ -46,9 +46,11 @@ Client.on('ready', function() {
     log.warn(`\nInvite: ${ createInvite(Client) }\n`, 'Invite');
 
     Client.on('messageCreate', async function (message) {
+        if(message.author.id === Client.user.id) return;
+
         log.log(message.author.username + ': ' + message.content, 'Message');
         if(message.content == '!reload') {
-            await message.reply(lang.reload.requested);
+            await message.reply(language.get(lang.reload.requested));
             reload(message);
         }
     });
@@ -68,7 +70,7 @@ function reload(message) {
     }
 
     Client.login(config.token).then(function () {
-        message.reply(lang.reload.success);
+        message.reply(language.get(lang.reload.success));
     });
 }
 function createInvite(bot) {
