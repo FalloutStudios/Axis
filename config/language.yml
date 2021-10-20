@@ -1,10 +1,14 @@
-stop: 'Stopping <:oke:888823666228486195>'
+stop: 
+  - 'Stopping <:oke:888823666228486195>'
+  - 'Shutting down <:wehdikashore:900367488636813343>'
+  - 'Signing out as a bot <:tologobooo:881023181354319893>'
 error:
   - 'An error occurred <a:thicc_sugoma:857953871384018964>'
   - 'Error occurred <:omegalol:886695211747672095>'
+  - 'Oppss an error occurred <:tologobooo:881023181354319893>'
   - 'Error! <:e:888823666400452619>'
 thinking: 
-  - 'I''m thonking wait...'
+  - 'I''m thonking wait... <:tologobooo:881023181354319893>'
   - 'wait breh <a:loading:870586127973756949>'
   - ':brain: <a:loading:870586127973756949>'
 noPerms:
@@ -24,6 +28,9 @@ reload:
 help:
   title: 'Command Help'
   description: 'Here''s a list of the current commands:'
+langs:
+  title: 'Language codes list'
+  description: 'Here''s a list of language codes `Add an argument to filter list`:'
 
 
 version: 1.0.0 # Version (don't modify this value)

@@ -1,4 +1,4 @@
-const AI = require("discord-chatbot/");
+const AI = require("discord-chatbot");
 const Util = require('fallout-utility');
 
 module.exports = new create();
@@ -36,7 +36,7 @@ function create(){
             response = Util.replaceAll(response, 'Samik', message.author.username);
 
             createMessage.edit(response);
-        }).catch(err=> {
+        }).catch(err => {
             console.error(err);
             createMessage.edit(action.get(this.language.error) + '\n```\n'+ err.message +'\n```')
         });
