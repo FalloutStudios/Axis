@@ -2,6 +2,7 @@ token: TOKEN # Bot token
 
 embedColor: '#19AFFF'   # Colors for embed messages
 commandPrefix: '>'      # Prefix for commands
+owner: 'Ghexter'        # Who owns this bot
 
 blacklistChannels:            # Ignored channels
   enabled: true               # Enable blacklisted channels
