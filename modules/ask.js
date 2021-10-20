@@ -9,9 +9,9 @@ function create(){
     this.config = {};
     this.language = {};
     this.command = {
-        "question": {
-            "required": true,
-            "values": ""
+        question: {
+            required: true,
+            values: ""
         }
     };
 
