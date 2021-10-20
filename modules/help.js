@@ -13,8 +13,6 @@ let commands = {};
 for (const file of modulesList) {
     let name = Path.parse(file).name;
 
-    if(name == 'help') continue;
-
     let importModule = require(`./${file}`);
     
     try {
@@ -32,6 +30,11 @@ for (const file of modulesList) {
 function create(){
     this.config = {};
     this.language = {};
+    this.command = {
+        search: {
+            required: false
+        }
+    };
 
     this.start = (config, language) => {
         this.config = config;
@@ -52,9 +55,17 @@ function create(){
             .setFooter(client.user.username)
             .setTimestamp();
 
-        if(filter && filter.length > 0) commands = commands.indexOf(filter);
+        let visibleCommands = Object.keys(commands);
 
-        for (const value in commands) {
+        if(filter && filter.length > 0) { 
+            visibleCommands = visibleCommands.filter((elmt) => {
+                return elmt.toLowerCase().indexOf(filter.toLowerCase()) !== -1
+            });
+        }
+
+        console.log(visibleCommands);
+
+        for (const value of visibleCommands) {
             embed.addField(value, '```'+ this.config.commandPrefix + createString(commands[value], value) +'```', false);
         }
 
