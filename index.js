@@ -82,7 +82,7 @@ function actions() {
         lang = language.language;
     
         Client.login(config.token).then(function () {
-            message.reply(language.get(lang.error));
+            message.reply(language.get(lang.reload.success));
         }).catch(err => {
             log.error(err, 'Reload');
             message.reply(language.get(lang.error) + '\n```\n' + err.message + '\n```');
