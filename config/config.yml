@@ -1,10 +1,14 @@
-# Invite: https://discord.com/oauth2/authorize?client_id=<id>&permissions=8&scope=bot%20applications.commands
-
 token: TOKEN # Bot token
 
-commandPrefix: '!'
+embedColor: '#19AFFF'   # Colors for embed messages
+commandPrefix: '>'      # Prefix for commands
 
-inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands # Invite format (%id% will be replaced with bot id)
-language: 'config/language.yml' # Langage file
+blacklistChannels:            # Ignored channels
+  enabled: true               # Enable blacklisted channels
+  channels: []                # List of blacklisted channels
+  convertToWhitelist: false   # Convert channels to whitelisted channels
 
-version: 1.0.0 # Version (don't modify this value)
+inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot   # Invite format for bot
+language: 'config/language.yml'                                                              # Langage file 
+
+version: 1.0.0    # Version (don't modify this value)

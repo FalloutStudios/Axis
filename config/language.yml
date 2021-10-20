@@ -1,11 +1,28 @@
+stop: 'Stopping <:oke:888823666228486195>'
+error:
+  - 'An error occurred <a:thicc_sugoma:857953871384018964>'
+  - 'Eror occurred <:omegalol:900274266241658900>'
+  - 'Error <:e:888823666400452619>'
+thinking: 
+  - 'I''m thonking wait...'
+  - 'give me some time to answer that <:innocente:888823666438180885>'
+  - 'me: :brain: <a:loading:870586127973756949>'
+noPerms:
+  - 'No permissions <:e:888823666400452619>'
+  - 'lul no permissions'
+  - 'NO PERMMSSS! <:omegalol:900274266241658900>'
 reload: 
   requested: 
-    - ok <a:boi_scrollright:898522330786070568>
-    - breuh you bitch
-    - ok <:boi:891291989335748650>
+    - 'ok <a:boi_scrollright:898522330786070568>'
+    - 'bruh oki :point_right: :point_left:'
+    - 'ok <:boi:891291989335748650>'
   success: 
-    - Your bitch bot has been destroyed and recreated <a:thicc_sugoma:857953871384018964>
-    - reloaded poor bitch <:boi:891291989335748650>
+    - 'Your bitch bot has been destroyed and recreated <a:thicc_sugoma:857953871384018964>'
+    - 'reloaded poor bitch <:boi:891291989335748650>'
     - 'lul :middle_finger:'
+help:
+  title: 'Command Help'
+  description: 'Here''s a list of the current commands:'
+
 
 version: 1.0.0 # Version (don't modify this value)
