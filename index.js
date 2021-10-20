@@ -11,6 +11,8 @@ require('./scripts/startup')();
 
 // Modules
 const Util = require('fallout-utility');
+const Fs = require('fs');
+const Path = require('path');
 const Config = require('./scripts/config');
 const Language = require('./scripts/language');
 const Discord = require('discord.js');
@@ -18,7 +20,7 @@ const Discord = require('discord.js');
 const log = Util.logger;
     log.defaultPrefix = 'Bot';
 const parseConfig = new Config();
-    parseConfig.location = './config/config.dev.yml';
+    parseConfig.location = './config/config.yml';
     parseConfig.parse();
     parseConfig.testmode();
     parseConfig.prefill();
@@ -45,13 +47,35 @@ Client.on('ready', function() {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ createInvite(Client) }\n`, 'Invite');
 
+    const modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
+    let commands = {};
+    for (const file of modulesList) {
+        let name = Path.parse(file).name;
+
+        let importModule = require(__dirname + '/modules/' + file);
+        
+        try {
+            name = Util.replaceAll(name, ' ', '_');
+            commands[name] = importModule;
+
+            commands[name].start(config, language);
+        } catch (e) {
+            log.error(`Coudln't load ${file}: ${e.message}`, 'Modules');
+        }
+    }
+
     Client.on('messageCreate', async function (message) {
-        if(message.author.id === Client.user.id) return;
+        if(message.author.id === Client.user.id || message.author.bot) return;
 
         log.log(message.author.username + ': ' + message.content, 'Message');
-        if(message.content == '!reload') {
-            await message.reply(language.get(lang.reload.requested));
-            reload(message);
+        if(Util.detectCommand(message.content, config.commandPrefix)){
+            const commandConstructor = Util.getCommand(message.content, config.commandPrefix);
+            const command = commandConstructor.command;
+            const args = commandConstructor.args;
+
+            if(commands.hasOwnProperty(command)){
+                commands[command].execute(args, message);
+            }
         }
     });
 });
@@ -72,6 +96,11 @@ function reload(message) {
     Client.login(config.token).then(function () {
         message.reply(language.get(lang.reload.success));
     });
+
+    return {
+        language: lang,
+        config: config
+    };
 }
 function createInvite(bot) {
     return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);

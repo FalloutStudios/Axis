@@ -2,6 +2,8 @@
 
 token: TOKEN # Bot token
 
+commandPrefix: '!'
+
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands # Invite format (%id% will be replaced with bot id)
 language: 'config/language.yml' # Langage file
 
