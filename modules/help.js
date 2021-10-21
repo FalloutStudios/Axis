@@ -62,8 +62,6 @@ function create(){
             });
         }
 
-        console.log(visibleCommands);
-
         for (const value of visibleCommands) {
             embed.addField(value, '```'+ this.config.commandPrefix + createString(commands[value], value) +'```', false);
         }
