@@ -45,6 +45,7 @@ function create(){
     }
     this.execute = async (args, message, action, client) => {
         // Command executed
+        let perms = 0;
         let filter = Util.makeSentence(args);
         
         let embed = new MessageEmbed()
@@ -53,15 +54,24 @@ function create(){
             .setColor(this.config.embedColor)
             .setTimestamp();
 
+        if(action.moderator(message)) {
+            perms = 1;
+        } else if(action.admin(message)) {
+            perms = 2;
+        }
+
         let visibleCommands = Object.keys(commands);
 
         if(filter && filter.length > 0) { 
             visibleCommands = visibleCommands.filter((elmt) => {
-                return elmt.toLowerCase().indexOf(filter.toLowerCase()) !== -1
+                return elmt.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
             });
         }
 
         for (const value of visibleCommands) {
+            if(this.config.moderatorOnlyCommands.find(key => key.toLowerCase() == value) && perms < 1) continue;
+            if(this.config.adminOnlyCommands.find(key => key.toLowerCase() == value) && perms < 2) continue;
+
             embed.addField(value, '```'+ this.config.commandPrefix + createString(commands[value], value) +'```', false);
         }
 
@@ -77,8 +87,8 @@ function createString(object = {}, commandName = '%command%'){
 
     for(let name in object){
         const types = {
-            required: "<%arg%:required%values%>",
-            optional: "[%arg%:optional%values%]"
+            required: "<%arg%%values%>",
+            optional: "[%arg%%values%]"
         }
 
         let arg = object[name].required ? types['required'] : types['optional'];
@@ -90,7 +100,7 @@ function createString(object = {}, commandName = '%command%'){
 
                 let increment = 0;
 
-                values += ' | ';
+                values += ': ';
 
                 for (const value of object[name].values) {
                     increment++;
