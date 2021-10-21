@@ -29,22 +29,20 @@ function create(){
         let sentence = Util.makeSentence(args).toString().trim();
         if(sentence.length == 0) { await message.reply(action.get(this.language.empty)); return; }
 
-        message.channel.sendTyping()
+        message.channel.sendTyping();
 
         try {
-            chatbot.chat(sentence, message.author.id).then(async (response) => {
+            chatbot.chat(sentence, message.author.id).then((response) => {
                 response = Util.replaceAll(response, 'Udit', this.config.owner);
                 response = Util.replaceAll(response, 'March 18, 2012', 'April 20, 2021');
                 response = Util.replaceAll(response, 'Samik', message.author.username);
 
-                await message.reply(response);
-            }).catch(async (err) => {
+                action.reply(message, response);
+            }).catch((err) => {
                 console.error(err);
-                await message.reply(action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
             });
         } catch (err) {
             console.error(err);
-            await message.reply(action.get(this.language.error) + '\n```\n'+ err.message +'\n```')
         }
     }
 }

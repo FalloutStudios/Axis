@@ -56,14 +56,12 @@ function create(){
                 user: message.author.id, 
                 language: lang
             }).then( async (response) => {
-                message.reply(response);
+                action.reply(message, response);
             }).catch( async (err) => {
                 console.error(err);
-                message.reply(action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
             });
         } catch (err) {
             console.error(err);
-            message.reply(action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
         }
     }
 }
