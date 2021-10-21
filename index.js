@@ -85,10 +85,10 @@ function actions() {
         lang = language.language;
     
         Client.login(config.token).then(function () {
-            message.reply(language.get(lang.reload.success));
+            this.reply(message, language.get(lang.reload.success));
         }).catch(err => {
             log.error(err, 'Reload');
-            message.reply(language.get(lang.error) + '\n```\n' + err.message + '\n```');
+            this.reply(message, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
         
         this.loadCommands();
@@ -130,10 +130,10 @@ function actions() {
         if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && Actions.admin(message) || !config.adminOnlyCommands.find(key => key.toLowerCase() == command)) {
             commands[command].execute(args, message, Actions, Client).catch(async err => {
                 log.error(err, command + '.js');
-                await message.channel.send(language.get(lang.error) + '\n```\n' + err.message + '\n```');
+                await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
             });
         } else {
-            message.reply(language.get(lang.noPerms));
+            this.reply(message, language.get(lang.noPerms));
         }
     }
     this.admin = (message) => {
@@ -145,14 +145,14 @@ function actions() {
         try {
             await channel.send(message).catch(err => { log.error(err) }).catch(err => { log.error(err)});
         } catch (err) {
-            log.error(err);
+            log.error(err, 'Send error');
         }
     }
     this.reply = async (message, reply) => {
         try {
             await message.reply(reply).catch(err => { log.error(err) }).catch(err => { log.error(err)});
         } catch (err) {
-            log.error(err);
+            log.error(err, 'Reply error');
         }
     }
 }
