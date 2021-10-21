@@ -139,11 +139,11 @@ function actions() {
             await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
     }
-    this.admin = (message) => {
+    this.admin = (member) => {
         if(member && member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) return true;
         return false;
     }
-    this.moderator = (message) => {
+    this.moderator = (member) => {
         if(member && member.permissions.has([Discord.Permissions.FLAGS.BAN_MEMBERS, Discord.Permissions.FLAGS.KICK_MEMBERS])) return true;
         return false;
     }
