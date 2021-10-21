@@ -28,6 +28,7 @@ function create(){
         return true;
     }
     this.execute = async (args, message, action, client) => {
+        // Command executed
         let lang = 'auto';
         let skip = 0;
 
@@ -42,7 +43,6 @@ function create(){
             }
         }
 
-        // Command executed
         let sentence = Util.makeSentence(args, skip).toString().trim();
         if(sentence.length == 0) { await message.reply(action.get(this.language.empty)); return; }
 

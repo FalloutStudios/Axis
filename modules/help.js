@@ -45,7 +45,6 @@ function create(){
     }
     this.execute = async (args, message, action, client) => {
         // Command executed
-
         let filter = Util.makeSentence(args);
         
         let embed = new MessageEmbed()
