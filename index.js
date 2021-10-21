@@ -20,7 +20,7 @@ const Discord = require('discord.js');
 const log = Util.logger;
     log.defaultPrefix = 'Bot';
 const parseConfig = new Config();
-    parseConfig.location = './config/config.yml';
+    parseConfig.location = './config/config.dev.yml';
     parseConfig.parse();
     parseConfig.testmode();
     parseConfig.prefill();
@@ -61,6 +61,14 @@ Client.on('ready', function() {
             const commandConstructor = Util.getCommand(message.content, config.commandPrefix);
             const command = commandConstructor.command.toLowerCase();
 
+            // Ignored channels
+            if(
+                config.blacklistChannels.enabled && !config.blacklistChannels.convertToWhitelist && config.blacklistChannels.channels.includes(message.channelId.toString())
+                || 
+                config.blacklistChannels.enabled && config.blacklistChannels.convertToWhitelist && !config.blacklistChannels.channels.includes(message.channelId.toString())
+            ) return;
+
+            // Execute command
             if(commands.hasOwnProperty(command)){
                 Actions.command(command, message);
             }
