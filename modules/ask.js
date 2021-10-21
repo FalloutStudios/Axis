@@ -1,4 +1,4 @@
-const AI = require("discord-chatbot");
+const AI = require("../scripts/discord-chatbot/");
 const Util = require('fallout-utility');
 
 module.exports = new create();
@@ -29,22 +29,22 @@ function create(){
         let sentence = Util.makeSentence(args).toString().trim();
         if(sentence.length == 0) { await message.reply(action.get(this.language.empty)); return; }
 
-        let createMessage = await message.reply(action.get(this.language.thinking));
+        message.channel.sendTyping()
 
         try {
-            chatbot.chat(sentence, message.author.username).then((response) => {
+            chatbot.chat(sentence, message.author.id).then(async (response) => {
                 response = Util.replaceAll(response, 'Udit', this.config.owner);
                 response = Util.replaceAll(response, 'March 18, 2012', 'April 20, 2021');
                 response = Util.replaceAll(response, 'Samik', message.author.username);
 
-                createMessage.edit(response);
-            }).catch((err) => {
+                await message.reply(response);
+            }).catch(async (err) => {
                 console.error(err);
-                createMessage.edit(action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
+                await message.reply(action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
             });
         } catch (err) {
             console.error(err);
-            createMessage.edit(action.get(this.language.error) + '\n```\n'+ err.message +'\n```')
+            await message.reply(action.get(this.language.error) + '\n```\n'+ err.message +'\n```')
         }
     }
 }
