@@ -10,7 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "commander": "^8.2.0",
-    "discord-chatbot": "^2.0.2",
     "discord.js": "^13.2.0",
     "fallout-utility": "^1.0.36",
     "prompt-sync": "^4.1.6",
