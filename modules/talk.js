@@ -46,10 +46,7 @@ function create(){
         let sentence = Util.makeSentence(args, skip).toString().trim();
         if(sentence.length == 0) { await message.reply(action.get(this.language.empty)); return; }
 
-        let createMessage = await message.reply(action.get(this.language.thinking));
-
-        console.log(lang);
-        console.log(sentence);
+        message.channel.sendTyping();
 
         try {
             chatbot.chat({
@@ -58,15 +55,15 @@ function create(){
                 owner: action.get(this.config.owner), 
                 user: message.author.id, 
                 language: lang
-            }).then((response) => {
-                createMessage.edit(response);
-            }).catch((err) => {
+            }).then( async (response) => {
+                message.reply(response);
+            }).catch( async (err) => {
                 console.error(err);
-                createMessage.edit(action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
+                message.reply(action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
             });
         } catch (err) {
             console.error(err);
-            createMessage.edit(action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
+            message.reply(action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
         }
     }
 }
