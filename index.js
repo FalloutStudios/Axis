@@ -85,10 +85,10 @@ function actions() {
         lang = language.language;
     
         Client.login(config.token).then(function () {
-            this.reply(message, language.get(lang.reload.success));
+            Actions.reply(message, language.get(lang.reload.success));
         }).catch(err => {
             log.error(err, 'Reload');
-            this.reply(message, language.get(lang.error) + '\n```\n' + err.message + '\n```');
+            Actions.reply(message, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
         
         this.loadCommands();
@@ -127,18 +127,24 @@ function actions() {
 
         log.warn(message.author.username + ' executed ' + command);
 
-        if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && Actions.admin(message) || !config.adminOnlyCommands.find(key => key.toLowerCase() == command)) {
-            commands[command].execute(args, message, Actions, Client).catch(async err => {
-                log.error(err, command + '.js');
-                await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
-            });
-        } else {
-            this.reply(message, language.get(lang.noPerms));
+        if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !this.admin(message)) { 
+            this.reply(message, language.get(lang.noPerms)); return; 
         }
+        if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !this.moderator(message)) { 
+            this.reply(message, language.get(lang.noPerms)); return; 
+        }
+
+        commands[command].execute(args, message, Actions, Client).catch(async err => {
+            log.error(err, command + '.js');
+            await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
+        });
     }
     this.admin = (message) => {
         if(message.member && message.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) return true;
-        
+        return false;
+    }
+    this.moderator = (message) => {
+        if(message.member && message.member.permissions.has([Discord.Permissions.FLAGS.BAN_MEMBERS, Discord.Permissions.FLAGS.KICK_MEMBERS])) return true;
         return false;
     }
     this.send = async (channel, message) => {
