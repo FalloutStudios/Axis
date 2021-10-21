@@ -31,9 +31,7 @@ function create(){
 
         if(reason.length == 0) reason = action.get(this.language.kicked.defaultReason);
         if(target.user.id == message.author.id) { action.reply(message, action.get(this.language.noPerms)); return; }
-        target.kick({
-            reason: reason
-        }).then((member) => {
+        target.kick(reason).then((member) => {
             reason = Util.replaceAll(reason, '%username%', member.user.username);
             reason = Util.replaceAll(reason, '%author%', message.author.username);
 
