@@ -34,7 +34,7 @@ function create(){
         target.kick({
             reason: reason
         }).then((member) => {
-            reason = Util.replaceAll(reason, '%username%', member.username);
+            reason = Util.replaceAll(reason, '%username%', member.user.username);
             reason = Util.replaceAll(reason, '%author%', message.author.username);
 
             let embed = new MessageEmbed()
