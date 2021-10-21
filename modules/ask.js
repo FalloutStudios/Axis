@@ -26,19 +26,22 @@ function create(){
     }
     this.execute = async (args, message, action, client) => {
         // Command executed
-        let sentence = Util.makeSentence(args).toString();
+        let sentence = Util.makeSentence(args).toString().trim();
+        if(sentence.length == 0) { await message.reply(action.get(this.language.empty)); return; }
 
         let createMessage = await message.reply(action.get(this.language.thinking));
 
-        chatbot.chat(sentence, message.author.username).then((response) => {
-            response = Util.replaceAll(response, 'Udit', this.config.owner);
-            response = Util.replaceAll(response, 'March 18, 2012', 'April 20, 2021');
-            response = Util.replaceAll(response, 'Samik', message.author.username);
+        try {
+            chatbot.chat(sentence, message.author.username).then((response) => {
+                response = Util.replaceAll(response, 'Udit', this.config.owner);
+                response = Util.replaceAll(response, 'March 18, 2012', 'April 20, 2021');
+                response = Util.replaceAll(response, 'Samik', message.author.username);
 
-            createMessage.edit(response);
-        }).catch(err => {
+                createMessage.edit(response);
+            });
+        } catch (err) {
             console.error(err);
             createMessage.edit(action.get(this.language.error) + '\n```\n'+ err.message +'\n```')
-        });
+        }
     }
 }

@@ -4,8 +4,7 @@ const Util = require('fallout-utility');
 module.exports = new create();
 
 let chatbot = new AI.Client();
-let langs = require('../scripts/langs');
-    langs = Object.keys(langs);
+let langs = require('../langs.json');
 
 function create(){
     this.config = {};
@@ -32,28 +31,39 @@ function create(){
         let lang = 'auto';
         let skip = 0;
 
-        if(args.length > 1 && typeof langs.filter(filter => filter == args[0]) !== 'undefined') {
-            lang = langs.filter(filter => filter == args[0])[0];
-            skip = 1;
+        if(args.length > 1 && typeof args[0] !== 'undefined') {
+            langs.filter(filter => {
+                return filter.key == args[0];
+            });
+
+            if(langs.length > 0) {
+                lang = langs.filter(filter => filter.key == args[0])[0]['key'];
+                skip = 1;
+            }
         }
 
         // Command executed
-        let sentence = Util.makeSentence(args, skip).toString();
+        let sentence = Util.makeSentence(args, skip).toString().trim();
+        if(sentence.length == 0) { await message.reply(action.get(this.language.empty)); return; }
+
         let createMessage = await message.reply(action.get(this.language.thinking));
 
-        
+        console.log(lang);
+        console.log(sentence);
 
-        chatbot.chat({
-            message: sentence, 
-            name: client.user.username, 
-            owner: action.get(this.config.owner), 
-            user: message.author.id, 
-            language: lang
-        }).then((response) => {
-            createMessage.edit(response);
-        }).catch(err=> {
+        try {
+            chatbot.chat({
+                message: sentence, 
+                name: client.user.username, 
+                owner: action.get(this.config.owner), 
+                user: message.author.id, 
+                language: lang
+            }).then((response) => {
+                createMessage.edit(response);
+            });
+        } catch (err) {
             console.error(err);
             createMessage.edit(action.get(this.language.error) + '\n```\n'+ err.message +'\n```')
-        });
+        }
     }
 }
