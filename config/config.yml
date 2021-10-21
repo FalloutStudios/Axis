@@ -5,9 +5,13 @@ commandPrefix: '!'      # Prefix for commands
 owner: 'Ghexter'        # Who owns this bot
 
 adminOnlyCommands:    # Restrict commands for admin only
-  - 'version'
   - 'stop'
   - 'reload'
+
+moderatorOnlyCommands: # Command for moderator with kick and ban perms
+  - 'version'
+  - 'ban'
+  - 'kick'
 
 blacklistChannels:            # Ignored channels
   enabled: true               # Enable blacklisted channels
