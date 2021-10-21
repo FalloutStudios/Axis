@@ -52,7 +52,6 @@ function create(){
             .setAuthor(action.get(this.language.help.title), client.user.avatarURL)
             .setDescription(action.get(this.language.help.description))
             .setColor(this.config.embedColor)
-            .setFooter(client.user.username)
             .setTimestamp();
 
         let visibleCommands = Object.keys(commands);
@@ -69,8 +68,9 @@ function create(){
             embed.addField(value, '```'+ this.config.commandPrefix + createString(commands[value], value) +'```', false);
         }
 
-        message.channel.send({ embeds: [embed] }).catch(err => { log.error(err) });
-        return true;
+        embed.setFooter(`Total of ${ Object.keys(commands).length } commands`);
+
+        action.reply(message, { embeds: [embed] });
     }
 }
 
