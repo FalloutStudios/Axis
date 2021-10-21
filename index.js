@@ -123,14 +123,14 @@ function actions() {
         return language.get(object);
     }
     this.command = (command, message) => {
-        const args = Util.getCommand(message.content, config.commandPrefix).args;
+        const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
 
         log.warn(message.author.username + ' executed ' + command);
 
-        if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !this.admin(message)) { 
+        if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !this.admin(message.member)) { 
             this.reply(message, language.get(lang.noPerms)); return; 
         }
-        if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !this.moderator(message)) { 
+        if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !this.moderator(message.member)) { 
             this.reply(message, language.get(lang.noPerms)); return; 
         }
 
@@ -140,11 +140,11 @@ function actions() {
         });
     }
     this.admin = (message) => {
-        if(message.member && message.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) return true;
+        if(member && member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) return true;
         return false;
     }
     this.moderator = (message) => {
-        if(message.member && message.member.permissions.has([Discord.Permissions.FLAGS.BAN_MEMBERS, Discord.Permissions.FLAGS.KICK_MEMBERS])) return true;
+        if(member && member.permissions.has([Discord.Permissions.FLAGS.BAN_MEMBERS, Discord.Permissions.FLAGS.KICK_MEMBERS])) return true;
         return false;
     }
     this.send = async (channel, message) => {

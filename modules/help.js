@@ -54,9 +54,9 @@ function create(){
             .setColor(this.config.embedColor)
             .setTimestamp();
 
-        if(action.moderator(message)) {
+        if(action.moderator(message.member)) {
             perms = 1;
-        } else if(action.admin(message)) {
+        } else if(action.admin(message.member)) {
             perms = 2;
         }
 
