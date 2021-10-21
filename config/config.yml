@@ -1,7 +1,7 @@
 token: TOKEN # Bot token
 
 embedColor: '#19AFFF'   # Colors for embed messages
-commandPrefix: '>'      # Prefix for commands
+commandPrefix: '!'      # Prefix for commands
 owner: 'Ghexter'        # Who owns this bot
 
 adminOnlyCommands:    # Restrict commands for admin only
