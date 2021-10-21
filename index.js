@@ -60,19 +60,9 @@ Client.on('ready', function() {
         if(Util.detectCommand(message.content, config.commandPrefix)){
             const commandConstructor = Util.getCommand(message.content, config.commandPrefix);
             const command = commandConstructor.command.toLowerCase();
-            const args = commandConstructor.args;
 
             if(commands.hasOwnProperty(command)){
-                log.warn(message.author.username + ' executed ' + command);
-
-                if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && Actions.admin(message) || !config.adminOnlyCommands.find(key => key.toLowerCase() == command)) {
-                    commands[command].execute(args, message, Actions, Client).catch(async err => {
-                        log.error(err, command + '.js');
-                        await message.channel.send(language.get(lang.error) + '\n```\n' + err.message + '\n```');
-                    });
-                } else {
-                    message.reply(language.get(lang.noPerms));
-                }
+                Actions.command(command, message);
             }
         }
     });
@@ -123,6 +113,20 @@ function actions() {
     }
     this.get = (object) => {
         return language.get(object);
+    }
+    this.command = (command, message) => {
+        const args = Util.getCommand(message.content, config.commandPrefix).args;
+
+        log.warn(message.author.username + ' executed ' + command);
+
+        if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && Actions.admin(message) || !config.adminOnlyCommands.find(key => key.toLowerCase() == command)) {
+            commands[command].execute(args, message, Actions, Client).catch(async err => {
+                log.error(err, command + '.js');
+                await message.channel.send(language.get(lang.error) + '\n```\n' + err.message + '\n```');
+            });
+        } else {
+            message.reply(language.get(lang.noPerms));
+        }
     }
     this.admin = (message) => {
         if(message.member && message.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) return true;
