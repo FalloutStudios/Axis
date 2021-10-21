@@ -23,7 +23,7 @@ for (const file of modulesList) {
 
         log.warn('Help is ready for command: ' + name, file);
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
 }
 
