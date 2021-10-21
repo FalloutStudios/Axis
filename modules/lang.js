@@ -46,6 +46,6 @@ function create(){
             embed.addField(lang['name'], `\`${lang['key']}\` - ${lang['nativeName']}`, true);
         }
 
-        await message.reply({ embeds: [embed] });
+        action.reply(message, { embeds: [embed] });
     }
 }
