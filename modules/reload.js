@@ -13,9 +13,7 @@ function create(){
     }
     this.execute = async (args, message, action, client) => {
         // Command executed
-        if(!action.admin(message)) { message.reply(action.get(this.language.noPerms)); return; }
-
-        await message.reply(action.get(this.language.reload.requested));
+        await action.reply(message, action.get(this.language.reload.requested));
         action.reload(message);
     }
 }
