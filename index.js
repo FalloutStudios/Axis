@@ -59,15 +59,20 @@ Client.on('ready', function() {
         log.log(message.author.username + ': ' + message.content, 'Message');
         if(Util.detectCommand(message.content, config.commandPrefix)){
             const commandConstructor = Util.getCommand(message.content, config.commandPrefix);
-            const command = commandConstructor.command;
+            const command = commandConstructor.command.toLowerCase();
             const args = commandConstructor.args;
 
             if(commands.hasOwnProperty(command)){
-                log.warn(message.author.username + ' executed ' + command)
-                commands[command].execute(args, message, Actions, Client).catch(err => {
-                    log.error(err, command + '.js');
-                    message.reply(language.get(lang.error) + '\n```\n' + err.message + '\n```');
-                });
+                log.warn(message.author.username + ' executed ' + command);
+
+                if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && Actions.admin(message) || !config.adminOnlyCommands.find(key => key.toLowerCase() == command)) {
+                    commands[command].execute(args, message, Actions, Client).catch(async err => {
+                        log.error(err, command + '.js');
+                        await message.channel.send(language.get(lang.error) + '\n```\n' + err.message + '\n```');
+                    });
+                } else {
+                    message.reply(language.get(lang.noPerms));
+                }
             }
         }
     });
@@ -104,7 +109,7 @@ function actions() {
             let importModule = require(__dirname + '/modules/' + file);
             
             try {
-                name = Util.replaceAll(name, ' ', '_');
+                name = Util.replaceAll(name, ' ', '_').toLowerCase();
                 commands[name] = importModule;
     
                 if(commands[name].start(config, lang, Client)) log.log('Ready! command: ' + name, file);
@@ -123,5 +128,19 @@ function actions() {
         if(message.member && message.member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) return true;
         
         return false;
+    }
+    this.send = async (channel, message) => {
+        try {
+            await channel.send(message).catch(err => { log.error(err) }).catch(err => { log.error(err)});
+        } catch (err) {
+            log.error(err);
+        }
+    }
+    this.reply = async (message, reply) => {
+        try {
+            await message.reply(reply).catch(err => { log.error(err) }).catch(err => { log.error(err)});
+        } catch (err) {
+            log.error(err);
+        }
     }
 }
