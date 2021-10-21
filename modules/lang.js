@@ -2,7 +2,7 @@ const { MessageEmbed } = require('discord.js');
 const Util = require('fallout-utility');
 module.exports = new create();
 
-let langs = require('../scripts/langs');
+let langs = require('../langs.json');
 
 function create(){
     this.config = {};
@@ -27,12 +27,12 @@ function create(){
     }
     this.execute = async (args, message, action, client) => {
         // Command executed
-        let sentence = !args && args == null ? '' : Util.makeSentence(args);
+        let sentence = args.length == 0 ? '' : Util.makeSentence(args);
 
         console.log(args);
 
-        let langsFetch = Object.keys(langs).filter((elmt) => {
-            return elmt.toLowerCase().indexOf(sentence.toLowerCase()) !== -1
+        let langsFetch = langs.filter(lang => {
+            return lang.name.toLowerCase().indexOf(sentence.toLowerCase()) !== -1
         });
 
         let embed = new MessageEmbed()
@@ -43,8 +43,7 @@ function create(){
             .setTimestamp();
 
         for (const lang of langsFetch) {
-            let selected = langs[lang];
-            embed.addField(selected['name'], `\`${lang}\` - ${selected['nativeName']}`, true);
+            embed.addField(lang['name'], `\`${lang['key']}\` - ${lang['nativeName']}`, true);
         }
 
         await message.reply({ embeds: [embed] });
