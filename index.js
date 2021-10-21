@@ -66,7 +66,7 @@ Client.on('ready', function() {
                 log.warn(message.author.username + ' executed ' + command)
                 commands[command].execute(args, message, Actions, Client).catch(err => {
                     log.error(err, command + '.js');
-                    message.channel.send(err.message);
+                    message.reply(language.get(lang.error) + '\n```\n' + err.message + '\n```');
                 });
             }
         }
