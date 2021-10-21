@@ -38,6 +38,9 @@ function create(){
                 response = Util.replaceAll(response, 'Samik', message.author.username);
 
                 createMessage.edit(response);
+            }).catch((err) => {
+                console.error(err);
+                createMessage.edit(action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
             });
         } catch (err) {
             console.error(err);

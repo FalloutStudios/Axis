@@ -60,10 +60,13 @@ function create(){
                 language: lang
             }).then((response) => {
                 createMessage.edit(response);
+            }).catch((err) => {
+                console.error(err);
+                createMessage.edit(action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
             });
         } catch (err) {
             console.error(err);
-            createMessage.edit(action.get(this.language.error) + '\n```\n'+ err.message +'\n```')
+            createMessage.edit(action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
         }
     }
 }
