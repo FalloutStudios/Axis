@@ -13,8 +13,8 @@ moderatorOnlyCommands: # Command for moderator with kick and ban perms
   - 'ban'
   - 'kick'
 
-blacklistChannels:            # Ignored channels
-  enabled: true               # Enable blacklisted channels
+blacklistChannels:            # Ignored channels based on IDs
+  enabled: false               # Enable blacklisted channels
   channels: []                # List of blacklisted channels
   convertToWhitelist: false   # Convert channels to whitelisted channels
 
