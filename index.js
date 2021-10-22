@@ -21,6 +21,7 @@ const log = Util.logger;
     log.defaultPrefix = 'Bot';
 const parseConfig = new Config();
     parseConfig.location = './config/config.yml';
+    parseConfig.location = './config/config.dev.yml';
     parseConfig.parse();
     parseConfig.testmode();
     parseConfig.prefill();
