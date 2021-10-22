@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "node index.js",
-    "test": "node index.js --testmode -D TOKEN"
+    "test": "node index.js --testmode"
   },
   "engines": {
     "node": ">=16.6.0"
