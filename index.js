@@ -54,7 +54,7 @@ Client.on('ready', function() {
     Actions.loadCommands();
 
     Client.on('messageCreate', async function (message) {
-        if(message.author.id === Client.user.id || message.author.bot) return;
+        if(message.author.id === Client.user.id || message.author.bot || message.author.system) return;
 
         log.log(message.author.username + ': ' + message.content, 'Message');
         if(Util.detectCommand(message.content, config.commandPrefix)){
