@@ -28,6 +28,7 @@ jobs:
         cache: 'npm'
       env:
         discordtoken: ${{ secrets.DISCORD_TOKEN }}
+    - run: npm install -g npm@latest
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test

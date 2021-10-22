@@ -3,6 +3,7 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/FalloutStudios/Axis)
 ![GitHub repo size](https://img.shields.io/github/repo-size/FalloutStudios/Axis)
 ![Lines of code](https://img.shields.io/tokei/lines/github/FalloutStudios/Axis)
+![Node.js CI](https://github.com/FalloutStudios/Axis/actions/workflows/node.js.yml/badge.svg?branch=main)
 
 Axis bot is named after the Our World's server clan named `Axis` *The reincarnation of Fallout clan*
 
