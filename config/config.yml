@@ -6,6 +6,7 @@ owner: 'Ghexter'        # Who owns this bot
 
 adminOnlyCommands:    # Restrict commands for admin only
   - 'stop'
+  - 'spam'
   - 'reload'
 
 moderatorOnlyCommands: # Command for moderator with kick and ban perms
