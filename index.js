@@ -111,6 +111,7 @@ function actions() {
                 name = Util.replaceAll(name, ' ', '_').toLowerCase();
                 scripts[name] = importModule;
     
+                if(scripts[name].start(Client, Actions, config, lang)) log.log('Ready! command: ' + name, file);
             } catch (err) {
                 log.error(`Coudln't load ${file}: ${err.message}`, file);
                 log.error(err, file);
