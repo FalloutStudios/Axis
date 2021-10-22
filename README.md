@@ -6,6 +6,14 @@
 
 Axis bot is named after the Our World's server clan named `Axis` *The reincarnation of Fallout clan*
 
+## Installation
+
+To run or self-host, the following prerequisites must be installed.
+
++ Node js `version >=16.6.0`
+
+Run `npm install` to install all dependencies then `node index.js` to run the bot.
+
 ## Custom script
 
 This is an example command script file `modules/example.js`
