@@ -105,3 +105,4 @@ dist
 
 # Development config
 *.dev.yml
+config/spam.yml

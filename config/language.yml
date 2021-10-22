@@ -19,15 +19,14 @@ noPerms:
   - 'lul no permissions'
   - 'NO PERMMSSS! <:omegalol:886695211747672095>'
   - '**NO PERMS!** <:omegalol:886695211747672095>'
-reload: 
-  requested: 
-    - 'ok <a:boi_scrollright:898522330786070568>'
-    - 'bruh oki :point_right: :point_left:'
-    - 'FINEE! <:boi:891291989335748650>'
-  success: 
-    - 'bot has been destroyed and recreated <a:thicc_sugoma:857953871384018964>'
-    - 'reloaded you poor bitch <:boi:891291989335748650>'
-    - 'Bot was reloaded <:gihun:899026746693787648>'
+tooLarge:
+  - 'Too large! <:omegalol:886695211747672095>'
+  - 'I wan''t you to make it smaller <:tologobooo:881023181354319893>'
+  - 'That''s too big! <a:thicc_sugoma:857953871384018964>'
+tooSmall:
+  - '<:omegalol:886695211747672095> Too small!'
+  - 'I wan''t you to make it larger! <a:boi_scrollright:898522330786070568>'
+  - 'That''s too small! <a:thicc_sugoma:857953871384018964>'
 
 # For commands
 help:
@@ -66,5 +65,14 @@ stop:
   - 'Stopping <:oke:888823666228486195>'
   - 'Shutting down <:wehdikashore:891291989205717052>'
   - 'Signing out as a bot <:tologobooo:881023181354319893>'
+reload: 
+  requested: 
+    - 'ok <a:boi_scrollright:898522330786070568>'
+    - 'bruh oki :point_right: :point_left:'
+    - 'FINEE! <:boi:891291989335748650>'
+  success: 
+    - 'bot has been destroyed and recreated <a:thicc_sugoma:857953871384018964>'
+    - 'reloaded you poor bitch <:boi:891291989335748650>'
+    - 'Bot was reloaded <:gihun:899026746693787648>'
 
 version: 1.0.0 # Version (don't modify this value)
