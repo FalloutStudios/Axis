@@ -20,7 +20,7 @@ function create(){
     };
 
     // This will be executed on bot ready
-    this.start = (config, language) => {
+    this.start = (client, action, config, language) => {
         this.config = config;   // Set config
         this.language = language; // Set language
 

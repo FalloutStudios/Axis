@@ -15,7 +15,7 @@ function create(){
         }
     };
 
-    this.start = (config, language, client) => {
+    this.start = (client, action, config, language) => {
         this.config = config;
         this.language = language;
 

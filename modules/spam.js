@@ -33,7 +33,7 @@ function create(){
     };
 
     // This will be executed on bot ready
-    this.start = (config, language) => {
+    this.start = (client, action, config, language) => {
         this.config = config;   // Set config
         this.language = language; // Set language
 
@@ -43,7 +43,6 @@ function create(){
         } else {
             spamConfig = Yml.parse(Fs.readFileSync('./config/' + spamConfigFile, 'utf-8'));
         }
-
         return true; // Return true if it's ready
     }
 

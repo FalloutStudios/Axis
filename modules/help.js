@@ -10,22 +10,6 @@ module.exports = new create();
 
 let modulesList = Fs.readdirSync(__dirname + '/').filter(file => file.endsWith('.js'));
 let commands = {};
-for (const file of modulesList) {
-    let name = Path.parse(file).name;
-
-    let importModule = require(`./${file}`);
-    
-    try {
-        name = Util.replaceAll(name, ' ', '_');
-        commands[name] = importModule.command;
-
-        if(typeof commands[name] === 'undefined' || Object.keys(commands[name]).length <= 0){ commands[name] = null; }
-
-        log.warn('Help is ready for command: ' + name, file);
-    } catch (e) {
-        console.error(e);
-    }
-}
 
 function create(){
     this.config = {};
@@ -36,11 +20,27 @@ function create(){
         }
     };
 
-    this.start = (config, language) => {
+    this.start = (client, action, config, language) => {
         this.config = config;
         this.language = language;
 
         // Command ready
+        for (const file of modulesList) {
+            let name = Path.parse(file).name;
+        
+            let importModule = require(`./${file}`);
+            
+            try {
+                name = Util.replaceAll(name, ' ', '_');
+                if(typeof importModule.execute === 'undefined') continue;
+
+                commands[name] = importModule.command;
+        
+                if(typeof commands[name] === 'undefined' || Object.keys(commands[name]).length <= 0){ commands[name] = null; }
+            } catch (err) {
+                console.error(err);
+            }
+        }        
         return true;
     }
     this.execute = async (args, message, action, client) => {

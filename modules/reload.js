@@ -4,7 +4,7 @@ function create(){
     this.config = {};
     this.language = {};
 
-    this.start = (config, language) => {
+    this.start = (client, action, config, language) => {
         this.config = config;
         this.language = language;
 
