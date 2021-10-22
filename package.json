@@ -4,7 +4,8 @@
     "test": "node index.js --testmode"
   },
   "engines": {
-    "node": ">=16.6.0"
+    "node": ">=16.6.0",
+    "npm": ">=7.24.2"
   },
   "engineStrict": true,
   "license": "MIT",

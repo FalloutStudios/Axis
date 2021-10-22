@@ -24,7 +24,6 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
-        discordtoken: ${{ secrets.DISCORD_TOKEN }}
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
       env:
