@@ -12,13 +12,13 @@ function create(){
 
     // Command description
     this.command = {
-        arg1: {
+        count: {
             required: false, // Is this required
             values: [] // Values of this argument 
         },
-        arg2: {
+        message: {
             required: true, // Is this required
-            values: ["value1", "value2"] // Values of this argument
+            values: [] // Values of this argument
         }
     };
 

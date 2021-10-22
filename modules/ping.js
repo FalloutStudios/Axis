@@ -7,18 +7,6 @@ function create(){
     this.config = {};
     this.language = {};
 
-    // Command description
-    this.command = {
-        arg1: {
-            required: false, // Is this required
-            values: [] // Values of this argument 
-        },
-        arg2: {
-            required: true, // Is this required
-            values: ["value1", "value2"] // Values of this argument
-        }
-    };
-
     // This will be executed on bot ready
     this.start = (client, action, config, language) => {
         this.config = config;   // Set config

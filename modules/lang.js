@@ -8,13 +8,8 @@ function create(){
     this.config = {};
     this.language = {};
     this.command = {
-        arg1: {
-            required: false,
-            values: ""
-        },
-        arg2: {
-            required: true,
-            values: ["value1", "value2"]
+        languageFilter: {
+            required: false
         }
     };
 
