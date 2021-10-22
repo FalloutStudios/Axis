@@ -1,23 +1,35 @@
 token: TOKEN # Bot token
 
-embedColor: '#19AFFF'   # Colors for embed messages
-commandPrefix: '!'      # Prefix for commands
-owner: 'Ghexter'        # Who owns this bot
+embedColor: '#19AFFF'  # Colors for embed messages
+commandPrefix: '!'  # Prefix for commands
+owner: 'Ghexter'  # Who owns this bot
 
-adminOnlyCommands:    # Restrict commands for admin only
+# Restrict commands for admin only
+adminOnlyCommands:
   - 'stop'
   - 'spam'
   - 'reload'
 
-moderatorOnlyCommands: # Command for moderator with kick and ban perms
+# Command for moderator with kick and ban perms
+moderatorOnlyCommands: 
   - 'version'
   - 'ban'
   - 'kick'
 
-blacklistChannels:            # Ignored channels based on IDs
-  enabled: false               # Enable blacklisted channels
-  channels: []                # List of blacklisted channels
-  convertToWhitelist: false   # Convert channels to whitelisted channels
+# Ignored channels based on IDs
+blacklistChannels:            
+  enabled: false  # Enable blacklisted channels
+
+  # List of blacklisted channels
+  channels: []
+  convertToWhitelist: false  # Convert channels to whitelisted channels
+
+# Custom bot presence
+presence:
+  enabled: true  # Enable presence
+  status: 'online'  # Status of bot (online, idle, dnd, offline)
+  type: 'playing'  # Type of status (playing, listening, watching, streaming) or enter a custom status
+  activityName: 'Minecraft'  # Name your activity
 
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot   # Invite format for bot
 language: 'config/language.yml'                                                              # Langage file 
