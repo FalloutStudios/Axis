@@ -175,6 +175,18 @@ function actions() {
         }
     }
     this.delete = async (message) => {
-
+        try {
+            if(await message.delete().catch( err => { log.error(err, 'Delete error')})) return true;
+        } catch (err) {
+            log.error(err, 'Delete error');
+        }
+    }
+    this.react = async (message, reaction) => {
+        try {
+            if(await message.react(reaction).catch( err => { log.error(err, 'Reaction error')})) return true;
+        } catch (err) {
+            log.error(err, 'Reaction error');
+            return false;
+        }
     }
 }
