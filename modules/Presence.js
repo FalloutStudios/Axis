@@ -12,10 +12,10 @@ function create(){
     this.start = (client, action, config, language) => {
         // Script is ready
         client.user.setPresence({
-            status: config.presence.status,
+            status: action.get(config.presence.status),
             activities: [{
-                name: config.presence.activityName,
-                type: config.presence.type.toUpperCase()
+                name: action.get(config.presence.activityName),
+                type: action.get(config.presence.type).toUpperCase()
             }]
         });
 
