@@ -4,9 +4,9 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/FalloutStudios/Axis)
 ![Lines of code](https://img.shields.io/tokei/lines/github/FalloutStudios/Axis)
 
-Axis bot named base on OurWorld Minecraft servers belongs to the Axis clan.
+Axis bot is named after the Our World's server clan named `Axis` *The reincarnation of Fallout clan*
 
-## Custom scripts
+## Custom script
 
 This is an example command script file `modules/example.js`
 
