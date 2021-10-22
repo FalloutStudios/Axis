@@ -111,8 +111,10 @@ function actions() {
             
             try {
                 name = Util.replaceAll(name, ' ', '_').toLowerCase();
+
+                if(!importModule.versions || importModule.versions && !importModule.versions.find(version => version == config.version)) { log.error(`${file} does not support bot version ${config.version}`, file); continue; }
+
                 scripts[name] = importModule;
-    
                 if(scripts[name].start(Client, Actions, config, lang)) log.log('Ready! command: ' + name, file);
             } catch (err) {
                 log.error(`Coudln't load ${file}: ${err.message}`, file);

@@ -6,6 +6,7 @@ function create(){
     // Command and language
     this.config = {};
     this.language = {};
+    this.versions = ['1.1.0'];
 
     // This will be executed on bot ready
     this.start = (client, action, config, language) => {

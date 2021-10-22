@@ -5,6 +5,7 @@ module.exports = new create();
 function create(){
     this.config = {};
     this.language = {};
+    this.versions = ['1.1.0'];
     this.command = {
         username: {
             required: true

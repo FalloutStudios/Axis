@@ -17,7 +17,7 @@ Run `npm install` to install all dependencies then `node index.js` to run the bo
 
 ## Custom script
 
-This is an example command script file `modules/example.js`
+This is an example command script file.
 
 ```js
 // Export the module
@@ -28,6 +28,9 @@ function create(){
     // Command and language
     this.config = {};
     this.language = {};
+
+    // This is required to specify the supported version of bot
+    this.versions = ['1.1.0'];
 
     // If this is a command, you can optionally add description
     this.command = {

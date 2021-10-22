@@ -9,6 +9,7 @@ function create(){
     // Command and language
     this.config = {};
     this.language = {};
+    this.versions = ['1.1.0'];
 
     // Command description
     this.command = {

@@ -10,6 +10,9 @@ function create(){
     this.config = {};
     this.language = {};
 
+    // This is required to specify the supported version of bot
+    this.versions = ['1.1.0'];
+
     // If this is a command, you can optionally add description
     this.command = {
         arg1: {
