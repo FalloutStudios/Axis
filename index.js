@@ -77,6 +77,7 @@ Client.on('ready', function() {
 });
 
 function actions() {
+    // scripts
     this.reload = (message) => {
         parseConfig.parse();
         config = parseConfig.config;
@@ -119,12 +120,6 @@ function actions() {
             }
         }
     }
-    this.createInvite = (bot) => {
-        return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
-    }
-    this.get = (object) => {
-        return language.get(object);
-    }
     this.command = (command, message) => {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
 
@@ -143,6 +138,16 @@ function actions() {
             await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
     }
+
+    // Other utility functions
+    this.get = (object) => {
+        return language.get(object);
+    }
+    this.createInvite = (bot) => {
+        return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
+    }
+    
+    // Permissions
     this.admin = (member) => {
         if(member && member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) return true;
         return false;
@@ -151,6 +156,8 @@ function actions() {
         if(member && member.permissions.has([Discord.Permissions.FLAGS.BAN_MEMBERS, Discord.Permissions.FLAGS.KICK_MEMBERS])) return true;
         return false;
     }
+
+    // Safe execute
     this.send = async (channel, message) => {
         try {
             await channel.send(message).catch(err => { log.error(err) }).catch(err => { log.error(err)});
@@ -164,5 +171,8 @@ function actions() {
         } catch (err) {
             log.error(err, 'Reply error');
         }
+    }
+    this.delete = async (message) => {
+
     }
 }
