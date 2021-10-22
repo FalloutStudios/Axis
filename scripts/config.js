@@ -34,6 +34,6 @@ module.exports = function() {
     this.testmode = function() {
         if(!commands.opts().testmode) return true;
 
-        this.config.token = process.env.DISCORD_TOKEN;
+        this.config.token = process.env['discordtoken'];
     }
 }

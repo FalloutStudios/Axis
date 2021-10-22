@@ -24,11 +24,11 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
-        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+        discordtoken: ${{ secrets.DISCORD_TOKEN }}
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
       env:
-        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+        discordtoken: ${{ secrets.DISCORD_TOKEN }}
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
