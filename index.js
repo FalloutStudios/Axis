@@ -99,6 +99,7 @@ function actions() {
         };
     }
     this.loadCommands = () => {
+        commands = {};
         modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
 
         for (const file of modulesList) {
@@ -111,8 +112,9 @@ function actions() {
                 commands[name] = importModule;
     
                 if(commands[name].start(config, lang, Client)) log.log('Ready! command: ' + name, file);
-            } catch (e) {
-                log.error(`Coudln't load ${file}: ${e.message}`, file);
+            } catch (err) {
+                log.error(`Coudln't load ${file}: ${err.message}`, file);
+                log.error(err, file);
             }
         }
     }
