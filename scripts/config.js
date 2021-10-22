@@ -4,7 +4,6 @@ const Fs = require('fs');
 const Commander = require('commander');
 const Version = require('./version');
 const util = require('fallout-utility');
-const { env } = require('process');
 
 const commands = new Commander.Command;
     
@@ -35,6 +34,6 @@ module.exports = function() {
     this.testmode = function() {
         if(!commands.opts().testmode) return true;
 
-        if(commands.opts().discordToken && commands.opts().discordToken != null) this.config.token = env.DISCORD_TOKEN;
+        if(commands.opts().discordToken && commands.opts().discordToken != null) this.config.token = process.env.DISCORD_TOKEN;
     }
 }
