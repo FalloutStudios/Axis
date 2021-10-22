@@ -8,6 +8,7 @@
 **/
 
 require('./scripts/startup')();
+console.log(process.env);
 
 // Modules
 const Util = require('fallout-utility');
