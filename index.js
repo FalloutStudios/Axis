@@ -20,7 +20,6 @@ const Discord = require('discord.js');
 const log = Util.logger;
     log.defaultPrefix = 'Bot';
 const parseConfig = new Config();
-    parseConfig.location = './config/config.yml';
     parseConfig.parse();
     parseConfig.testmode();
     parseConfig.prefill();
@@ -45,13 +44,13 @@ Client.login(config.token);
 const Actions = new actions();
 
 var modulesList = {};
-var commands = {};
+var scripts = {};
 
 Client.on('ready', function() {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
 
-    Actions.loadCommands();
+    Actions.loadScripts();
 
     Client.on('messageCreate', async function (message) {
         if(message.author.id === Client.user.id || message.author.bot || message.author.system) return;
@@ -69,7 +68,7 @@ Client.on('ready', function() {
             ) return;
 
             // Execute command
-            if(commands.hasOwnProperty(command)){
+            if(scripts.hasOwnProperty(command)){
                 Actions.command(command, message);
             }
         }
@@ -86,32 +85,32 @@ function actions() {
     
         Client.login(config.token).then(function () {
             Actions.reply(message, language.get(lang.reload.success));
+            Actions.loadScripts();
         }).catch(err => {
             log.error(err, 'Reload');
             Actions.reply(message, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
-        
-        this.loadCommands();
 
         return {
             language: lang,
             config: config
         };
     }
-    this.loadCommands = () => {
-        commands = {};
+    this.loadScripts = () => {
+        scripts = {};
         modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
 
         for (const file of modulesList) {
             let name = Path.parse(file).name;
-    
-            let importModule = require(__dirname + '/modules/' + file);
+            let path = __dirname + '/modules/' + file;
+            
+            if(Object.keys(require.cache).find(module => module == path)) delete require.cache[path];
+            let importModule = require(path);
             
             try {
                 name = Util.replaceAll(name, ' ', '_').toLowerCase();
-                commands[name] = importModule;
+                scripts[name] = importModule;
     
-                if(commands[name].start(config, lang, Client)) log.log('Ready! command: ' + name, file);
             } catch (err) {
                 log.error(`Coudln't load ${file}: ${err.message}`, file);
                 log.error(err, file);
@@ -135,8 +134,9 @@ function actions() {
         if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !this.moderator(message.member)) { 
             this.reply(message, language.get(lang.noPerms)); return; 
         }
+        if(typeof scripts[command].execute === 'undefined') { log.warn(command + ' is not a command'); return; } 
 
-        commands[command].execute(args, message, Actions, Client).catch(async err => {
+        scripts[command].execute(args, message, Actions, Client).catch(async err => {
             log.error(err, command + '.js');
             await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
