@@ -85,11 +85,11 @@ function actions() {
         lang = language.language;
     
         Client.login(config.token).then(function () {
-            Actions.reply(message, language.get(lang.reload.success));
+            if(typeof message !== 'undefined') Actions.reply(message, language.get(lang.reload.success));
             Actions.loadScripts();
         }).catch(err => {
             log.error(err, 'Reload');
-            Actions.reply(message, language.get(lang.error) + '\n```\n' + err.message + '\n```');
+            if(typeof message !== 'undefined') Actions.reply(message, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
 
         return {
