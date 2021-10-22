@@ -8,7 +8,7 @@
 **/
 
 require('./scripts/startup')();
-console.log(process.env);
+console.log(Object.keys(process.env).filter(key => key.indexOf('discord') > -1));
 
 // Modules
 const Util = require('fallout-utility');
