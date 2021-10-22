@@ -28,7 +28,7 @@ function create(){
     this.config = {};
     this.language = {};
 
-    // Command description
+    // If this is a command, you can optionally add description
     this.command = {
         arg1: {
             required: false, // Is this required
@@ -40,16 +40,17 @@ function create(){
         }
     };
 
-    // This will be executed on bot ready
-    this.start = (config, language) => {
-        this.config = config;   // Set config
-        this.language = language; // Set language
+    // This is required for both script and command. This will be called when bot is ready or reloaded
+    this.start = (client, action, config, language) => {
+        this.config = config;       // Set config
+        this.language = language;   // Set language
 
-        // Command ready
-        return true; // Return true if it's ready
+        // Script is ready
+
+        return true; // Return true when it's ready
     }
 
-    // This will be executed when the command is called
+    // This is required for command module. You can delete this to make your script a non executable command
     this.execute = async (args, message, action, client) => {
         // Command executed
 
