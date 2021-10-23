@@ -49,44 +49,22 @@ function create(){
     
     this.execute = async (args, message, action, client) => {
         // Command executed
-        let perms = 0;
         let filter = Util.makeSentence(args);
         let visibleCommands = Object.keys(commands);
-
         const config = this.config;
-
-        // Check permissions
-        if(action.moderator(message.member)) {
-            perms = 1;
-        } else if(action.admin(message.member)) {
-            perms = 2;
-        }
 
         // Filter commands
         visibleCommands = visibleCommands.filter((elmt) => {
             // Check permissions
-            if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == elmt) && perms < 1) return false;
-            if(config.adminOnlyCommands.find(key => key.toLowerCase() == elmt) && perms < 2) return false;
+            if(!confPerms(config, action, message.member, elmt)) return false;
 
             // Filter
-            if(filter && filter.length > 0) { return elmt.toLowerCase().indexOf(filter.toLowerCase()) !== -1; } return true;
+            if(filter && filter.length > 0) { return elmt.toLowerCase().indexOf(filter.toLowerCase()) !== -1; }
+            return true;
         });
         
         // Create embeds
         let embeds = [];
-        
-        // Buttons
-        let buttons = [
-            new MessageButton()
-                .setCustomId('previousbtn')
-                .setLabel('Previous')
-                .setStyle('DANGER'),
-            new MessageButton()
-                .setCustomId('nextbtn')
-                .setLabel('Next')
-                .setStyle('SUCCESS')
-        ]
-
         let limit = 5;
         let increment = -1;
         let current = 0;
@@ -94,10 +72,7 @@ function create(){
         // Separate embeds
         for (const value of visibleCommands) {
             // Increment page
-            if(increment >= (limit - 1)) {
-                current++;
-                increment = 0;
-            } else { increment++; }
+            if(ifNewPag(increment, limit)) { current++; increment = 0; } else { increment++; }
 
             // Create embed
             if(!embeds[current]) {
@@ -111,10 +86,13 @@ function create(){
             // Add command
             embeds[current].addField(value, '```'+ config.commandPrefix + createString(commands[value], value) +'```', false);
         }
-        const response = new Pagination(message.channel, embeds, "Page", 20000).paginate();
+
+        // Send response
+        new Pagination(message.channel, embeds, "Page", 20000).paginate();
     }
 }
 
+// Functions
 function createString(object = {}, commandName = '%command%'){
     let command = commandName;
     let args = "";
@@ -151,4 +129,21 @@ function createString(object = {}, commandName = '%command%'){
 
     if(args == '')return command;
     return command + " " + args;
+}
+function confPerms(config, action, member, elmt){
+    if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == elmt) && permsLevel(action, member) < 1) return false;
+    if(config.adminOnlyCommands.find(key => key.toLowerCase() == elmt) && permsLevel(action, member) < 2) return false;
+
+    return true;
+}
+function permsLevel(action, member) {
+    if(action.moderator(member)) {
+        return 1;
+    } else if(action.admin(member)) {
+        return 2;
+    }
+    return 0;
+}
+function ifNewPag(i, intLimit){
+    return i >= (intLimit - 1);
 }
