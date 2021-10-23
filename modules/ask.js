@@ -21,7 +21,8 @@ function create(){
         this.config = config;
         this.language = language;
 
-        chatbot = new AI({name: client.user.username, gender: "male"});
+        client.on('ready', () => { chatbot = new AI({name: client.user.username, gender: "male"}); });
+
         return true;
     }
     this.execute = async (args, message, action, client) => {

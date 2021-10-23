@@ -23,7 +23,7 @@ function create(){
         }
     };
 
-    // This is required for both script and command. This will be called when bot is ready or reloaded
+    // This is required for both script and command.
     this.start = (client, action, conf, lang) => {
         // Set config and language
         config = conf;
