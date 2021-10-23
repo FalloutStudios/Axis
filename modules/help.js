@@ -1,13 +1,15 @@
 const Util = require('fallout-utility');
 const Fs = require('fs');
 const Path = require('path');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageButton } = require('discord.js');
+const {Pagination} = require("discordjs-button-embed-pagination");
 
 const log = Util.logger;
     log.defaultPrefix = 'help.js';
 
 module.exports = new create();
 
+// list available modules
 let modulesList = Fs.readdirSync(__dirname + '/').filter(file => file.endsWith('.js'));
 let commands = {};
 
@@ -25,12 +27,12 @@ function create(){
         this.config = config;
         this.language = language;
 
-        // Command ready
+        // List all commands
         for (const file of modulesList) {
             let name = Path.parse(file).name;
-        
             let importModule = require(`./${file}`);
             
+            // Check if it's a valid command module
             try {
                 name = Util.replaceAll(name, ' ', '_');
                 if(typeof importModule.execute === 'undefined') continue;
@@ -41,45 +43,75 @@ function create(){
             } catch (err) {
                 console.error(err);
             }
-        }        
-        return true;
+        }
+        return true; // Always return true
     }
     
     this.execute = async (args, message, action, client) => {
         // Command executed
         let perms = 0;
         let filter = Util.makeSentence(args);
-        
-        let embed = new MessageEmbed()
-            .setAuthor(action.get(this.language.help.title), client.user.avatarURL)
-            .setDescription(action.get(this.language.help.description))
-            .setColor(this.config.embedColor)
-            .setTimestamp();
+        let visibleCommands = Object.keys(commands);
 
+        const config = this.config;
+
+        // Check permissions
         if(action.moderator(message.member)) {
             perms = 1;
         } else if(action.admin(message.member)) {
             perms = 2;
         }
 
-        let visibleCommands = Object.keys(commands);
+        // Filter commands
+        visibleCommands = visibleCommands.filter((elmt) => {
+            // Check permissions
+            if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == elmt) && perms < 1) return false;
+            if(config.adminOnlyCommands.find(key => key.toLowerCase() == elmt) && perms < 2) return false;
 
-        if(filter && filter.length > 0) { 
-            visibleCommands = visibleCommands.filter((elmt) => {
-                return elmt.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
-            });
-        }
+            // Filter
+            if(filter && filter.length > 0) { return elmt.toLowerCase().indexOf(filter.toLowerCase()) !== -1; } return true;
+        });
+        
+        // Create embeds
+        let embeds = [];
+        
+        // Buttons
+        let buttons = [
+            new MessageButton()
+                .setCustomId('previousbtn')
+                .setLabel('Previous')
+                .setStyle('DANGER'),
+            new MessageButton()
+                .setCustomId('nextbtn')
+                .setLabel('Next')
+                .setStyle('SUCCESS')
+        ]
 
+        let limit = 5;
+        let increment = -1;
+        let current = 0;
+        
+        // Separate embeds
         for (const value of visibleCommands) {
-            if(this.config.moderatorOnlyCommands.find(key => key.toLowerCase() == value) && perms < 1) continue;
-            if(this.config.adminOnlyCommands.find(key => key.toLowerCase() == value) && perms < 2) continue;
+            // Increment page
+            if(increment >= (limit - 1)) {
+                current++;
+                increment = 0;
+            } else { increment++; }
 
-            embed.addField(value, '```'+ this.config.commandPrefix + createString(commands[value], value) +'```', false);
+            // Create embed
+            if(!embeds[current]) {
+                embeds.push(new MessageEmbed()
+                    .setAuthor(action.get(this.language.help.title), client.user.displayAvatarURL())
+                    .setDescription(action.get(this.language.help.description))
+                    .setColor(config.embedColor)
+                    .setTimestamp());
+            }
+
+            // Add command
+            embeds[current].addField(value, '```'+ config.commandPrefix + createString(commands[value], value) +'```', false);
         }
-
-        embed.setFooter(`Total of ${ Object.keys(commands).length } commands`);
-
-        action.reply(message, { embeds: [embed] });
+        const response = new Pagination(message.channel, embeds, "Page", 20000).paginate();
     }
 }
 

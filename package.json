@@ -12,6 +12,7 @@
   "dependencies": {
     "commander": "^8.2.0",
     "discord.js": "^13.2.0",
+    "discordjs-button-embed-pagination": "^4.0.1",
     "fallout-utility": "^1.0.36",
     "prompt-sync": "^4.1.6",
     "yaml": "^1.10.2"
