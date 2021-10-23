@@ -16,27 +16,24 @@ function create(){
         }
     };
 
+    // Create the chatbot
     this.start = (client, action, config, language) => {
         this.config = config;
         this.language = language;
 
         chatbot = new AI({name: client.user.username, gender: "male"});
-
-        // Command ready
         return true;
     }
     this.execute = async (args, message, action, client) => {
-        // Command executed
         let sentence = Util.makeSentence(args).toString().trim();
         if(sentence.length == 0) { await message.reply(action.get(this.language.empty)); return; }
 
         message.channel.sendTyping();
 
+        // Get udit api response
         try {
             chatbot.chat(sentence, message.author.id).then((response) => {
                 response = Util.replaceAll(response, 'Udit', this.config.owner);
-                response = Util.replaceAll(response, 'March 18, 2012', 'April 20, 2021');
-                response = Util.replaceAll(response, 'Samik', message.author.username);
 
                 action.reply(message, response);
             }).catch((err) => {
