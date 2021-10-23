@@ -16,6 +16,8 @@ const Path = require('path');
 const Config = require('./scripts/config');
 const Language = require('./scripts/language');
 const Discord = require('discord.js');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
 
 const log = Util.logger;
     log.defaultPrefix = 'Bot';
@@ -47,16 +49,53 @@ const Actions = new actions();
 var modulesList = {};
 var scripts = {};
 
+var commands = [];
+Client.commands = new Discord.Collection();
+
 Client.on('ready', function() {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
 
     Actions.loadScripts();
 
+    // Register commands
+    const rest = new REST({
+        version: '9'
+    }).setToken(config.token);
+    (async () => {
+        try {
+            await rest.put(
+                Routes.applicationCommands(Client.user.id), {
+                    body: commands
+                },
+            );
+            log.log(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
+        } catch (err) {
+            log.error(err, 'Register Commands');
+        }
+    })();
+
+    // On Interaction commands
+    Client.on('interactionCreate', async (interaction) => {
+        if(!interaction.isCommand()) return;
+
+        const command = Client.commands.get(interaction.commandName);
+        if (typeof command === 'undefined') return;
+
+        try {
+            await command.execute(interaction, Client, Actions);
+        } catch (err) {
+            log.error(err, 'Interaction');
+            await interaction.reply(language.get(lang.error) + '\n```\n' + err.message + '\n```');
+        }
+    });
+
+    // On Message
     Client.on('messageCreate', async function (message) {
         if(message.author.id === Client.user.id || message.author.bot || message.author.system) return;
-
         log.log(message.author.username + ': ' + message.content, 'Message');
+
+        // Message commands
         if(Util.detectCommand(message.content, config.commandPrefix)){
             const commandConstructor = Util.getCommand(message.content, config.commandPrefix);
             const command = commandConstructor.command.toLowerCase();
@@ -74,6 +113,7 @@ Client.on('ready', function() {
             }
         }
     });
+
 });
 
 function actions() {
@@ -84,13 +124,14 @@ function actions() {
     
         language.parse();
         lang = language.language;
-    
+
+        // re-login to client
         Client.login(config.token).then(function () {
-            if(typeof message !== 'undefined') Actions.reply(message, language.get(lang.reload.success));
+            if(typeof message !== 'undefined') Actions.messageReply(message, language.get(lang.reload.success));
             Actions.loadScripts();
         }).catch(err => {
             log.error(err, 'Reload');
-            if(typeof message !== 'undefined') Actions.reply(message, language.get(lang.error) + '\n```\n' + err.message + '\n```');
+            if(typeof message !== 'undefined') Actions.messageReply(message, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
 
         return {
@@ -102,20 +143,31 @@ function actions() {
         scripts = {};
         modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
 
+        // Require scripts
         for (const file of modulesList) {
             let name = Path.parse(file).name;
             let path = __dirname + '/modules/' + file;
             
+            // Clear cache from previous script
             if(Object.keys(require.cache).find(module => module == path)) delete require.cache[path];
             let importModule = require(path);
             
             try {
+                // Replace whitespace
                 name = Util.replaceAll(name, ' ', '_').toLowerCase();
 
+                // Check supported version
                 if(!importModule.versions || importModule.versions && !importModule.versions.find(version => version == config.version)) { log.error(`${file} does not support bot version ${config.version}`, file); continue; }
 
+                // Import script
                 scripts[name] = importModule;
-                if(scripts[name].start(Client, Actions, config, lang)) log.log('Ready! command: ' + name, file);
+                if(scripts[name].start(Client, Actions, config, lang)) log.log(`Script ${name} ready!`, file);
+
+                // Slash commands
+                if(typeof scripts[name]['slash'] != 'undefined') {
+                    commands.push(scripts[name]['slash']['command'].toJSON());
+                    Client.commands.set(name, scripts['slash']);
+                }
             } catch (err) {
                 log.error(`Coudln't load ${file}: ${err.message}`, file);
                 log.error(err, file);
