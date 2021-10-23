@@ -1,6 +1,7 @@
 # Script template
 
 ```js
+const { SlashCommandBuilder } = require('@discordjs/builders');
 // Export the module
 module.exports = new create();
 
@@ -24,6 +25,11 @@ function create(){
             values: ["value1", "value2"] // Values of this argument
         }
     };
+
+    // Add slash commands
+    this.slash = {
+        name: ""
+    }
 
     // This is required for both script and command. This will be called when bot is ready or reloaded
     this.start = (client, action, config, language) => {

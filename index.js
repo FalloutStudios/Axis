@@ -160,7 +160,7 @@ function actions() {
     }
 
     // Safe execute
-    this.send = async (channel, message) => {
+    this.messageSend = async (channel, message) => {
         try {
             return await channel.send(message).catch(err => { log.error(err, 'Send error'); });
         } catch (err) {
@@ -168,7 +168,7 @@ function actions() {
             return false;
         }
     }
-    this.reply = async (message, reply) => {
+    this.messageReply = async (message, reply) => {
         try {
             return await message.reply(reply).catch(err => { log.error(err, 'Reply error'); });
         } catch (err) {
@@ -176,14 +176,14 @@ function actions() {
             return false;
         }
     }
-    this.delete = async (message) => {
+    this.messageDelete = async (message) => {
         try {
             return await message.delete().catch( err => { log.error(err, 'Delete error'); });
         } catch (err) {
             log.error(err, 'Delete error');
         }
     }
-    this.react = async (message, reaction) => {
+    this.messageReact = async (message, reaction) => {
         try {
             return await message.react(reaction).catch( err => { log.error(err, 'Reaction error'); });
         } catch (err) {
