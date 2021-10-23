@@ -52,11 +52,12 @@ var scripts = {};
 var commands = [];
 Client.commands = new Discord.Collection();
 
+// Load scripts
+Actions.loadScripts();
+
 Client.on('ready', function() {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
-
-    Actions.loadScripts();
 
     // Register commands
     const rest = new REST({
@@ -69,7 +70,7 @@ Client.on('ready', function() {
                     body: commands
                 },
             );
-            log.log(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
+            log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
         } catch (err) {
             log.error(err, 'Register Commands');
         }
@@ -128,12 +129,12 @@ function actions() {
         // re-login to client
         Client.login(config.token).then(function () {
             if(typeof message !== 'undefined') Actions.messageReply(message, language.get(lang.reload.success));
-            Actions.loadScripts();
         }).catch(err => {
             log.error(err, 'Reload');
             if(typeof message !== 'undefined') Actions.messageReply(message, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
 
+        Actions.loadScripts();
         return {
             language: lang,
             config: config
@@ -166,7 +167,7 @@ function actions() {
                 // Slash commands
                 if(typeof scripts[name]['slash'] != 'undefined') {
                     commands.push(scripts[name]['slash']['command'].toJSON());
-                    Client.commands.set(name, scripts['slash']);
+                    Client.commands.set(scripts[name]['slash']['command']['name'], scripts['slash']);
                 }
             } catch (err) {
                 log.error(`Coudln't load ${file}: ${err.message}`, file);
