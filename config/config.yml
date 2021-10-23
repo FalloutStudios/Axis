@@ -31,7 +31,7 @@ presence:
   type: ['playing']  # Type of status (playing, listening, watching, streaming) or enter a custom status  [this can be a string or an object for random value]
   activityName: ['Minecraft']  # Name your activity [this can be a string or an object for random value]
 
-inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot   # Invite format for bot
+inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
 language: 'config/language.yml'                                                              # Langage file 
 
 version: 1.1.0    # Version (don't modify this value)
