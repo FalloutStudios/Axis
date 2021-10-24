@@ -55,44 +55,31 @@ Client.commands = new Discord.Collection();
 // Load scripts
 Actions.loadScripts();
 
+// Client ready
 Client.on('ready', function() {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
 
     // Register commands
-    const rest = new REST({
-        version: '9'
-    }).setToken(config.token);
-    (async () => {
-        try {
-            await rest.put(
-                Routes.applicationCommands(Client.user.id), {
-                    body: commands
-                },
-            );
-            log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
-        } catch (err) {
-            log.error(err, 'Register Commands');
-        }
-    })();
+    Actions.registerInteractionCommmands(Client);
 
     // On Interaction commands
     Client.on('interactionCreate', async (interaction) => {
         if(!interaction.isCommand()) return;
 
         const command = Client.commands.get(interaction.commandName);
-        if (typeof command === 'undefined') return;
+        if (!command) return;
 
+        log.warn(interaction.member.user.username + ' executed ' + interaction.commandName, 'Slash command');
         try {
             await command.execute(interaction, Client, Actions);
         } catch (err) {
             log.error(err, 'Interaction');
-            await interaction.reply(language.get(lang.error) + '\n```\n' + err.message + '\n```');
         }
     });
 
     // On Message
-    Client.on('messageCreate', async function (message) {
+    Client.on('messageCreate', async (message) => {
         if(message.author.id === Client.user.id || message.author.bot || message.author.system) return;
         log.log(message.author.username + ': ' + message.content, 'Message');
 
@@ -110,16 +97,15 @@ Client.on('ready', function() {
 
             // Execute command
             if(scripts.hasOwnProperty(command)){
-                Actions.command(command, message);
+                Actions.messageCommand(command, message);
             }
         }
     });
-
 });
 
 function actions() {
     // scripts
-    this.reload = (message) => {
+    this.reload = (message, interaction) => {
         parseConfig.parse();
         config = parseConfig.config;
     
@@ -129,9 +115,11 @@ function actions() {
         // re-login to client
         Client.login(config.token).then(function () {
             if(typeof message !== 'undefined') Actions.messageReply(message, language.get(lang.reload.success));
+            if(typeof interaction !== 'undefined') interaction.reply(language.get(lang.reload.success));
         }).catch(err => {
             log.error(err, 'Reload');
             if(typeof message !== 'undefined') Actions.messageReply(message, language.get(lang.error) + '\n```\n' + err.message + '\n```');
+            if(typeof interaction !== 'undefined') interaction.reply(language.get(lang.reload.error));
         });
 
         Actions.loadScripts();
@@ -166,8 +154,10 @@ function actions() {
 
                 // Slash commands
                 if(typeof scripts[name]['slash'] != 'undefined') {
-                    commands.push(scripts[name]['slash']['command'].toJSON());
-                    Client.commands.set(scripts[name]['slash']['command']['name'], scripts['slash']);
+                    let slash = scripts[name]['slash'];
+
+                    commands.push(slash['command'].toJSON());
+                    Client.commands.set(slash['command']['name'], slash);
                 }
             } catch (err) {
                 log.error(`Coudln't load ${file}: ${err.message}`, file);
@@ -175,10 +165,12 @@ function actions() {
             }
         }
     }
-    this.command = (command, message) => {
+
+    // Commands
+    this.messageCommand = (command, message) => {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
 
-        log.warn(message.author.username + ' executed ' + command);
+        log.warn(message.author.username + ' executed ' + command, 'message Command');
 
         if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !this.admin(message.member)) { 
             this.reply(message, language.get(lang.noPerms)); return; 
@@ -192,6 +184,19 @@ function actions() {
             log.error(err, command + '.js');
             await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
+    }
+    this.registerInteractionCommmands = async (client) => {
+        const rest = new REST({ version: '9' }).setToken(config.token);
+
+        try {
+            await rest.put(
+                Routes.applicationCommands(client.user.id),
+                { body: commands },
+            );            
+            log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
+        } catch (err) {
+            log.error(err, 'Register Commands');
+        }
     }
 
     // Other utility functions
