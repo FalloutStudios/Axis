@@ -181,7 +181,7 @@ function actions() {
         if(typeof scripts[command].execute === 'undefined') { log.warn(command + ' is not a command'); return; } 
 
         // Execute
-        scripts[command].execute(args, message, Actions, Client).catch(async err => {
+        scripts[command].execute(args, message, Client, Actions).catch(async err => {
             log.error(err, command + '.js');
             await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
