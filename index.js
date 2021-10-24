@@ -23,7 +23,7 @@ const deployFile = 'deploy.txt';
 const log = Util.logger;
     log.defaultPrefix = 'Bot';
 const parseConfig = new Config();
-    parseConfig.location = './config/config.dev.yml';
+    parseConfig.location = './config/config.yml';
     parseConfig.parse();
     parseConfig.testmode();
     parseConfig.prefill();
@@ -60,7 +60,7 @@ Client.once('ready', async () => {
     
     // Register commands
     await Actions.loadScripts();
-    await Actions.registerInteractionCommmands(Client);
+    await Actions.registerInteractionCommmands(Client, false, config.guildId);
 });
 
 Client.on('ready', function() {
@@ -129,7 +129,8 @@ function actions() {
         });
 
         // Log script
-        Actions.loadScripts(true);
+        await Actions.loadScripts(true);
+        await Actions.registerInteractionCommmands(Client, false, config.guildId);
 
         return success;
     }
@@ -187,8 +188,8 @@ function actions() {
             await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
     }
-    this.registerInteractionCommmands = async (client) => {
-        if(Fs.existsSync('./' + deployFile)) {
+    this.registerInteractionCommmands = async (client, force = false, guild = null) => {
+        if(Fs.existsSync('./' + deployFile) && !force && !guild) {
             const deploy = Fs.readFileSync('./' + deployFile).toString().trim();
 
             if(deploy == 'false') {
@@ -203,10 +204,17 @@ function actions() {
         const rest = new REST({ version: '9' }).setToken(config.token);
         (async () => {
             try {
-                await rest.put(
-                    Routes.applicationCommands(client.user.id),
-                    { body: commands },
-                );            
+                if(!guild){
+                    await rest.put(
+                        Routes.applicationCommands(client.user.id),
+                        { body: commands },
+                    );
+                } else {
+                    await rest.put(
+                        Routes.applicationGuildCommands(client.user.id, guild),
+                        { body: commands },
+                    );
+                }
                 log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
             } catch (err) {
                 log.error(err, 'Register Commands');

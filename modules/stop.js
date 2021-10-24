@@ -16,6 +16,7 @@ function create(){
         return true;
     }
     this.execute = async (args, message, client, action) => {
+        await action.messageReply(message, action.get(language.stop));
         await stop(client, action);
     }
     this.slash = {
@@ -23,12 +24,12 @@ function create(){
             .setName("stop")
             .setDescription("Stop bot"),
         async execute(interaction, client, action) {
+            await action.interactionReply(interaction, action.get(language.stop));
             await stop(client, action);
         }
     }
 
     async function stop(client, action) {
-        await action.messageReply(message, action.get(language.stop));
         await client.destroy();
         logger.warn('Stopping...', 'stop.js');
         process.exit(0);
