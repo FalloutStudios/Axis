@@ -173,17 +173,14 @@ function actions() {
     // Commands
     this.messageCommand = (command, message) => {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
-
         log.warn(message.author.username + ' executed ' + config.commandPrefix + command, 'message Command');
 
-        if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !this.admin(message.member)) { 
-            this.messageReply(message, language.get(lang.noPerms)); return; 
-        }
-        if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !this.moderator(message.member)) { 
-            this.messageReply(message, language.get(lang.noPerms)); return; 
-        }
+        // Check permissions
+        if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.admin(message.member)) { Actions.messageReply(message, language.get(lang.noPerms)); return; }
+        if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.moderator(message.member)) { Actions.messageReply(message, language.get(lang.noPerms)); return; }
         if(typeof scripts[command].execute === 'undefined') { log.warn(command + ' is not a command'); return; } 
 
+        // Execute
         scripts[command].execute(args, message, Actions, Client).catch(async err => {
             log.error(err, command + '.js');
             await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
@@ -221,7 +218,7 @@ function actions() {
         return false;
     }
 
-    // Safe execute
+    // Safe message actions
     this.messageSend = async (channel, message) => {
         try {
             return await channel.send(message).catch(err => { log.error(err, 'Send error'); });
