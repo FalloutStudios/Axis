@@ -1,4 +1,6 @@
+// Require this if you want to add slash command
 const { SlashCommandBuilder } = require('@discordjs/builders');
+
 // Export the module
 module.exports = new create();
 
@@ -42,13 +44,16 @@ function create(){
         // client: discord client
     }
 
-    // Add slash commands
+    // Add slash commands. This is optional
     this.slash = {
+        // command: is required for slash command module.
         command: new SlashCommandBuilder()
-            .setName("slash")
-            .setDescription('This command is deprecated'),
+            .setName("command")
+            .setDescription('This is a test command'),
+
+        // This will be called when the slash command is executed.
         async execute (interaction, client, action) {
-            await interaction.reply('///');
+            await interaction.reply('you executed /' + interaction.commandName);
         }
     }
 }

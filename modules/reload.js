@@ -1,3 +1,4 @@
+const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = new create();
 
 function create(){
@@ -16,5 +17,14 @@ function create(){
         // Command executed
         await action.messageReply(message, action.get(this.language.reload.requested));
         action.reload(message);
+    }
+    this.slash = {
+        command: new SlashCommandBuilder()
+            .setName("reload")
+            .setDescription("Reload the bot"),
+        async execute(interaction, client, action) {
+            await interaction.reply(action.get(this.language.reload.requested));
+            action.reload(null, interaction);
+        }
     }
 }
