@@ -52,15 +52,13 @@ var scripts = {};
 var commands = [];
 Client.commands = new Discord.Collection();
 
-// Load scripts
-(async () => { await Actions.loadScripts(); })();
-
 // Client ready
 Client.once('ready', async () => {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
     
     // Register commands
+    await Actions.loadScripts();
     await Actions.registerInteractionCommmands(Client);
 });
 
@@ -128,11 +126,11 @@ function actions() {
         });
 
         // Log script
-        Actions.loadScripts();
+        Actions.loadScripts(true);
 
         return success;
     }
-    this.loadScripts = async () => {
+    this.loadScripts = async (reload = false) => {
         // Clear scripts
         scripts = {};
         modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
@@ -161,15 +159,15 @@ function actions() {
                 if(typeof scripts[name]['slash'] === 'undefined') continue;
 
                 let slash = scripts[name]['slash'];
+                if(!reload) commands.push(slash['command'].toJSON());
                 Client.commands.set(slash['command']['name'], slash);
-                commands.push(slash['command'].toJSON());
             } catch (err) {
                 log.error(`Coudln't load ${file}: ${err.message}`, file);
                 log.error(err, file);
             }
         }
 
-        console.log(scripts);
+        console.log(Object.keys(scripts));
         console.log(commands);
     }
 

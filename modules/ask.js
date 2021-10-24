@@ -23,7 +23,7 @@ function create(){
         config = conf;
         language = lang;
 
-        client.on('ready', () => { chatbot = new AI({name: client.user.username, gender: "male"}); });
+        chatbot = new AI({name: client.user.username, gender: "male"});
 
         return true;
     }

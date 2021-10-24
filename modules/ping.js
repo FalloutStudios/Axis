@@ -1,30 +1,27 @@
-// Export the module
+const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = new create();
 
-// Create the command
 function create(){
-    // Command and language
-    this.config = {};
-    this.language = {};
+    let config = {};
+    let language = {};
+
     this.versions = ['1.1.0'];
 
-    // This will be executed on bot ready
-    this.start = (client, action, config, language) => {
-        this.config = config;   // Set config
-        this.language = language; // Set language
+    this.start = (client, action, conf, lang) => {
+        config = conf;
+        language = lang;
 
-        // Command ready
-        return true; // Return true if it's ready
+        return true;
     }
-
-    // This will be executed when the command is called
     this.execute = async (args, message, client, action) => {
-        // Command executed
-
-        // args: list of separate words
-        // message: raw discord.js message
-        // action: actions from main file
-        // client: discord client
-        action.messageReply(message, action.get(this.language.ping));
+        action.messageReply(message, action.get(language.ping));
+    }
+    this.slash = {
+        command: new SlashCommandBuilder()
+            .setName("ping")
+            .setDescription("Ping me!"),
+        async execute(interaction, client, action){
+            await interaction.reply(action.get(language.ping));
+        }
     }
 }
