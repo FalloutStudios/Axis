@@ -19,10 +19,11 @@ const Discord = require('discord.js');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 
+const deployFile = 'deploy.txt';
 const log = Util.logger;
     log.defaultPrefix = 'Bot';
 const parseConfig = new Config();
-    parseConfig.location = './config/config.yml';
+    parseConfig.location = './config/config.dev.yml';
     parseConfig.parse();
     parseConfig.testmode();
     parseConfig.prefill();
@@ -158,9 +159,8 @@ function actions() {
                 // Slash commands
                 if(typeof scripts[name]['slash'] === 'undefined') continue;
 
-                let slash = scripts[name]['slash'];
-                if(!reload) commands.push(slash['command'].toJSON());
-                Client.commands.set(slash['command']['name'], slash);
+                if(!reload) commands.push(scripts[name]['slash']['command'].toJSON());
+                Client.commands.set(scripts[name]['slash']['command']['name'], null);
             } catch (err) {
                 log.error(`Coudln't load ${file}: ${err.message}`, file);
                 log.error(err, file);
@@ -188,6 +188,18 @@ function actions() {
         });
     }
     this.registerInteractionCommmands = async (client) => {
+        if(Fs.existsSync('./' + deployFile)) {
+            const deploy = Fs.readFileSync('./' + deployFile).toString().trim();
+
+            if(deploy == 'false') {
+                return;
+            }
+
+            Fs.writeFileSync('./' + deployFile, 'false');
+        } else {
+            Fs.writeFileSync('./' + deployFile, 'false'); 
+        }
+
         const rest = new REST({ version: '9' }).setToken(config.token);
         (async () => {
             try {
@@ -223,41 +235,57 @@ function actions() {
     // Safe message actions
     this.messageSend = async (channel, message) => {
         try {
-            return await channel.send(message).catch(err => { log.error(err, 'Send error'); });
+            return await channel.send(message).catch(err => { log.error(err, 'Message Send'); });
         } catch (err) {
-            log.error(err, 'Send error');
+            log.error(err, 'Message Send');
             return false;
         }
     }
     this.messageReply = async (message, reply) => {
         try {
-            return await message.reply(reply).catch(err => { log.error(err, 'Reply error'); });
+            return await message.reply(reply).catch(err => { log.error(err, 'Message Reply'); });
         } catch (err) {
-            log.error(err, 'Reply error');
+            log.error(err, 'Message Reply');
             return false;
         }
     }
     this.messageDelete = async (message) => {
         try {
-            return await message.delete().catch( err => { log.error(err, 'Delete error'); });
+            return await message.delete().catch( err => { log.error(err, 'Message Delete'); });
         } catch (err) {
-            log.error(err, 'Delete error');
+            log.error(err, 'Message Delete');
         }
     }
     this.messageReact = async (message, reaction) => {
         try {
-            return await message.react(reaction).catch( err => { log.error(err, 'Reaction error'); });
+            return await message.react(reaction).catch( err => { log.error(err, 'Message Reaction'); });
         } catch (err) {
-            log.error(err, 'Reaction error');
+            log.error(err, 'Message React');
             return false;
         }
     }
     this.messageEdit = async (message, edit) => {
         try {
-            return await message.edit(edit).catch( err => { log.error(err, 'Edit error'); });
+            return await message.edit(edit).catch( err => { log.error(err, 'Message Edit'); });
         } catch (err) {
-            log.error(err, 'Edit error');
+            log.error(err, 'Message Edit');
             return false;
+        }
+    }
+    
+    // Safe interaction actions
+    this.interactionReply = async (interaction, reply) => {
+        try {
+            return await interaction.reply(reply).catch( err => { log.error(err, 'Slash Command'); });
+        } catch (err) {
+            log.error(err, 'Slash Command');
+        }
+    }
+    this.interactionDeferReply = async (interaction, options) => {
+        try {
+            return await interaction.deferReply(options).catch( err => { log.error(err, 'Slash Command'); });
+        } catch (err) {
+            log.error(err, 'Slash Command');
         }
     }
 }
