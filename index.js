@@ -68,7 +68,7 @@ Client.on('ready', function() {
     Client.on('interactionCreate', async (interaction) => {
         if(!interaction.isCommand() || !interaction.member) return;
 
-        let command = Client.commands.get(interaction.commandName);
+        let command = scripts[Client.commands.get(interaction.commandName)];
         if (!command) return;
 
         // Execute interaction
@@ -78,7 +78,7 @@ Client.on('ready', function() {
         if(!config.slashCommands.enabled) { await interaction.reply({ content: language.get(lang.notAvailable), ephemeral: true }).catch(err => log.error(err)); return; }
 
         try {
-            await command.execute(interaction, Client, Actions);
+            await command['slash'].execute(interaction, Client, Actions);
         } catch (err) {
             log.error(err, 'Interaction');
         }
@@ -162,9 +162,9 @@ function actions() {
                 // Slash commands
                 if(typeof scripts[name]['slash'] === 'undefined') continue;
 
-                const command = scripts[name]['slash'];
-                if(!reload) commands.push(command['command'].toJSON());
-                Client.commands.set(command['command']['name'], command);
+                const command = scripts[name]['slash']['command']['name'];
+                if(!reload) commands.push(scripts[name]['slash']['command'].toJSON());
+                Client.commands.set(scripts[name]['slash']['command']['name'], command);
             } catch (err) {
                 log.error(`Coudln't load ${file}: ${err.message}`, file);
                 log.error(err, file);
