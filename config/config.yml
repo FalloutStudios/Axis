@@ -4,13 +4,13 @@ embedColor: '#19AFFF'  # Colors for embed messages
 commandPrefix: '!'  # Prefix for commands
 owner: 'Ghexter'  # Who owns this bot
 
-# Restrict commands for admin only
+# Restrict commands for admin only (This is the script name)
 adminOnlyCommands:
   - 'stop'
   - 'spam'
   - 'reload'
 
-# Command for moderator with kick and ban perms
+# Command for moderator with kick and ban perms (This is the script name)
 moderatorOnlyCommands: 
   - 'version'
   - 'ban'

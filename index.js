@@ -108,7 +108,7 @@ function actions() {
     // scripts
     this.reload = async () => {
         let success = false;
-        
+
         parseConfig.parse();
         config = parseConfig.config;
         language.parse();
