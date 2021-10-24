@@ -19,9 +19,9 @@ function create(){
     this.slash = {
         command: new SlashCommandBuilder()
             .setName("ping")
-            .setDescription("Ping me!"),
+            .setDescription("Ping!"),
         async execute(interaction, client, action){
-            await interaction.reply(action.get(language.ping));
+            await interaction.reply(`${action.get(language.ping)}`);
         }
     }
 }

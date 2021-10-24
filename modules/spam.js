@@ -84,7 +84,6 @@ function create(){
             let count = spamConfig.defaultSpamCount;
             
 
-            if (!interaction.member) { interaction.reply({ content: action.get(language.notAvailable), ephemeral: true}); return; }
             if(count > spamConfig.spamLimit) { interaction.reply({ content: action.get(language.tooLarge), ephemeral: true}); return; }
             if(!spamConfig.allowSpamPings) {
                 msg = Util.replaceAll(msg, '<', '<\\');

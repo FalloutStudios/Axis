@@ -66,9 +66,9 @@ Client.once('ready', async () => {
 Client.on('ready', function() {
     // On Interaction commands
     Client.on('interactionCreate', async (interaction) => {
-        if(!interaction.isCommand()) return;
+        if(!interaction.isCommand() || !interaction.member) return;
 
-        const command = Client.commands.get(interaction.commandName);
+        let command = Client.commands.get(interaction.commandName);
         if (!command) return;
 
         // Execute interaction
@@ -120,6 +120,8 @@ function actions() {
         lang = language.language;
 
         // re-login to client
+        try { Client.destroy(); } catch (err) { logger.error(err); }
+
         await Client.login(config.token).then(function () {
             success = true;
         }).catch(err => {
@@ -159,16 +161,14 @@ function actions() {
                 // Slash commands
                 if(typeof scripts[name]['slash'] === 'undefined') continue;
 
-                if(!reload) commands.push(scripts[name]['slash']['command'].toJSON());
-                Client.commands.set(scripts[name]['slash']['command']['name'], null);
+                const command = scripts[name]['slash'];
+                if(!reload) commands.push(command['command'].toJSON());
+                Client.commands.set(command['command']['name'], command);
             } catch (err) {
                 log.error(`Coudln't load ${file}: ${err.message}`, file);
                 log.error(err, file);
             }
         }
-
-        console.log(Object.keys(scripts));
-        console.log(commands);
     }
 
     // Commands
@@ -276,16 +276,31 @@ function actions() {
     // Safe interaction actions
     this.interactionReply = async (interaction, reply) => {
         try {
-            return await interaction.reply(reply).catch( err => { log.error(err, 'Slash Command'); });
+            return await interaction.reply(reply).catch( err => { log.error(err, 'Slash Reply'); });
         } catch (err) {
-            log.error(err, 'Slash Command');
+            log.error(err, 'Slash Reply');
         }
     }
     this.interactionDeferReply = async (interaction, options) => {
         try {
-            return await interaction.deferReply(options).catch( err => { log.error(err, 'Slash Command'); });
+            return await interaction.deferReply(options).catch( err => { log.error(err, 'Slash DeferReply'); });
         } catch (err) {
-            log.error(err, 'Slash Command');
+            log.error(err, 'Slash DeferReply');
         }
     }
+    this.interactionEditReply = async (interaction, edit) => {
+        try {
+            return await interaction.editReply(edit).catch( err => { log.error(err, 'Slash EditReply'); });
+        } catch (err) {
+            log.error(err, 'Slash EditReply');
+        }
+    }
+    this.interactionFollowUp = async (interaction, followUp) => {
+        try {
+            return await interaction.followUp(followUp).catch( err => { log.error(err, 'Slash FollowUp'); });
+        } catch (err) {
+            log.error(err, 'Slash FollowUp');
+        }
+    }
+    
 }
