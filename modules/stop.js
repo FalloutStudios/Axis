@@ -15,7 +15,7 @@ function create(){
     }
     this.execute = async (args, message, action, client) => {
         // Command executed
-        await action.reply(message, action.get(this.language.stop));
+        await action.messageReply(message, action.get(this.language.stop));
         await client.destroy();
         logger.warn('Stopping...', 'stop.js');
         process.exit(0);

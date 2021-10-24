@@ -34,6 +34,6 @@ function create(){
         .setTimestamp()
         .setFooter('Some footer text here', 'https://i.imgur.com/AfFp7pu.png');
 
-        action.send(message.channel, { embeds: [embed] });
+        action.messageSend(message.channel, { embeds: [embed] });
     }
 }

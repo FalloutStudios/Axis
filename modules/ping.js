@@ -25,6 +25,6 @@ function create(){
         // message: raw discord.js message
         // action: actions from main file
         // client: discord client
-        action.reply(message, action.get(this.language.ping));
+        action.messageReply(message, action.get(this.language.ping));
     }
 }

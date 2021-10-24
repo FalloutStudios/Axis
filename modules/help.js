@@ -88,7 +88,11 @@ function create(){
         }
 
         // Send response
-        new Pagination(message.channel, embeds, "Page", 20000).paginate();
+        try {
+            new Pagination(message.channel, embeds, "Page", 20000).paginate();
+        } catch (err) {
+            console.error(err);
+        }
     }
 }
 

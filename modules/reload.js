@@ -14,7 +14,7 @@ function create(){
     }
     this.execute = async (args, message, action, client) => {
         // Command executed
-        await action.reply(message, action.get(this.language.reload.requested));
+        await action.messageReply(message, action.get(this.language.reload.requested));
         action.reload(message);
     }
 }

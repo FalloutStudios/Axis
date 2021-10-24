@@ -47,8 +47,8 @@ function create(){
         command: new SlashCommandBuilder()
             .setName("slash")
             .setDescription('This command is deprecated'),
-        execute: function (interaction, client, action) {
-            interaction.reply('///');
+        async execute (interaction, client, action) {
+            await interaction.reply('///');
         }
     }
 }

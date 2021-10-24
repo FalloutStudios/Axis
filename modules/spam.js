@@ -64,19 +64,19 @@ function create(){
             msg = Util.makeSentence(args, 1).toString().trim();
         }
 
-        if(msg == '') { action.reply(message, action.get(this.language.empty)); return; }
+        if(msg == '') { action.messageReply(message, action.get(this.language.empty)); return; }
 
         if(!spamConfig.convertDisabledChannelsToWhitelist && spamConfig.disabledChannels.includes(message.channelId.toString())
             ||
             spamConfig.convertDisabledChannelsToWhitelist && !spamConfig.disabledChannels.includes(message.channelId.toString())
-        ) { action.reply(message, action.get(this.language.noPerms)); return; }
+        ) { action.messageReply(message, action.get(this.language.noPerms)); return; }
 
-        if(count > spamConfig.spamLimit) { action.reply(message, action.get(this.language.tooLarge)); return; }
+        if(count > spamConfig.spamLimit) { action.messageReply(message, action.get(this.language.tooLarge)); return; }
 
-        if(!spamConfig.allowSpamPings && message.mentions.users.size > 0 && message.mentions.roles.size > 0 && message.mentions.everyone || spamConfig.allowSpamPings) { action.reply(message, action.get(this.language.noPerms)); return; }
+        if(!spamConfig.allowSpamPings && message.mentions.users.size > 0 && message.mentions.roles.size > 0 && message.mentions.everyone || spamConfig.allowSpamPings) { action.messageReply(message, action.get(this.language.noPerms)); return; }
 
         for (let i = 0; i < count; i++){
-            await action.send(message.channel, spamConfig.spamMessagePrefix + msg);
+            await action.messageSend(message.channel, spamConfig.spamMessagePrefix + msg);
         }
     }
 }

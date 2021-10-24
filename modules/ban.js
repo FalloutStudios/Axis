@@ -24,14 +24,14 @@ function create(){
     }
     this.execute = async (args, message, action, client) => {
         // Command executed
-        if(!args.length) { action.reply(message, action.get(this.language.empty)); return; }
-        if(!message.mentions.members.first() || message.mentions.members.first() == null) { action.reply(message, action.get(this.language.needPing)); return; }
+        if(!args.length) { action.messageReply(message, action.get(this.language.empty)); return; }
+        if(!message.mentions.members.first() || message.mentions.members.first() == null) { action.messageReply(message, action.get(this.language.needPing)); return; }
 
         const target = message.mentions.members.first();
         let reason = Util.makeSentence(args, 1).toString().trim();
 
         if(reason.length == 0) reason = action.get(this.language.banned.defaultReason);
-        if(target.user.id == message.author.id) { action.reply(message, action.get(this.language.noPerms)); return; }
+        if(target.user.id == message.author.id) { action.messageReply(message, action.get(this.language.noPerms)); return; }
         target.ban({
             reason: reason
         }).then((member) => {
@@ -42,10 +42,10 @@ function create(){
                 .setTitle(action.get(this.language.banned.title))
                 .setDescription(reason)
                 .setTimestamp();
-            action.reply(message, { embeds: [embed]});
+            action.messageReply(message, { embeds: [embed]});
         }).catch((err) => {
             console.error(err);
-            action.reply(message, action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
+            action.messageReply(message, action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
         });
     }
 }

@@ -36,7 +36,7 @@ function create(){
             chatbot.chat(sentence, message.author.id).then((response) => {
                 response = Util.replaceAll(response, 'Udit', this.config.owner);
 
-                action.reply(message, response);
+                action.messageReply(message, response);
             }).catch((err) => {
                 console.error(err);
             });

@@ -17,6 +17,6 @@ function create(){
     }
     this.execute = async (args, message, action, client) => {
         // Command executed
-        action.send(message.channel, `**${client.user.username} v${Version}**\nBased on Axis bot v${Version}.\nhttps://github.com/FalloutStudios/Axis`);
+        action.messageSend(message.channel, `**${client.user.username} v${Version}**\nBased on Axis bot v${Version}.\nhttps://github.com/FalloutStudios/Axis`);
     }
 }
