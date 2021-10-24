@@ -70,6 +70,7 @@ Client.on('ready', function() {
         const command = Client.commands.get(interaction.commandName);
         if (!command) return;
 
+        // Execute interaction
         log.warn(interaction.member.user.username + ' executed ' + interaction.commandName, 'Slash command');
         try {
             await command.execute(interaction, Client, Actions);
