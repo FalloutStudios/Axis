@@ -47,13 +47,13 @@ Client.login(config.token);
 const Actions = new actions();
 
 var modulesList = {};
-var scripts = [];
+var scripts = {};
 
 var commands = [];
 Client.commands = new Discord.Collection();
 
 // Load scripts
-Actions.loadScripts();
+(async () => { await Actions.loadScripts(); })();
 
 // Client ready
 Client.once('ready', async () => {
@@ -132,9 +132,9 @@ function actions() {
 
         return success;
     }
-    this.loadScripts = () => {
+    this.loadScripts = async () => {
         // Clear scripts
-        scripts = [];
+        scripts = {};
         modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
 
         // Require scripts
@@ -155,7 +155,7 @@ function actions() {
 
                 // Import script
                 scripts[name] = importModule;
-                if(scripts[name].start(Client, Actions, config, lang)) log.log(`Script ${name} ready!`, file);
+                if(await scripts[name].start(Client, Actions, config, lang)) log.log(`Script ${name} ready!`, file);
 
                 // Slash commands
                 if(typeof scripts[name]['slash'] === 'undefined') continue;
@@ -168,10 +168,13 @@ function actions() {
                 log.error(err, file);
             }
         }
+
+        console.log(scripts);
+        console.log(commands);
     }
 
     // Commands
-    this.messageCommand = (command, message) => {
+    this.messageCommand = async (command, message) => {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
         log.warn(message.author.username + ' executed ' + config.commandPrefix + command, 'message Command');
 
@@ -181,7 +184,7 @@ function actions() {
         if(typeof scripts[command].execute === 'undefined') { log.warn(command + ' is not a command'); return; } 
 
         // Execute
-        scripts[command].execute(args, message, Client, Actions).catch(async err => {
+        await scripts[command].execute(args, message, Client, Actions).catch(async err => {
             log.error(err, command + '.js');
             await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
