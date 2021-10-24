@@ -107,13 +107,12 @@ Client.on('ready', function() {
 function actions() {
     // scripts
     this.reload = async () => {
+        let success = false;
+        
         parseConfig.parse();
         config = parseConfig.config;
-    
         language.parse();
         lang = language.language;
-
-        let success = false;
 
         // re-login to client
         await Client.login(config.token).then(function () {

@@ -10,8 +10,8 @@ module.exports = new create();
 // Create the command
 function create(){
     // Command and language
-    var config = {};
-    var language = {};
+    let config = {};
+    let language = {};
 
     // This is required to specify the supported version of bot
     this.versions = ['1.1.0'];
