@@ -1,8 +1,9 @@
 const Util = require('fallout-utility');
 const Fs = require('fs');
 const Path = require('path');
-const { MessageEmbed, MessageButton } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const {Pagination} = require("discordjs-button-embed-pagination");
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const log = Util.logger;
     log.defaultPrefix = 'help.js';
@@ -46,7 +47,6 @@ function create(){
         }
         return true; // Always return true
     }
-    
     this.execute = async (args, message, client, action) => {
         // Command executed
         let filter = Util.makeSentence(args);
@@ -92,6 +92,14 @@ function create(){
             new Pagination(message.channel, embeds, "Page", 20000).paginate();
         } catch (err) {
             console.error(err);
+        }
+    }
+    this.slash = {
+        command: new SlashCommandBuilder()
+            .setName("help")
+            .setDescription("Show help for commands"),
+        async execute(interaction, client, action) {
+            
         }
     }
 }
