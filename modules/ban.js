@@ -1,10 +1,11 @@
 const Util = require('fallout-utility');
 const { MessageEmbed } = require('discord.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = new create();
 
 function create(){
-    this.config = {};
-    this.language = {};
+    let config = {};
+    let language = {};
     this.versions = ['1.1.0'];
     this.command = {
         username: {
@@ -15,37 +16,79 @@ function create(){
         }
     };
 
-    this.start = (client, action, config, language) => {
-        this.config = config;
-        this.language = language;
-
-        // Command ready
+    this.start = (client, action, conf, lang) => {
+        config = conf;
+        language = lang;
         return true;
     }
     this.execute = async (args, message, client, action) => {
-        // Command executed
-        if(!args.length) { action.messageReply(message, action.get(this.language.empty)); return; }
-        if(!message.mentions.members.first() || message.mentions.members.first() == null) { action.messageReply(message, action.get(this.language.needPing)); return; }
+        if(!args.length) { action.messageReply(message, action.get(language.empty)); return; }
+        if(!message.mentions.members.first() || message.mentions.members.first() == null) { action.messageReply(message, action.get(language.needPing)); return; }
 
         const target = message.mentions.members.first();
         let reason = Util.makeSentence(args, 1).toString().trim();
 
-        if(reason.length == 0) reason = action.get(this.language.banned.defaultReason);
-        if(target.user.id == message.author.id) { action.messageReply(message, action.get(this.language.noPerms)); return; }
-        target.ban({
-            reason: reason
-        }).then((member) => {
-            reason = Util.replaceAll(reason, '%username%', member.user.username);
-            reason = Util.replaceAll(reason, '%author%', message.author.username);
+        if(reason.length == 0) reason = action.get(language.banned.defaultReason);
+        if(target.user.id == message.author.id) { action.messageReply(message, action.get(language.noPerms)); return; }
+        
+        const Ban = await ban(target, reason);
+        if(!Ban) return;
+
+        reason = Util.replaceAll(reason, '%username%', target.user.username);
+        reason = Util.replaceAll(reason, '%author%', message.author.username);
+
+        let embed = new MessageEmbed()
+            .setTitle(action.get(language.banned.title))
+            .setDescription(reason)
+            .setTimestamp();
+        
+        await action.messageReply(message, { embeds: [embed]});
+    }
+    this.slash = {
+        command: new SlashCommandBuilder()
+            .setName("ban")
+            .setDescription("Ban user")
+            .addUserOption(user => user.setName("user")
+                .setDescription("User to ban")
+                .setRequired(true)
+            )
+            .addStringOption(reason => reason.setName("reason")
+                .setDescription("Reason for ban")
+                .setRequired(false)
+            ),
+        async execute(interaction, client, action) {
+            const target = interaction.options.getUser('user');
+            let reason = action.get(language.banned.defaultReason);
+
+            if(!interaction.guild.members.cache.get(target.id)) { await action.interactionReply(interaction, { content: action.get(language.notAvailable), ephemeral: true}); return; }
+            if(target.id == interaction.member.user.id) { action.interactionReply(interaction, { content: action.get(language.noPerms), ephemer: true}); return; }
+
+            if(interaction.options.getString('reason')) reason = interaction.options.getString('reason');
+
+            const Ban = await ban(interaction.guild.members.cache.get(target.id), reason);
+            if(!Ban) return;
+
+            await action.interactionDeferReply(interaction);
+            reason = Util.replaceAll(reason, '%username%', target.username);
+            reason = Util.replaceAll(reason, '%author%', interaction.member.user.username);
 
             let embed = new MessageEmbed()
-                .setTitle(action.get(this.language.banned.title))
+                .setTitle(action.get(language.banned.title))
                 .setDescription(reason)
                 .setTimestamp();
-            action.messageReply(message, { embeds: [embed]});
-        }).catch((err) => {
+            
+            await action.interactionEditReply(interaction, { embeds: [embed] });
+        }
+    }
+
+    async function ban(user, reason) {
+        try {
+            return await user.ban({
+                reason: reason
+            }).catch( err => console.error(err));
+        } catch (err) {
             console.error(err);
-            action.messageReply(message, action.get(this.language.error) + '\n```\n'+ err.message +'\n```');
-        });
+            return false;
+        }
     }
 }
