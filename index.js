@@ -47,7 +47,7 @@ Client.login(config.token);
 const Actions = new actions();
 
 var modulesList = {};
-var scripts = {};
+var scripts = [];
 
 var commands = [];
 Client.commands = new Discord.Collection();
@@ -65,6 +65,7 @@ Client.on('ready', function() {
 
     // On Interaction commands
     Client.on('interactionCreate', async (interaction) => {
+        console.log(interaction);
         if(!interaction.isCommand()) return;
 
         const command = Client.commands.get(interaction.commandName);
@@ -105,31 +106,35 @@ Client.on('ready', function() {
 
 function actions() {
     // scripts
-    this.reload = (message, interaction) => {
+    this.reload = async () => {
         parseConfig.parse();
         config = parseConfig.config;
     
         language.parse();
         lang = language.language;
 
+        let success = false;
+
         // re-login to client
-        Client.login(config.token).then(function () {
-            if(typeof message !== 'undefined') Actions.messageReply(message, language.get(lang.reload.success));
-            if(typeof interaction !== 'undefined') interaction.reply(language.get(lang.reload.success));
+        await Client.login(config.token).then(function () {
+            success = true;
         }).catch(err => {
             log.error(err, 'Reload');
-            if(typeof message !== 'undefined') Actions.messageReply(message, language.get(lang.error) + '\n```\n' + err.message + '\n```');
-            if(typeof interaction !== 'undefined') interaction.reply(language.get(lang.reload.error));
         });
 
+        // Log script
         Actions.loadScripts();
-        return {
-            language: lang,
-            config: config
-        };
+        // Register commands
+        Actions.registerInteractionCommmands(Client);
+
+        return success;
     }
     this.loadScripts = () => {
-        scripts = {};
+        // Clear scripts
+        scripts = [];
+        commands = []
+        Client.commands.clear();
+
         modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
 
         // Require scripts
@@ -153,12 +158,12 @@ function actions() {
                 if(scripts[name].start(Client, Actions, config, lang)) log.log(`Script ${name} ready!`, file);
 
                 // Slash commands
-                if(typeof scripts[name]['slash'] != 'undefined') {
-                    let slash = scripts[name]['slash'];
+                if(typeof scripts[name]['slash'] === 'undefined') continue;
+                // if(Client.commands.get(scripts[name]['slash']['command']['name'])) { log.error(`slash command for "${name}" already exists. You may need to restart your bot to reload it.`, file); continue; }
 
-                    commands.push(slash['command'].toJSON());
-                    Client.commands.set(slash['command']['name'], slash);
-                }
+                let slash = scripts[name]['slash'];
+                commands.push(slash['command'].toJSON());
+                Client.commands.set(slash['command']['name'], slash);
             } catch (err) {
                 log.error(`Coudln't load ${file}: ${err.message}`, file);
                 log.error(err, file);
@@ -170,7 +175,7 @@ function actions() {
     this.messageCommand = (command, message) => {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
 
-        log.warn(message.author.username + ' executed ' + command, 'message Command');
+        log.warn(message.author.username + ' executed ' + config.commandPrefix + command, 'message Command');
 
         if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !this.admin(message.member)) { 
             this.reply(message, language.get(lang.noPerms)); return; 
@@ -246,6 +251,14 @@ function actions() {
             return await message.react(reaction).catch( err => { log.error(err, 'Reaction error'); });
         } catch (err) {
             log.error(err, 'Reaction error');
+            return false;
+        }
+    }
+    this.messageEdit = async (message, edit) => {
+        try {
+            return await message.edit(edit).catch( err => { log.error(err, 'Edit error'); });
+        } catch (err) {
+            log.error(err, 'Edit error');
             return false;
         }
     }
