@@ -1,3 +1,4 @@
+const { SlashCommandBuilder } = require('@discordjs/builders');
 const AI = require("../scripts/discord-chatbot/");
 const Util = require('fallout-utility');
 
@@ -6,8 +7,9 @@ module.exports = new create();
 let chatbot = null;
 
 function create(){
-    this.config = {};
-    this.language = {};
+    let config = {};
+    let language = {};
+
     this.versions = ['1.1.0'];
     this.command = {
         question: {
@@ -17,9 +19,9 @@ function create(){
     };
 
     // Create the chatbot
-    this.start = (client, action, config, language) => {
-        this.config = config;
-        this.language = language;
+    this.start = (client, action, conf, lang) => {
+        config = conf;
+        language = lang;
 
         client.on('ready', () => { chatbot = new AI({name: client.user.username, gender: "male"}); });
 
@@ -27,21 +29,47 @@ function create(){
     }
     this.execute = async (args, message, action, client) => {
         let sentence = Util.makeSentence(args).toString().trim();
-        if(sentence.length == 0) { await message.reply(action.get(this.language.empty)); return; }
+        if(sentence.length == 0) { await message.reply(action.get(language.empty)); return; }
 
         message.channel.sendTyping();
+        let reply = await ask(sentence, message.author.username, config.owner);
 
-        // Get udit api response
-        try {
-            chatbot.chat(sentence, message.author.id).then((response) => {
-                response = Util.replaceAll(response, 'Udit', this.config.owner);
+        if(reply) action.messageReply(message, reply);
+    }
 
-                action.messageReply(message, response);
-            }).catch((err) => {
-                console.error(err);
-            });
-        } catch (err) {
-            console.error(err);
+    this.slash = {
+        command: new SlashCommandBuilder()
+            .setName("ask")
+            .setDescription(`Ask me something`)
+            .addStringOption(option => option.setName('question')
+                .setDescription("Question")
+                .setRequired(true)
+            ),
+        async execute(interaction, client, action) {
+            await interaction.deferReply();
+            const response = await ask(interaction.options.getString('question'), interaction.member.username, config.owner);
+
+            await interaction.editReply(response);
         }
     }
+}
+
+async function ask(message, username, owner){
+    // Get udit api response
+    try {
+        let answer = false;
+        await chatbot.chat(message, username).then((response) => {
+            response = Util.replaceAll(response, 'Udit', owner);
+
+            answer = response;
+        }).catch((err) => {
+            console.error(err);
+        });
+
+        return answer;
+    } catch (err) {
+        console.error(err);
+    }
+
+    return false;
 }

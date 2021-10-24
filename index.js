@@ -65,7 +65,6 @@ Client.on('ready', function() {
 
     // On Interaction commands
     Client.on('interactionCreate', async (interaction) => {
-        console.log(interaction);
         if(!interaction.isCommand()) return;
 
         const command = Client.commands.get(interaction.commandName);
@@ -178,10 +177,10 @@ function actions() {
         log.warn(message.author.username + ' executed ' + config.commandPrefix + command, 'message Command');
 
         if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !this.admin(message.member)) { 
-            this.reply(message, language.get(lang.noPerms)); return; 
+            this.messageReply(message, language.get(lang.noPerms)); return; 
         }
         if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !this.moderator(message.member)) { 
-            this.reply(message, language.get(lang.noPerms)); return; 
+            this.messageReply(message, language.get(lang.noPerms)); return; 
         }
         if(typeof scripts[command].execute === 'undefined') { log.warn(command + ' is not a command'); return; } 
 
