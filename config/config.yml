@@ -4,6 +4,8 @@ embedColor: '#19AFFF'  # Colors for embed messages
 commandPrefix: '!'  # Prefix for commands
 owner: 'Ghexter'  # Who owns this bot
 
+guildId: # Register commands to specified guild only
+
 # Restrict commands for admin only (This is the script name)
 adminOnlyCommands:
   - 'stop'
