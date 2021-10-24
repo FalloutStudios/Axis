@@ -35,7 +35,7 @@ function create(){
     }
 
     // This is required for command module. You can delete this to make your script a non executable command
-    this.execute = async (args, message, action, client) => {
+    this.execute = async (args, message, client, action) => {
         // Message command executed
 
         // args: list of separate words

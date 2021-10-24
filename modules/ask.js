@@ -27,7 +27,7 @@ function create(){
 
         return true;
     }
-    this.execute = async (args, message, action, client) => {
+    this.execute = async (args, message, client, action) => {
         let sentence = Util.makeSentence(args).toString().trim();
         if(sentence.length == 0) { await message.reply(action.get(language.empty)); return; }
 

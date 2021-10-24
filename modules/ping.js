@@ -18,7 +18,7 @@ function create(){
     }
 
     // This will be executed when the command is called
-    this.execute = async (args, message, action, client) => {
+    this.execute = async (args, message, client, action) => {
         // Command executed
 
         // args: list of separate words

@@ -47,7 +47,7 @@ function create(){
         return true; // Always return true
     }
     
-    this.execute = async (args, message, action, client) => {
+    this.execute = async (args, message, client, action) => {
         // Command executed
         let filter = Util.makeSentence(args);
         let visibleCommands = Object.keys(commands);

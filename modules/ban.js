@@ -22,7 +22,7 @@ function create(){
         // Command ready
         return true;
     }
-    this.execute = async (args, message, action, client) => {
+    this.execute = async (args, message, client, action) => {
         // Command executed
         if(!args.length) { action.messageReply(message, action.get(this.language.empty)); return; }
         if(!message.mentions.members.first() || message.mentions.members.first() == null) { action.messageReply(message, action.get(this.language.needPing)); return; }

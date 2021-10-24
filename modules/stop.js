@@ -13,7 +13,7 @@ function create(){
         // Command ready
         return true;
     }
-    this.execute = async (args, message, action, client) => {
+    this.execute = async (args, message, client, action) => {
         // Command executed
         await action.messageReply(message, action.get(this.language.stop));
         await client.destroy();
