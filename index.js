@@ -163,7 +163,7 @@ function actions() {
                 if(typeof scripts[name]['slash'] === 'undefined') continue;
 
                 const command = scripts[name]['slash']['command']['name'];
-                if(!reload) commands.push(scripts[name]['slash']['command'].toJSON());
+                commands.push(scripts[name]['slash']['command'].toJSON());
                 Client.commands.set(scripts[name]['slash']['command']['name'], command);
             } catch (err) {
                 log.error(`Coudln't load ${file}: ${err.message}`, file);
