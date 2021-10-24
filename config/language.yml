@@ -71,16 +71,6 @@ stop:
   - 'Shut up! I''ll stop now <a:catgun:901325244499910727>'
   - 'Ok bitch <a:rogdance:901325242360815688>'
   - 'Stopping...'
-reload: 
-  requested: 
-    - 'Fine! <a:sussy:901325258299154462>'
-    - 'Reloading my self!'
-    - 'K <a:peperun:901325248769703936>'
-    - 'Reloading your spaghetti bot <:geminipog:901325246534156338>'
-  success: 
-    - 'You''re spaghetti has been reloaded! <:geminipog:901325246534156338>'
-    - 'Reloaded!'
-    - 'Reloaded <a:sadsponge:901325244353093674>'
 help:
   title: 'Command Help'
   description: 'Here''s a list of the current commands:'
