@@ -107,3 +107,4 @@ dist
 *.dev.yml
 config/spam.yml
 deploy.txt
+modules/reload.js
