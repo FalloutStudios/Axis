@@ -56,13 +56,15 @@ Client.commands = new Discord.Collection();
 Actions.loadScripts();
 
 // Client ready
-Client.on('ready', function() {
+Client.once('ready', async () => {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
-
+    
     // Register commands
-    Actions.registerInteractionCommmands(Client);
+    await Actions.registerInteractionCommmands(Client);
+});
 
+Client.on('ready', function() {
     // On Interaction commands
     Client.on('interactionCreate', async (interaction) => {
         if(!interaction.isCommand()) return;
@@ -71,7 +73,11 @@ Client.on('ready', function() {
         if (!command) return;
 
         // Execute interaction
-        log.warn(interaction.member.user.username + ' executed ' + interaction.commandName, 'Slash command');
+        log.warn('executed ' + interaction.commandName, 'Slash command');
+        
+        // Check configurations
+        if(!config.slashCommands.enabled) { await interaction.reply({ content: language.get(lang.notAvailable), ephemeral: true }).catch(err => log.error(err)); return; }
+
         try {
             await command.execute(interaction, Client, Actions);
         } catch (err) {
@@ -123,17 +129,12 @@ function actions() {
 
         // Log script
         Actions.loadScripts();
-        // Register commands
-        Actions.registerInteractionCommmands(Client);
 
         return success;
     }
     this.loadScripts = () => {
         // Clear scripts
         scripts = [];
-        commands = []
-        Client.commands.clear();
-
         modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
 
         // Require scripts
@@ -158,11 +159,10 @@ function actions() {
 
                 // Slash commands
                 if(typeof scripts[name]['slash'] === 'undefined') continue;
-                // if(Client.commands.get(scripts[name]['slash']['command']['name'])) { log.error(`slash command for "${name}" already exists. You may need to restart your bot to reload it.`, file); continue; }
 
                 let slash = scripts[name]['slash'];
-                commands.push(slash['command'].toJSON());
                 Client.commands.set(slash['command']['name'], slash);
+                commands.push(slash['command'].toJSON());
             } catch (err) {
                 log.error(`Coudln't load ${file}: ${err.message}`, file);
                 log.error(err, file);
@@ -188,16 +188,17 @@ function actions() {
     }
     this.registerInteractionCommmands = async (client) => {
         const rest = new REST({ version: '9' }).setToken(config.token);
-
-        try {
-            await rest.put(
-                Routes.applicationCommands(client.user.id),
-                { body: commands },
-            );            
-            log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
-        } catch (err) {
-            log.error(err, 'Register Commands');
-        }
+        (async () => {
+            try {
+                await rest.put(
+                    Routes.applicationCommands(client.user.id),
+                    { body: commands },
+                );            
+                log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
+            } catch (err) {
+                log.error(err, 'Register Commands');
+            }
+        })();
     }
 
     // Other utility functions

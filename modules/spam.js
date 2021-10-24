@@ -69,7 +69,7 @@ function create(){
 
     this.slash = {
         command: new SlashCommandBuilder()
-            .setName('name')
+            .setName('spam')
             .setDescription('Spam this channel')
             .addStringOption(text => text.setName("message")
                 .setDescription("Message to spam")
@@ -82,12 +82,21 @@ function create(){
         async execute(interaction, client, action) {
             let msg = interaction.options.getString('message');
             let count = spamConfig.defaultSpamCount;
+            
 
+            if (interaction.channel === 'dm') { interaction.reply({ content: action.get(language.notAvailable), ephemeral: true}); return; }
+            if(count > spamConfig.spamLimit) { interaction.reply({ content: action.get(language.tooLarge), ephemeral: true}); return; }
+            if(!spamConfig.allowSpamPings) {
+                msg = Util.replaceAll(msg, '<', '<\\');
+                msg = Util.replaceAll(msg, '>', '\>');
+            }
             if(interaction.options.getInteger('count')) count = interaction.options.getInteger('count');
 
+            await interaction.deferReply({ ephemeral: true });
             for (let i = 0; i < count; i++){
                 await action.messageSend(interaction.channel, spamConfig.spamMessagePrefix + msg);
             }
+            await interaction.editReply({ content: action.get(language.success), ephemeral: true });
         }
     }
 }

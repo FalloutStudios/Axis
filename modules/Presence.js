@@ -11,8 +11,8 @@ function create(){
     // This is required for both script and command. This will be called when bot is ready or reloaded
     this.start = (client, action, config, language) => {
         // Script is ready
-        client.on('ready', () => {
-            client.user.setPresence({
+        client.on('ready', async () => {
+            await client.user.setPresence({
                 status: action.get(config.presence.status),
                 activities: [{
                     name: action.get(config.presence.activityName),

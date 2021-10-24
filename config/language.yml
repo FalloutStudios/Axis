@@ -22,6 +22,10 @@ noPerms:
   - 'You don''t have permissions to do that! <a:lick:901325242830585896>'
   - 'You don''t habe perms <a:boi_shakeangry:898522330765090846>'
   - 'LUL no perms! <:vomit:901325245707845662>'
+notAvailable:
+  - 'This action is not available'
+success:
+  - 'yay!'
 tooLarge:
   - 'This is too large <a:blelele:901325242927054929>'
   - 'Too large for me <a:boi_fastparrot:898522328529522759>'
