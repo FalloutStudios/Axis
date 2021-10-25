@@ -44,70 +44,7 @@ const Client = new Discord.Client({
     ]
 });
 
-Client.login(config.token);
-const Actions = new actions();
-
-var modulesList = {};
-var scripts = {};
-
-var commands = [];
-Client.commands = new Discord.Collection();
-
-// Client ready
-Client.once('ready', async () => {
-    log.warn('Client connected!', 'Status');
-    log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
-    
-    // Register commands
-    await Actions.loadScripts();
-    await Actions.registerInteractionCommmands(Client, false, config.guildId);
-});
-
-Client.on('ready', function() {
-    // On Interaction commands
-    Client.on('interactionCreate', async (interaction) => {
-        if(!interaction.isCommand() || !interaction.member) return;
-
-        let command = scripts[Client.commands.get(interaction.commandName)];
-        if (!command) return;
-        
-        // Check configurations
-        if(!config.slashCommands.enabled) { await interaction.reply({ content: language.get(lang.notAvailable), ephemeral: true }).catch(err => log.error(err)); return; }
-        log.warn(`${interaction.member.user.username} executed ${interaction.commandName}`, 'Slash command');
-
-        try {
-            await command['slash'].execute(interaction, Client, Actions);
-        } catch (err) {
-            log.error(err, 'Interaction');
-        }
-    });
-
-    // On Message
-    Client.on('messageCreate', async (message) => {
-        if(message.author.id === Client.user.id || message.author.bot || message.author.system) return;
-        log.log(message.author.username + ': ' + message.content, 'Message');
-
-        // Message commands
-        if(Util.detectCommand(message.content, config.commandPrefix)){
-            const commandConstructor = Util.getCommand(message.content, config.commandPrefix);
-            const command = commandConstructor.command.toLowerCase();
-
-            // Ignored channels
-            if(
-                config.blacklistChannels.enabled && !config.blacklistChannels.convertToWhitelist && config.blacklistChannels.channels.includes(message.channelId.toString())
-                || 
-                config.blacklistChannels.enabled && config.blacklistChannels.convertToWhitelist && !config.blacklistChannels.channels.includes(message.channelId.toString())
-            ) return;
-
-            // Execute command
-            if(scripts.hasOwnProperty(command)){
-                Actions.messageCommand(command, message);
-            }
-        }
-    });
-});
-
-function actions() {
+class UtilActions {
     // scripts
     this.loadScripts = async () => {
         // Clear scripts
