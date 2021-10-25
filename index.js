@@ -23,7 +23,7 @@ const deployFile = 'deploy.txt';
 const log = Util.logger;
     log.defaultPrefix = 'Bot';
 const parseConfig = new Config();
-    parseConfig.location = './config/config.yml';
+    parseConfig.location = './config/config.dev.yml';
     parseConfig.parse();
     parseConfig.testmode();
     parseConfig.prefill();
@@ -46,7 +46,7 @@ const Client = new Discord.Client({
 
 class UtilActions {
     // scripts
-    this.loadScripts = async () => {
+    async loadScripts() {
         // Clear scripts
         scripts = {};
         modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
@@ -88,7 +88,7 @@ class UtilActions {
     }
 
     // Commands
-    this.messageCommand = async (command, message) => {
+    async messageCommand(command, message) {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
         log.warn(message.author.username + ' executed ' + config.commandPrefix + command, 'message Command');
 
@@ -103,7 +103,7 @@ class UtilActions {
             await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
     }
-    this.registerInteractionCommmands = async (client, force = false, guild = null) => {
+    async registerInteractionCommmands(client, force = false, guild = null) {
         if(Fs.existsSync('./' + deployFile) && !force && !guild) {
             const deploy = Fs.readFileSync('./' + deployFile).toString().trim();
 
@@ -138,91 +138,83 @@ class UtilActions {
     }
 
     // Other utility functions
-    this.get = (object) => {
+    get(object) {
         return language.get(object);
     }
-    this.createInvite = (bot) => {
+    createInvite(bot) {
         return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
     }
     
     // Permissions
-    this.admin = (member) => {
+    admin(member) {
         if(member && member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) return true;
         return false;
     }
-    this.moderator = (member) => {
+    moderator(member) {
         if(member && member.permissions.has([Discord.Permissions.FLAGS.BAN_MEMBERS, Discord.Permissions.FLAGS.KICK_MEMBERS])) return true;
         return false;
     }
-
-    // Safe message actions
-    this.messageSend = async (channel, message) => {
-        try {
-            return await channel.send(message).catch(err => { log.error(err, 'Message Send'); });
-        } catch (err) {
-            log.error(err, 'Message Send');
-            return false;
-        }
-    }
-    this.messageReply = async (message, reply) => {
-        try {
-            return await message.reply(reply).catch(err => { log.error(err, 'Message Reply'); });
-        } catch (err) {
-            log.error(err, 'Message Reply');
-            return false;
-        }
-    }
-    this.messageDelete = async (message) => {
-        try {
-            return await message.delete().catch( err => { log.error(err, 'Message Delete'); });
-        } catch (err) {
-            log.error(err, 'Message Delete');
-        }
-    }
-    this.messageReact = async (message, reaction) => {
-        try {
-            return await message.react(reaction).catch( err => { log.error(err, 'Message Reaction'); });
-        } catch (err) {
-            log.error(err, 'Message React');
-            return false;
-        }
-    }
-    this.messageEdit = async (message, edit) => {
-        try {
-            return await message.edit(edit).catch( err => { log.error(err, 'Message Edit'); });
-        } catch (err) {
-            log.error(err, 'Message Edit');
-            return false;
-        }
-    }
-    
-    // Safe interaction actions
-    this.interactionReply = async (interaction, reply) => {
-        try {
-            return await interaction.reply(reply).catch( err => { log.error(err, 'Slash Reply'); });
-        } catch (err) {
-            log.error(err, 'Slash Reply');
-        }
-    }
-    this.interactionDeferReply = async (interaction, options) => {
-        try {
-            return await interaction.deferReply(options).catch( err => { log.error(err, 'Slash DeferReply'); });
-        } catch (err) {
-            log.error(err, 'Slash DeferReply');
-        }
-    }
-    this.interactionEditReply = async (interaction, edit) => {
-        try {
-            return await interaction.editReply(edit).catch( err => { log.error(err, 'Slash EditReply'); });
-        } catch (err) {
-            log.error(err, 'Slash EditReply');
-        }
-    }
-    this.interactionFollowUp = async (interaction, followUp) => {
-        try {
-            return await interaction.followUp(followUp).catch( err => { log.error(err, 'Slash FollowUp'); });
-        } catch (err) {
-            log.error(err, 'Slash FollowUp');
-        }
-    }
 }
+
+Client.login(config.token);
+const Actions = new UtilActions();
+
+var modulesList = {};
+var scripts = {};
+
+var commands = [];
+Client.commands = new Discord.Collection();
+
+// Client ready
+Client.once('ready', async () => {
+    log.warn('Client connected!', 'Status');
+    log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
+    
+    // Register commands
+    await Actions.loadScripts();
+    await Actions.registerInteractionCommmands(Client, false, config.guildId);
+});
+
+Client.on('ready', function() {
+    // On Interaction commands
+    Client.on('interactionCreate', async (interaction) => {
+        if(!interaction.isCommand() || !interaction.member) return;
+
+        let command = scripts[Client.commands.get(interaction.commandName)];
+        if (!command) return;
+        
+        // Check configurations
+        if(!config.slashCommands.enabled) { await interaction.reply({ content: language.get(lang.notAvailable), ephemeral: true }).catch(err => log.error(err)); return; }
+        log.warn(`${interaction.member.user.username} executed ${interaction.commandName}`, 'Slash command');
+
+        try {
+            await command['slash'].execute(interaction, Client, Actions);
+        } catch (err) {
+            log.error(err, 'Interaction');
+        }
+    });
+
+    // On Message
+    Client.on('messageCreate', async (message) => {
+        if(message.author.id === Client.user.id || message.author.bot || message.author.system) return;
+        log.log(message.author.username + ': ' + message.content, 'Message');
+
+        // Message commands
+        if(Util.detectCommand(message.content, config.commandPrefix)){
+            const commandConstructor = Util.getCommand(message.content, config.commandPrefix);
+            const command = commandConstructor.command.toLowerCase();
+
+            // Ignored channels
+            if(
+                config.blacklistChannels.enabled && !config.blacklistChannels.convertToWhitelist && config.blacklistChannels.channels.includes(message.channelId.toString())
+                || 
+                config.blacklistChannels.enabled && config.blacklistChannels.convertToWhitelist && !config.blacklistChannels.channels.includes(message.channelId.toString())
+            ) return;
+
+            // Execute command
+            if(scripts.hasOwnProperty(command)){
+                Actions.messageCommand(command, message);
+            }
+        }
+    });
+});
