@@ -45,10 +45,10 @@ function create(){
                 .setRequired(true)
             ),
         async execute(interaction, client, action) {
-            await interaction.deferReply();
+            await action.interactionDeferReply(interaction);
             const response = await ask(interaction.options.getString('question'), interaction.member.username, config.owner);
 
-            await interaction.editReply(response);
+            await action.interactionEditReply(interaction,response);
         }
     }
 }

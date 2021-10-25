@@ -5,7 +5,6 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = new create();
 
 function create(){
-    let config = {};
     let language = {};
     this.versions = ['1.1.0'];
     this.command = {
@@ -32,7 +31,6 @@ function create(){
 
     // This will be executed on bot ready
     this.start = (client, action, conf, lang) => {
-        config = conf;
         language = lang;
 
         // Generate config for spam command
@@ -90,11 +88,11 @@ function create(){
             }
             if(interaction.options.getInteger('count')) count = interaction.options.getInteger('count');
 
-            await interaction.deferReply({ ephemeral: true });
+            await action.interactionDeferReply({ ephemeral: true });
             for (let i = 0; i < count; i++){
                 await action.messageSend(interaction.channel, spamConfig.spamMessagePrefix + msg);
             }
-            await interaction.editReply({ content: action.get(language.success), ephemeral: true });
+            await action.interactionEditReply({ content: action.get(language.success), ephemeral: true });
         }
     }
 }

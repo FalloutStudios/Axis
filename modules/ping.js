@@ -20,7 +20,7 @@ function create(){
             .setName("ping")
             .setDescription("Ping!"),
         async execute(interaction, client, action){
-            await interaction.reply(`${action.get(language.ping)}`);
+            await action.interactionReply(interaction, `${action.get(language.ping)}`);
         }
     }
 }
