@@ -104,6 +104,7 @@ class UtilActions {
         });
     }
     async registerInteractionCommmands(client, force = false, guild = null) {
+        if(!config.slashCommands.enabled) return;
         if(Fs.existsSync('./' + deployFile) && !force && !guild) {
             const deploy = Fs.readFileSync('./' + deployFile).toString().trim();
 
