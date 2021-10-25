@@ -2,6 +2,8 @@ const Fs = require('fs');
 const Yml = require('yaml');
 const Util = require('fallout-utility');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const safeMessage = require('../scripts/safeMessage');
+const safeInteract = require('../scripts/safeIteract');
 module.exports = new create();
 
 function create(){
@@ -53,14 +55,26 @@ function create(){
         }
 
         // Validate message
-        if(msg == '') { action.messageReply(message, action.get(language.empty)); return; }
-        if(!spamConfig.convertDisabledChannelsToWhitelist && spamConfig.disabledChannels.includes(message.channelId.toString()) || spamConfig.convertDisabledChannelsToWhitelist && !spamConfig.disabledChannels.includes(message.channelId.toString())) { action.messageReply(message, action.get(language.noPerms)); return; }
-        if(count > spamConfig.spamLimit) { action.messageReply(message, action.get(language.tooLarge)); return; }
-        if(!spamConfig.allowSpamPings && message.mentions.users.size > 0 && message.mentions.roles.size > 0 && message.mentions.everyone || spamConfig.allowSpamPings) { action.messageReply(message, action.get(this.language.noPerms)); return; }
+        if(msg == '') { 
+            await safeMessage.reply(message, action.get(language.empty));
+            return; 
+        }
+        if(!spamConfig.convertDisabledChannelsToWhitelist && spamConfig.disabledChannels.includes(message.channelId.toString()) || spamConfig.convertDisabledChannelsToWhitelist && !spamConfig.disabledChannels.includes(message.channelId.toString())) { 
+            await safeMessage.reply(message, action.get(language.noPerms));
+            return;
+        }
+        if(count > spamConfig.spamLimit) { 
+            await safeMessage.reply(message, action.get(language.tooLarge));
+            return;
+        }
+        if(!spamConfig.allowSpamPings && message.mentions.users.size > 0 && message.mentions.roles.size > 0 && message.mentions.everyone || spamConfig.allowSpamPings) {
+            await safeMessage.reply(message, action.get(this.language.noPerms));
+            return;
+        }
 
         // Loop message
         for (let i = 0; i < count; i++){
-            await action.messageSend(message.channel, spamConfig.spamMessagePrefix + msg);
+            await safeMessage.send(message.channel, spamConfig.spamMessagePrefix + msg);
         }
     }
 
@@ -81,18 +95,21 @@ function create(){
             let count = spamConfig.defaultSpamCount;
             
 
-            if(count > spamConfig.spamLimit) { interaction.reply({ content: action.get(language.tooLarge), ephemeral: true}); return; }
+            if(count > spamConfig.spamLimit) { 
+                await safeInteract.reply(interaction, { content: action.get(language.tooLarge), ephemeral: true});
+                return;
+            }
             if(!spamConfig.allowSpamPings) {
                 msg = Util.replaceAll(msg, '<', '<\\');
                 msg = Util.replaceAll(msg, '>', '\>');
             }
             if(interaction.options.getInteger('count')) count = interaction.options.getInteger('count');
 
-            await action.interactionDeferReply({ ephemeral: true });
+            await safeInteract.deferReply({ ephemeral: true });
             for (let i = 0; i < count; i++){
-                await action.messageSend(interaction.channel, spamConfig.spamMessagePrefix + msg);
+                await safeMessage.send(interaction.channel, spamConfig.spamMessagePrefix + msg);
             }
-            await action.interactionEditReply({ content: action.get(language.success), ephemeral: true });
+            await safeInteract.editReply({ content: action.get(language.success), ephemeral: true });
         }
     }
 }

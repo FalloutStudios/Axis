@@ -1,4 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const safeMessage = require('../scripts/safeMessage');
+const safeInteract = require('../scripts/safeIteract');
 module.exports = new create();
 
 function create(){
@@ -11,14 +13,14 @@ function create(){
         return true;
     }
     this.execute = async (args, message, client, action) => {
-        action.messageReply(message, action.get(language.ping));
+        await safeMessage.reply(message, action.get(language.ping));
     }
     this.slash = {
         command: new SlashCommandBuilder()
             .setName("ping")
             .setDescription("Ping!"),
         async execute(interaction, client, action){
-            await action.interactionReply(interaction, `${action.get(language.ping)}`);
+            await safeInteract.reply(interaction, `${action.get(language.ping)}`);
         }
     }
 }

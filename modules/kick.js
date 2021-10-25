@@ -1,6 +1,8 @@
 const Util = require('fallout-utility');
 const { MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const safeMessage = require('../scripts/safeMessage');
+const safeInteract = require('../scripts/safeIteract');
 module.exports = new create();
 
 function create(){
@@ -20,14 +22,23 @@ function create(){
         return true;
     }
     this.execute = async (args, message, client, action) => {
-        if(!args.length) { action.messageReply(message, action.get(language.empty)); return; }
-        if(!message.mentions.members.first() || message.mentions.members.first() == null) { action.messageReply(message, action.get(language.needPing)); return; }
+        if(!args.length) {
+            await safeMessage.reply(message, action.get(language.empty));
+            return;
+        }
+        if(!message.mentions.members.first() || message.mentions.members.first() == null) {
+            await safeMessage.reply(message, action.get(language.needPing));
+            return;
+        }
 
         const target = message.mentions.members.first();
         let reason = Util.makeSentence(args, 1).toString().trim();
 
-        if(reason.length == 0) reason = action.get(language.kicked.defaultReason);
-        if(target.user.id == message.author.id) { action.messageReply(message, action.get(language.noPerms)); return; }
+        if(reason.length == 0) { reason = action.get(language.kicked.defaultReason); }
+        if(target.user.id == message.author.id) {
+            await safeMessage.reply(message, action.get(language.noPerms));
+            return;
+        }
         
         const Kick = await kick(target, reason);
         if(!Kick) return;
@@ -40,7 +51,7 @@ function create(){
             .setDescription(reason)
             .setTimestamp();
         
-        await action.messageReply(message, { embeds: [embed]});
+        await safeMessage.reply(message, { embeds: [embed]});
     }
     this.slash = {
         command: new SlashCommandBuilder()
@@ -58,15 +69,21 @@ function create(){
             const target = interaction.options.getUser('user');
             let reason = action.get(language.kicked.defaultReason);
 
-            if(!interaction.guild.members.cache.get(target.id)) { await action.interactionReply(interaction, { content: action.get(language.notAvailable), ephemeral: true}); return; }
-            if(target.id == interaction.member.user.id) { action.interactionReply(interaction, { content: action.get(language.noPerms), ephemer: true}); return; }
+            if(!interaction.guild.members.cache.get(target.id)) {
+                await safeInteract.reply(interaction, { content: action.get(language.notAvailable), ephemeral: true});
+                return;
+            }
+            if(target.id == interaction.member.user.id) {
+                await safeInteract.reply(interaction, { content: action.get(language.noPerms), ephemer: true});
+                return;
+            }
 
-            if(interaction.options.getString('reason')) reason = interaction.options.getString('reason');
+            if(interaction.options.getString('reason')) { reason = interaction.options.getString('reason'); }
 
             const Kick = await kick(interaction.guild.members.cache.get(target.id), reason);
             if(!Kick) return;
 
-            await action.interactionDeferReply(interaction);
+            await safeInteract.deferReply(interaction);
             reason = Util.replaceAll(reason, '%username%', target.username);
             reason = Util.replaceAll(reason, '%author%', interaction.member.user.username);
 
@@ -75,7 +92,7 @@ function create(){
                 .setDescription(reason)
                 .setTimestamp();
             
-            await action.interactionEditReply(interaction, { embeds: [embed] });
+            await safeInteract.editReply(interaction, { embeds: [embed] });
         }
     }
 

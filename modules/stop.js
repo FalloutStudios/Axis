@@ -1,5 +1,7 @@
 const { logger } = require('fallout-utility');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const safeMessage = require('../scripts/safeMessage');
+const safeInteract = require('../scripts/safeIteract');
 module.exports = new create();
 
 function create(){
@@ -11,7 +13,7 @@ function create(){
         return true;
     }
     this.execute = async (args, message, client, action) => {
-        await action.messageReply(message, action.get(language.stop));
+        await safeMessage.reply(message, action.get(language.stop));
         await stop(client, action);
     }
     this.slash = {
@@ -19,7 +21,7 @@ function create(){
             .setName("stop")
             .setDescription("Stop bot"),
         async execute(interaction, client, action) {
-            await action.interactionReply(interaction, action.get(language.stop));
+            await safeInteract.reply(interaction, action.get(language.stop));
             await stop(client, action);
         }
     }

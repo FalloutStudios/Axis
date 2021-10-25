@@ -1,5 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const AI = require("../scripts/discord-chatbot/");
+const safeMessage = require('../scripts/safeMessage');
+const safeInteract = require('../scripts/safeIteract');
 const Util = require('fallout-utility');
 
 module.exports = new create();
@@ -33,7 +35,7 @@ function create(){
         message.channel.sendTyping();
         let reply = await ask(sentence, message.author.username, config.owner);
 
-        if(reply) action.messageReply(message, reply);
+        if(reply) safeMessage.reply(message, reply);
     }
 
     this.slash = {
@@ -45,10 +47,10 @@ function create(){
                 .setRequired(true)
             ),
         async execute(interaction, client, action) {
-            await action.interactionDeferReply(interaction);
+            await safeInteract.deferReply(interaction);
             const response = await ask(interaction.options.getString('question'), interaction.member.username, config.owner);
 
-            await action.interactionEditReply(interaction,response);
+            await safeInteract.editReply(interaction,response);
         }
     }
 }

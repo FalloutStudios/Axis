@@ -2,8 +2,10 @@ const Util = require('fallout-utility');
 const Fs = require('fs');
 const Path = require('path');
 const { MessageEmbed } = require('discord.js');
-const {Pagination} = require("discordjs-button-embed-pagination");
+const { Pagination } = require("discordjs-button-embed-pagination");
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const safeMessage = require('../scripts/safeMessage');
+const safeInteract = require('../scripts/safeIteract');
 
 const log = Util.logger;
     log.defaultPrefix = 'help.js';
