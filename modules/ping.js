@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const safeMessage = require('../scripts/safeMessage');
-const safeInteract = require('../scripts/safeIteract');
+const safeInteract = require('../scripts/safeInteract');
 module.exports = new create();
 
 function create(){

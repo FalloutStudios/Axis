@@ -5,7 +5,7 @@ const { MessageEmbed } = require('discord.js');
 const { Pagination } = require("discordjs-button-embed-pagination");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const safeMessage = require('../scripts/safeMessage');
-const safeInteract = require('../scripts/safeIteract');
+const safeInteract = require('../scripts/safeInteract');
 
 const log = Util.logger;
     log.defaultPrefix = 'help.js';
