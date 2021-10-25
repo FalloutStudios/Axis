@@ -1,3 +1,6 @@
+const { logger } = require('fallout-utility');
+const log = logger;
+
 module.exports = {
     async send (channel, message) {
         try {

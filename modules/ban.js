@@ -2,7 +2,7 @@ const Util = require('fallout-utility');
 const { MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const safeMessage = require('../scripts/safeMessage');
-const safeInteract = require('../scripts/safeInteract');
+
 module.exports = new create();
 
 function create(){
@@ -70,11 +70,11 @@ function create(){
             let reason = action.get(language.banned.defaultReason);
 
             if(!interaction.guild.members.cache.get(target.id)) { 
-                await safeInteract.reply(interaction, { content: action.get(language.notAvailable), ephemeral: true});
+                await interaction.reply({ content: action.get(language.notAvailable), ephemeral: true});
                 return;
             }
             if(target.id == interaction.member.user.id) { 
-                await safeInteract.reply(interaction, { content: action.get(language.noPerms), ephemer: true});
+                await interaction.reply({ content: action.get(language.noPerms), ephemer: true});
                 return;
             }
 
@@ -83,7 +83,7 @@ function create(){
             const Ban = await ban(interaction.guild.members.cache.get(target.id), reason);
             if(!Ban) return;
 
-            await safeInteract.deferReply(interaction);
+            await interaction.deferReply();
             reason = Util.replaceAll(reason, '%username%', target.username);
             reason = Util.replaceAll(reason, '%author%', interaction.member.user.username);
 
@@ -92,7 +92,7 @@ function create(){
                 .setDescription(reason)
                 .setTimestamp();
             
-            await safeInteract.editReply(interaction, { embeds: [embed] });
+            await interaction.editReply({ embeds: [embed] });
         }
     }
 

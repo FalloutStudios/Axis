@@ -218,3 +218,9 @@ Client.on('ready', function() {
         }
     });
 });
+
+// Client error
+Client.on('shardError', (error) => { log.error(error); });
+
+// Process warning
+process.on('warning', (warn) => log.warn(warn));

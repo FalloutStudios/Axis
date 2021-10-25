@@ -3,7 +3,7 @@ const Yml = require('yaml');
 const Util = require('fallout-utility');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const safeMessage = require('../scripts/safeMessage');
-const safeInteract = require('../scripts/safeInteract');
+
 module.exports = new create();
 
 function create(){
@@ -96,7 +96,7 @@ function create(){
             
 
             if(count > spamConfig.spamLimit) { 
-                await safeInteract.reply(interaction, { content: action.get(language.tooLarge), ephemeral: true});
+                await interaction.reply({ content: action.get(language.tooLarge), ephemeral: true});
                 return;
             }
             if(!spamConfig.allowSpamPings) {
@@ -105,11 +105,11 @@ function create(){
             }
             if(interaction.options.getInteger('count')) count = interaction.options.getInteger('count');
 
-            await safeInteract.deferReply({ ephemeral: true });
+            await interaction.deferReply({ ephemeral: true });
             for (let i = 0; i < count; i++){
                 await safeMessage.send(interaction.channel, spamConfig.spamMessagePrefix + msg);
             }
-            await safeInteract.editReply({ content: action.get(language.success), ephemeral: true });
+            await interaction.editReply({ content: action.get(language.success), ephemeral: true });
         }
     }
 }

@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const safeMessage = require('../scripts/safeMessage');
-const safeInteract = require('../scripts/safeInteract');
+
 module.exports = new create();
 
 function create(){
@@ -20,7 +20,7 @@ function create(){
             .setName("ping")
             .setDescription("Ping!"),
         async execute(interaction, client, action){
-            await safeInteract.reply(interaction, `${action.get(language.ping)}`);
+            await interaction.reply(`${action.get(language.ping)}`);
         }
     }
 }

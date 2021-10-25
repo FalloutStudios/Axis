@@ -1,7 +1,7 @@
 const { logger } = require('fallout-utility');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const safeMessage = require('../scripts/safeMessage');
-const safeInteract = require('../scripts/safeInteract');
+
 module.exports = new create();
 
 function create(){
@@ -21,7 +21,7 @@ function create(){
             .setName("stop")
             .setDescription("Stop bot"),
         async execute(interaction, client, action) {
-            await safeInteract.reply(interaction, action.get(language.stop));
+            await interaction.reply(action.get(language.stop));
             await stop(client, action);
         }
     }

@@ -1,7 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const AI = require("../scripts/discord-chatbot/");
 const safeMessage = require('../scripts/safeMessage');
-const safeInteract = require('../scripts/safeInteract');
 const Util = require('fallout-utility');
 
 module.exports = new create();
@@ -24,7 +23,7 @@ function create(){
         config = conf;
         language = lang;
 
-        chatbot = new AI({name: client.user.username, gender: "male"});
+        chatbot = new AI({name: client.user.username, gender: "Male"});
 
         return true;
     }
@@ -47,10 +46,10 @@ function create(){
                 .setRequired(true)
             ),
         async execute(interaction, client, action) {
-            await safeInteract.deferReply(interaction);
+            await interaction.deferReply();
             const response = await ask(interaction.options.getString('question'), interaction.member.username, config.owner);
 
-            await safeInteract.editReply(interaction,response);
+            await interaction.editReply(response);
         }
     }
 }
