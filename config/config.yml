@@ -10,7 +10,6 @@ guildId: # Only register slash commands for the given guild.
 adminOnlyCommands:
   - 'stop'
   - 'spam'
-  - 'reload'
 
 # Command for moderator with kick and ban perms (This is the script name)
 moderatorOnlyCommands: 
