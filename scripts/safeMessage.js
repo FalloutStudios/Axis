@@ -1,43 +1,43 @@
-const { logger } = require('fallout-utility');
-const log = logger;
+const { Logger } = require('fallout-utility');
+const log = new Logger('Safe Message');
 
 module.exports = {
     async send (channel, message) {
         try {
-            return await channel.send(message).catch(err => { log.error(err, 'Message Send'); });
+            return await channel.send(message).catch(err => { log.error(err); });
         } catch (err) {
-            log.error(err, 'Message Send');
+            log.error(err);
             return false;
         }
     },
     async reply (message, reply) {
         try {
-            return await message.reply(reply).catch(err => { log.error(err, 'Message Reply'); });
+            return await message.reply(reply).catch(err => { log.error(err); });
         } catch (err) {
-            log.error(err, 'Message Reply');
+            log.error(err);
             return false;
         }
     },
     async delete (message) {
         try {
-            return await message.delete().catch( err => { log.error(err, 'Message Delete'); });
+            return await message.delete().catch( err => { log.error(err); });
         } catch (err) {
-            log.error(err, 'Message Delete');
+            log.error(err);
         }
     },
     async react (message, reaction) {
         try {
-            return await message.react(reaction).catch( err => { log.error(err, 'Message Reaction'); });
+            return await message.react(reaction).catch( err => { log.error(err); });
         } catch (err) {
-            log.error(err, 'Message React');
+            log.error(err);
             return false;
         }
     },
     async edit (message, edit) {
         try {
-            return await message.edit(edit).catch( err => { log.error(err, 'Message Edit'); });
+            return await message.edit(edit).catch( err => { log.error(err); });
         } catch (err) {
-            log.error(err, 'Message Edit');
+            log.error(err);
             return false;
         }
     }

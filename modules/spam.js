@@ -1,6 +1,6 @@
 const Fs = require('fs');
 const Yml = require('yaml');
-const Util = require('fallout-utility');
+const { makeSentence, replaceAll, isNumber } = require('fallout-utility');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const safeMessage = require('../scripts/safeMessage');
 
@@ -46,12 +46,12 @@ function create(){
 
     this.execute = async (args, message, client, action) => {
 
-        let msg = Util.makeSentence(args).toString().trim();
+        let msg = makeSentence(args).toString().trim();
         let count = spamConfig.defaultSpamCount;
 
-        if(args.length > 1 && Util.isNumber(parseInt(args[0]))){
+        if(args.length > 1 && isNumber(parseInt(args[0]))){
             count = parseInt(args[0]);
-            msg = Util.makeSentence(args, 1).toString().trim();
+            msg = makeSentence(args, 1).toString().trim();
         }
 
         // Validate message
@@ -100,8 +100,8 @@ function create(){
                 return;
             }
             if(!spamConfig.allowSpamPings) {
-                msg = Util.replaceAll(msg, '<', '<\\');
-                msg = Util.replaceAll(msg, '>', '\>');
+                msg = replaceAll(msg, '<', '<\\');
+                msg = replaceAll(msg, '>', '\>');
             }
             if(interaction.options.getInteger('count')) count = interaction.options.getInteger('count');
 

@@ -1,4 +1,4 @@
-const Util = require('fallout-utility');
+const { makeSentence, replaceAll } = require('fallout-utility');
 const { MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const safeMessage = require('../scripts/safeMessage');
@@ -32,7 +32,7 @@ function create(){
         }
 
         const target = message.mentions.members.first();
-        let reason = Util.makeSentence(args, 1).toString().trim();
+        let reason = makeSentence(args, 1).toString().trim();
 
         if(reason.length == 0) { reason = action.get(language.banned.defaultReason); }
         if(target.user.id == message.author.id) {
@@ -43,8 +43,8 @@ function create(){
         const Ban = await ban(target, reason);
         if(!Ban) return;
 
-        reason = Util.replaceAll(reason, '%username%', target.user.username);
-        reason = Util.replaceAll(reason, '%author%', message.author.username);
+        reason = replaceAll(reason, '%username%', target.user.username);
+        reason = replaceAll(reason, '%author%', message.author.username);
 
         let embed = new MessageEmbed()
             .setTitle(action.get(language.banned.title))
@@ -84,8 +84,8 @@ function create(){
             if(!Ban) return;
 
             await interaction.deferReply();
-            reason = Util.replaceAll(reason, '%username%', target.username);
-            reason = Util.replaceAll(reason, '%author%', interaction.member.user.username);
+            reason = replaceAll(reason, '%username%', target.username);
+            reason = replaceAll(reason, '%author%', interaction.member.user.username);
 
             let embed = new MessageEmbed()
                 .setTitle(action.get(language.banned.title))

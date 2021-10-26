@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const AI = require("../scripts/discord-chatbot/");
 const safeMessage = require('../scripts/safeMessage');
-const Util = require('fallout-utility');
+const { makeSentence, replaceAll } = require('fallout-utility');
 
 module.exports = new create();
 
@@ -28,7 +28,7 @@ function create(){
         return true;
     }
     this.execute = async (args, message, client, action) => {
-        let sentence = Util.makeSentence(args).toString().trim();
+        let sentence = makeSentence(args).toString().trim();
         if(sentence.length == 0) { await message.reply(action.get(language.empty)); return; }
 
         message.channel.sendTyping();
@@ -59,7 +59,7 @@ async function ask(message, username, owner){
     try {
         let answer = false;
         await chatbot.chat(message, username).then((response) => {
-            response = Util.replaceAll(response, 'Udit', owner);
+            response = replaceAll(response, 'Udit', owner);
 
             answer = response;
         }).catch((err) => {

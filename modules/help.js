@@ -1,12 +1,11 @@
-const Util = require('fallout-utility');
+const { makeSentence, replaceAll, Logger } = require('fallout-utility');
 const Fs = require('fs');
 const Path = require('path');
 const { MessageEmbed } = require('discord.js');
 const { Pagination } = require("discordjs-button-embed-pagination");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
-const log = Util.logger;
-    log.defaultPrefix = 'help.js';
+const log = new Logger('help.js');
 
 module.exports = new create();
 
@@ -35,7 +34,7 @@ function create(){
             
             // Check if it's a valid command module
             try {
-                name = Util.replaceAll(name, ' ', '_');
+                name = replaceAll(name, ' ', '_');
                 if(typeof importModule.execute === 'undefined') continue;
 
                 commands[name] = importModule.command;
@@ -49,7 +48,7 @@ function create(){
     }
     this.execute = async (args, message, client, action) => {
         // Command executed
-        let filter = Util.makeSentence(args);
+        let filter = makeSentence(args);
         let visibleCommands = Object.keys(commands);
         const config = this.config;
 
@@ -72,7 +71,7 @@ function create(){
         // Separate embeds
         for (const value of visibleCommands) {
             // Increment page
-            if(ifNewPag(increment, limit)) { current++; increment = 0; } else { increment++; }
+            if(ifNewPage(increment, limit)) { current++; increment = 0; } else { increment++; }
 
             // Create embed
             if(!embeds[current]) {
@@ -99,7 +98,7 @@ function create(){
             .setName("help")
             .setDescription("Show help for commands"),
         async execute(interaction, client, action) {
-            
+            // Soon
         }
     }
 }
@@ -116,7 +115,7 @@ function createString(object = {}, commandName = '%command%'){
         }
 
         let arg = object[name].required ? types['required'] : types['optional'];
-            arg = Util.replaceAll(arg, '%arg%', name);
+            arg = replaceAll(arg, '%arg%', name);
 
         let values = "";
             if(object[name].values && object[name].values.length > 0){
@@ -134,7 +133,7 @@ function createString(object = {}, commandName = '%command%'){
                 }
             }
 
-        args += ' ' + Util.replaceAll(arg, '%values%', values);
+        args += ' ' + replaceAll(arg, '%values%', values);
     }
 
     args = args.trim();
@@ -156,6 +155,6 @@ function permsLevel(action, member) {
     }
     return 0;
 }
-function ifNewPag(i, intLimit){
+function ifNewPage(i, intLimit){
     return i >= (intLimit - 1);
 }

@@ -20,8 +20,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 
 const deployFile = 'deploy.txt';
-const log = Util.logger;
-    log.defaultPrefix = 'Bot';
+const log = new Util.Logger('Bot');
 const parseConfig = new Config();
     parseConfig.location = './config/config.yml';
     parseConfig.parse();
