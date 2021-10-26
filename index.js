@@ -1,5 +1,5 @@
 /**    ###      ##     ##   ######     ######  
-      ## ##      ##   ##      ##     ##    ## 
+      ## ##      ##   ##      ##     ##     ## 
      ##   ##      ## ##       ##     ##       
     ##     ##      ###        ##      ######  
     #########     ## ##       ##           ## 
@@ -154,6 +154,14 @@ class UtilActions {
         if(member && member.permissions.has([Discord.Permissions.FLAGS.BAN_MEMBERS, Discord.Permissions.FLAGS.KICK_MEMBERS])) return true;
         return false;
     }
+    isIgnoredChannel(channelId) {
+        if(
+            config.blacklistChannels.enabled && !config.blacklistChannels.convertToWhitelist && config.blacklistChannels.channels.includes(channelId.toString())
+            || 
+            config.blacklistChannels.enabled && config.blacklistChannels.convertToWhitelist && !config.blacklistChannels.channels.includes(channelId.toString())
+        ) { return true; }
+        return false;
+    }
 }
 
 Client.login(config.token);
@@ -184,7 +192,7 @@ Client.on('ready', function() {
         if (!command) return;
         
         // Check configurations
-        if(!config.slashCommands.enabled) { await interaction.reply({ content: language.get(lang.notAvailable), ephemeral: true }).catch(err => log.error(err)); return; }
+        if(!config.slashCommands.enabled || Actions.isIgnoredChannel(interaction.channelId)) { await interaction.reply({ content: language.get(lang.notAvailable), ephemeral: true }).catch(err => log.error(err)); return; }
         log.warn(`${interaction.member.user.username} executed ${interaction.commandName}`, 'Slash command');
 
         try {
@@ -205,11 +213,7 @@ Client.on('ready', function() {
             const command = commandConstructor.command.toLowerCase();
 
             // Ignored channels
-            if(
-                config.blacklistChannels.enabled && !config.blacklistChannels.convertToWhitelist && config.blacklistChannels.channels.includes(message.channelId.toString())
-                || 
-                config.blacklistChannels.enabled && config.blacklistChannels.convertToWhitelist && !config.blacklistChannels.channels.includes(message.channelId.toString())
-            ) return;
+            if(Actions.isIgnoredChannel(message.channelId)) return;
 
             // Execute command
             if(scripts.hasOwnProperty(command)){

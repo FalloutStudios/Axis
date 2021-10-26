@@ -12,6 +12,7 @@ module.exports = new create();
 // list available modules
 let modulesList = Fs.readdirSync(__dirname + '/').filter(file => file.endsWith('.js'));
 let commands = {};
+let slash = {};
 
 function create(){
     this.config = {};
@@ -35,11 +36,7 @@ function create(){
             // Check if it's a valid command module
             try {
                 name = replaceAll(name, ' ', '_');
-                if(typeof importModule.execute === 'undefined') continue;
-
-                commands[name] = importModule.command;
-        
-                if(typeof commands[name] === 'undefined' || Object.keys(commands[name]).length <= 0){ commands[name] = null; }
+                if(typeof importModule.execute !== 'undefined' && typeof importModule.command !== 'undefined' && Object.keys(importModule.command).length > 0) { commands[name] = importModule.command; }
             } catch (err) {
                 console.error(err);
             }
