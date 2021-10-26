@@ -1,6 +1,8 @@
-const { logger } = require('fallout-utility');
+const { Logger } = require('fallout-utility');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const safeMessage = require('../scripts/safeMessage');
+
+const log = new Logger('stop.js');
 
 module.exports = new create();
 
@@ -28,7 +30,7 @@ function create(){
 
     async function stop(client, action) {
         await client.destroy();
-        logger.warn('Stopping...', 'stop.js');
+        log.warn('Stopping...');
         process.exit(0);
     }
 }
