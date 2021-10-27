@@ -43,38 +43,37 @@ const Client = new Discord.Client({
     ]
 });
 
+var modulesList = {};
+var scripts = {};
+
+var commands = [];
+Client.commands = new Discord.Collection();
+
 class UtilActions {
     // scripts
     async loadScripts() {
         // Clear scripts
-        scripts = {};
-        modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
+        modulesList = Fs.readdirSync(`${__dirname}/modules/`).filter(file => { return file.endsWith('.js') && !file.startsWith('_'); });
 
         // Require scripts
         for (const file of modulesList) {
-            let name = Path.parse(file).name;
-            let path = __dirname + '/modules/' + file;
-
-            // Clear cache from previous script
-            if (Object.keys(require.cache).find(module => module == path))
-                delete require.cache[path];
-            let importModule = require(path);
+            const path = `${__dirname}/modules/${file}`;
+            const importModule = require(path);
 
             try {
-                // Replace whitespace
-                name = Util.replaceAll(name, ' ', '_').toLowerCase();
+                // Name of the script
+                const name = Util.replaceAll(Path.parse(file).name, ' ', '_').toLowerCase().split('.').shift();
+                if(!name) continue;
 
                 // Check supported version
-                if (!importModule.versions || importModule.versions && !importModule.versions.find(version => version == config.version)) { log.error(`${file} does not support bot version ${config.version}`, file); continue; }
+                if (!importModule.versions || importModule.versions && !importModule.versions.find(version => version == config.version)) { log.error(`${file} (${name}) does not support bot version ${config.version}`, file); continue; }
 
                 // Import script
                 scripts[name] = importModule;
-                if (await scripts[name].start(Client, Actions, config, lang))
-                    log.log(`Script ${name} ready!`, file);
+                if (await scripts[name].start(Client, Actions, config, lang)) log.log(`Script ${name} ready!`, file);
 
                 // Slash commands
-                if (typeof scripts[name]['slash'] === 'undefined')
-                    continue;
+                if (typeof scripts[name]['slash'] === 'undefined') continue;
 
                 const command = scripts[name]['slash']['command']['name'];
                 commands.push(scripts[name]['slash']['command'].toJSON());
@@ -166,12 +165,6 @@ class UtilActions {
 
 Client.login(config.token);
 const Actions = new UtilActions();
-
-var modulesList = {};
-var scripts = {};
-
-var commands = [];
-Client.commands = new Discord.Collection();
 
 // Client ready
 Client.once('ready', async () => {
