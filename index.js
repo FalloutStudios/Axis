@@ -22,7 +22,7 @@ const { Routes } = require('discord-api-types/v9');
 const deployFile = 'deploy.txt';
 const log = new Util.Logger('Bot');
 const parseConfig = new Config();
-    parseConfig.location = './config/config.dev.yml';
+    parseConfig.location = './config/config.yml';
     parseConfig.parse();
     parseConfig.testmode();
     parseConfig.prefill();
