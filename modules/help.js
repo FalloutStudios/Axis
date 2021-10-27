@@ -38,12 +38,13 @@ function create(){
 
         // List all commands
         for (const file of modulesList) {
-            let name = Path.parse(file).name;
-            let importModule = require(`./${file}`);
+            const importModule = require(`./${file}`);
+            
+            const name = replaceAll(Path.parse(file).name, ' ', '_').toLowerCase().split('.').shift();
+            if(!name) continue;
             
             // Check if it's a valid command module
             try {
-                name = replaceAll(name, ' ', '_');
                 if(typeof importModule.slash !== 'undefined' && typeof importModule.slash.command.toJSON() === 'object') { slash[importModule.slash.command.name] = addSlash(importModule.slash.command); }
                 if(typeof importModule.execute !== 'undefined') { commands[name] = createString(importModule.command, name); }
             } catch (err) {
