@@ -23,9 +23,13 @@ noPerms:
   - 'You don''t habe perms <a:boi_shakeangry:898522330765090846>'
   - 'LUL no perms! <:vomit:901325245707845662>'
 notAvailable:
-  - 'This action is not available'
+  - 'This action is not available <a:lick:901325242830585896>'
+  - 'This is not available <:omegalol:901325113369186344>'
+  - 'You can''t use this for now <a:sadsponge:901325244353093674>'
 success:
-  - 'yay!'
+  - 'Successful!'
+  - 'Successful <a:boi_shakeangry:898522330765090846>'
+  - 'Noice! It''s done <a:blelele:901325242927054929>'
 tooLarge:
   - 'This is too large <a:blelele:901325242927054929>'
   - 'Too large for me <a:boi_fastparrot:898522328529522759>'
