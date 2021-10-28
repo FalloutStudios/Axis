@@ -19,7 +19,7 @@ const Discord = require('discord.js');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 
-const deployFile = 'deploy.txt';
+const deployFile = './deploy.txt';
 const log = new Util.Logger('Bot');
 const parseConfig = new Config();
     parseConfig.location = './config/config.yml';
@@ -53,11 +53,11 @@ class UtilActions {
     // scripts
     async loadScripts() {
         // Clear scripts
-        modulesList = Fs.readdirSync(`${__dirname}/modules/`).filter(file => { return file.endsWith('.js') && !file.startsWith('_'); });
+        modulesList = Fs.readdirSync(Path.join(__dirname, "modules")).filter(file => { return file.endsWith('.js') && !file.startsWith('_'); });
 
         // Require scripts
         for (const file of modulesList) {
-            const path = `${__dirname}/modules/${file}`;
+            const path = Path.join(__dirname, 'modules' , file);
             const importModule = require(path);
 
             try {
@@ -88,31 +88,31 @@ class UtilActions {
     // Commands
     async messageCommand(command, message) {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
-        log.warn(message.author.username + ' executed ' + config.commandPrefix + command, 'message Command');
+        log.warn(`${message.author.username} executed ${config.commandPrefix}${command}`, 'message Command');
 
         // Check permissions
         if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.admin(message.member)) { Actions.messageReply(message, language.get(lang.noPerms)); return; }
         if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.moderator(message.member)) { Actions.messageReply(message, language.get(lang.noPerms)); return; }
-        if(typeof scripts[command].execute === 'undefined') { log.warn(command + ' is not a command'); return; } 
+        if(typeof scripts[command].execute === 'undefined') { log.warn(`${command} is not a command`); return; } 
 
         // Execute
         await scripts[command].execute(args, message, Client, Actions).catch(async err => {
-            log.error(err, command + '.js');
+            log.error(err, `${config.commandPrefix}${command}`);
             await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
     }
     async registerInteractionCommmands(client, force = false, guild = null) {
         if(!config.slashCommands.enabled) return;
-        if(Fs.existsSync('./' + deployFile) && !force && !guild) {
-            const deploy = Fs.readFileSync('./' + deployFile).toString().trim();
+        if(Fs.existsSync(deployFile) && !force && !guild) {
+            const deploy = Fs.readFileSync(deployFile).toString().trim();
 
             if(deploy == 'false') {
                 return;
             }
 
-            Fs.writeFileSync('./' + deployFile, 'false');
+            Fs.writeFileSync(deployFile, 'false');
         } else {
-            Fs.writeFileSync('./' + deployFile, 'false'); 
+            Fs.writeFileSync(deployFile, 'false'); 
         }
 
         const rest = new REST({ version: '9' }).setToken(config.token);
@@ -198,7 +198,7 @@ Client.on('ready', function() {
     // On Message
     Client.on('messageCreate', async (message) => {
         if(message.author.id === Client.user.id || message.author.bot || message.author.system) return;
-        log.log(message.author.username + ': ' + message.content, 'Message');
+        log.log(`${message.author.username}: ${message.content}`, 'Message');
 
         // Message commands
         if(Util.detectCommand(message.content, config.commandPrefix)){
