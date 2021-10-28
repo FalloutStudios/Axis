@@ -10,7 +10,7 @@ function Create(){
     this.versions = ['1.1.0'];
 
     // If this is a command module, you can optionally add args description for help.js
-    this.command = {
+    this.arguments = {
         arg1: {
             required: false,                // Is this required
             values: []                      // Values of this argument 
