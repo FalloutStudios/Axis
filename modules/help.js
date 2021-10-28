@@ -25,7 +25,7 @@ function create(){
     let config = {};
     let language = {};
     this.versions = ['1.1.0'];
-    this.command = {
+    this.arguments = {
         search: {
             required: false
         }
@@ -46,7 +46,7 @@ function create(){
             // Check if it's a valid command module
             try {
                 if(typeof importModule.slash !== 'undefined' && typeof importModule.slash.command.toJSON() === 'object') { slash[importModule.slash.command.name] = addSlash(importModule.slash.command); }
-                if(typeof importModule.execute !== 'undefined') { commands[name] = createString(importModule.command, name); }
+                if(typeof importModule.execute !== 'undefined') { commands[name] = createString(importModule.arguments, name); }
             } catch (err) {
                 console.error(err);
             }

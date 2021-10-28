@@ -9,7 +9,7 @@ module.exports = new create();
 function create(){
     let language = {};
     this.versions = ['1.1.0'];
-    this.command = {
+    this.arguments = {
         count: {
             required: false,
             values: []

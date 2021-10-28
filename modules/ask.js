@@ -11,7 +11,7 @@ function create(){
     let config = {};
     let language = {};
     this.versions = ['1.1.0'];
-    this.command = {
+    this.arguments = {
         question: {
             required: true,
             values: ""
