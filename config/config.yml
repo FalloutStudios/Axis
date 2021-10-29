@@ -9,13 +9,10 @@ guildId: # Only register slash commands for the given guild.
 # Restrict commands for admin only (This is the script name)
 adminOnlyCommands:
   - 'stop'
-  - 'spam'
 
 # Command for moderator with kick and ban perms (This is the script name)
 moderatorOnlyCommands: 
   - 'version'
-  - 'ban'
-  - 'kick'
 
 # Slash commands
 slashCommands:
@@ -37,6 +34,6 @@ presence:
   activityName: ['Minecraft']  # Name your activity [this can be a string or an object for random value]
 
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
-language: 'config/language.yml'                                                              # Langage file 
+language: 'config/language.yml'   # Langage file 
 
 version: 1.1.0    # Version (don't modify this value)
