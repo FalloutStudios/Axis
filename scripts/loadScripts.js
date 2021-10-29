@@ -25,7 +25,8 @@ module.exports = async (location, Actions, config, lang, Client) => {
 
             // Import script
             scripts[name] = importModule;
-            if (await scripts[name].start(Client, Actions, config, lang)) log.log(`Script ${name} ready!`, file);
+            if (!await scripts[name].start(Client, Actions, config, lang)) throw new Error(`Couldn't start script ${file}`);
+            log.log(`Script ${name} ready!`, file);
 
             // Slash commands
             if (typeof scripts[name]['slash'] === 'undefined') continue;
