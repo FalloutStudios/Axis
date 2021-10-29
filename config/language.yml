@@ -22,6 +22,14 @@ noPerms:
   - 'You don''t have permissions to do that! <a:lick:901325242830585896>'
   - 'You don''t habe perms <a:boi_shakeangry:898522330765090846>'
   - 'LUL no perms! <:vomit:901325245707845662>'
+notAvailable:
+  - 'This action is not available <a:lick:901325242830585896>'
+  - 'This is not available <:omegalol:901325113369186344>'
+  - 'You can''t use this for now <a:sadsponge:901325244353093674>'
+success:
+  - 'Successful!'
+  - 'Successful <a:boi_shakeangry:898522330765090846>'
+  - 'Noice! It''s done <a:blelele:901325242927054929>'
 tooLarge:
   - 'This is too large <a:blelele:901325242927054929>'
   - 'Too large for me <a:boi_fastparrot:898522328529522759>'
@@ -32,51 +40,11 @@ tooSmall:
   - 'So tiny for me <a:flame:901325248413204510>'
 
 # For commands
-ping:
-  - 'Pong! <a:sadsponge:901325244353093674>'
-  - 'Pong! <a:bingusangry:901325252318089276>'
-  - 'Ping <:huh:901325246165045258>'
-  - 'Ping Ping <a:funnycursed:901325245854662667>'
-banned:
-  title:
-    - 'Banned!'
-    - 'The ban hammer has spoken!'
-    - 'Talk to my ban hammer!'
-    - 'You''re now banned!'
-    - 'Ban! Ban!'
-  defaultReason: # %username% %author%
-    - 'You''re so hot to stay here <a:flame:901325248413204510>'
-    - 'Fly high! <a:5011kekwwa:901325243862360124>'
-    - 'Good bye <a:sadsponge:901325244353093674>'
-    - 'Talk to my ban hammer <a:blelele:901325242927054929>'
-    - 'The ban hammer has spoken to your ass! <a:holysmokes:901325256634036305>'
-kicked:
-  title:
-    - 'Kicked!'
-    - 'POG got kicked'
-    - 'I kicked some ass again!'
-    - 'Kicked LUL'
-  defaultReason: # %username% %author%
-    - 'See you soon to get your ban :eyes:'
-    - 'Go to your momma now! <a:peperun:901325248769703936>'
-    - 'Kicked because you''re sus!'
-    - 'Ayoo! got kicked <a:pepesword:901325250900402206>'
-    - 'Kicked!'
 stop: 
   - 'Ok <a:boi_scrollright:898522330786070568>'
   - 'Shut up! I''ll stop now <a:catgun:901325244499910727>'
   - 'Ok bitch <a:rogdance:901325242360815688>'
   - 'Stopping...'
-reload: 
-  requested: 
-    - 'Fine! <a:sussy:901325258299154462>'
-    - 'Reloading my self!'
-    - 'K <a:peperun:901325248769703936>'
-    - 'Reloading your spaghetti bot <:geminipog:901325246534156338>'
-  success: 
-    - 'You''re spaghetti has been reloaded! <:geminipog:901325246534156338>'
-    - 'Reloaded!'
-    - 'Reloaded <a:sadsponge:901325244353093674>'
 help:
   title: 'Command Help'
   description: 'Here''s a list of the current commands:'

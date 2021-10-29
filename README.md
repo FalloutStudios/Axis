@@ -1,5 +1,7 @@
 # Axis 🗡️
 
+<img align="right" src="https://i.imgur.com/yRsHfHi.png" height="140" width="140">
+
 ![GitHub top language](https://img.shields.io/github/languages/top/FalloutStudios/Axis)
 ![GitHub repo size](https://img.shields.io/github/repo-size/FalloutStudios/Axis)
 ![Lines of code](https://img.shields.io/tokei/lines/github/FalloutStudios/Axis)

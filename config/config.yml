@@ -4,17 +4,19 @@ embedColor: '#19AFFF'  # Colors for embed messages
 commandPrefix: '!'  # Prefix for commands
 owner: 'Ghexter'  # Who owns this bot
 
-# Restrict commands for admin only
+guildId: # Only register slash commands for the given guild.
+
+# Restrict commands for admin only (This is the script name)
 adminOnlyCommands:
   - 'stop'
-  - 'spam'
-  - 'reload'
 
-# Command for moderator with kick and ban perms
+# Command for moderator with kick and ban perms (This is the script name)
 moderatorOnlyCommands: 
   - 'version'
-  - 'ban'
-  - 'kick'
+
+# Slash commands
+slashCommands:
+  enabled: true
 
 # Ignored channels based on IDs
 blacklistChannels:            
@@ -32,6 +34,7 @@ presence:
   activityName: ['Minecraft']  # Name your activity [this can be a string or an object for random value]
 
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
-language: 'config/language.yml'                                                              # Langage file 
+language: 'config/language.yml'   # Langage file 
+modulesFolder: 'modules'
 
 version: 1.1.0    # Version (don't modify this value)

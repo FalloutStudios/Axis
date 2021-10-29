@@ -1,22 +1,25 @@
 const Version = require('../scripts/version');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const safeMessage = require('../scripts/safeMessage');
 
 module.exports = new create();
 
 function create(){
-    this.config = {};
-    this.language = {};
-
     this.versions = ['1.1.0'];
 
-    this.start = (client, action, config, language) => {
-        this.config = config;
-        this.language = language;
-
-        // Command ready
+    this.start = (client, action, conf, lang) => {
         return true;
     }
     this.execute = async (args, message, client, action) => {
         // Command executed
-        action.messageSend(message.channel, `**${client.user.username} v${Version}**\nBased on Axis bot v${Version}.\nhttps://github.com/FalloutStudios/Axis`);
+        await safeMessage.send(message.channel, `**${client.user.username} v${Version}**\nBased on Axis bot v${Version}.\nhttps://github.com/FalloutStudios/Axis`);
+    }
+    this.slash = {
+        command: new SlashCommandBuilder()
+            .setName("version")
+            .setDescription("Current bot version"),
+        async execute(interaction, client, action) {
+            await interaction.reply(`**${client.user.username} v${Version}**\nBased on Axis bot v${Version}.\nhttps://github.com/FalloutStudios/Axis`);
+        }
     }
 }

@@ -1,5 +1,5 @@
 /**    ###      ##     ##   ######     ######  
-      ## ##      ##   ##      ##     ##    ## 
+      ## ##      ##   ##      ##     ##     ## 
      ##   ##      ## ##       ##     ##       
     ##     ##      ###        ##      ######  
     #########     ## ##       ##           ## 
@@ -15,12 +15,13 @@ const Fs = require('fs');
 const Path = require('path');
 const Config = require('./scripts/config');
 const Language = require('./scripts/language');
+const ScriptLoader = require('./scripts/loadScripts');
 const Discord = require('discord.js');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 
-const log = Util.logger;
-    log.defaultPrefix = 'Bot';
+const deployFile = './deploy.txt';
+const log = new Util.Logger('Bot');
 const parseConfig = new Config();
     parseConfig.location = './config/config.yml';
     parseConfig.parse();
@@ -43,37 +44,124 @@ const Client = new Discord.Client({
     ]
 });
 
-Client.login(config.token);
-const Actions = new actions();
-
-var modulesList = {};
-var scripts = [];
-
+var scripts = {};
 var commands = [];
 Client.commands = new Discord.Collection();
 
-// Load scripts
-Actions.loadScripts();
+class UtilActions {
+    // scripts
+    async loadScripts() {
+        const scriptsLoader = await ScriptLoader(Path.join(__dirname, config.modulesFolder), Actions, config, lang, Client);
+
+        scripts = scriptsLoader.scripts;
+        commands = scriptsLoader.commands;
+    }
+
+    // Commands
+    async messageCommand(command, message) {
+        const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
+        log.warn(`${message.author.username} executed ${config.commandPrefix}${command}`, 'message Command');
+
+        // Check permissions
+        if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.admin(message.member)) { Actions.messageReply(message, language.get(lang.noPerms)); return; }
+        if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.moderator(message.member)) { Actions.messageReply(message, language.get(lang.noPerms)); return; }
+        if(typeof scripts[command].execute === 'undefined') { log.warn(`${command} is not a command`); return; } 
+
+        // Execute
+        await scripts[command].execute(args, message, Client, Actions).catch(async err => {
+            log.error(err, `${config.commandPrefix}${command}`);
+            await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
+        });
+    }
+    async registerInteractionCommmands(client, force = false, guild = null) {
+        if(!config.slashCommands.enabled) return;
+        if(Fs.existsSync(deployFile) && !force && !guild) {
+            const deploy = Fs.readFileSync(deployFile).toString().trim();
+
+            if(deploy == 'false') {
+                return;
+            }
+
+            Fs.writeFileSync(deployFile, 'false');
+        } else {
+            Fs.writeFileSync(deployFile, 'false'); 
+        }
+
+        const rest = new REST({ version: '9' }).setToken(config.token);
+        (async () => {
+            try {
+                if(!guild){
+                    await rest.put(
+                        Routes.applicationCommands(client.user.id),
+                        { body: commands },
+                    );
+                } else {
+                    await rest.put(
+                        Routes.applicationGuildCommands(client.user.id, guild),
+                        { body: commands },
+                    );
+                }
+                log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
+            } catch (err) {
+                log.error(err, 'Register Commands');
+            }
+        })();
+    }
+
+    // Other utility functions
+    get(object) {
+        return language.get(object);
+    }
+    createInvite(bot) {
+        return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
+    }
+    
+    // Permissions
+    admin(member) {
+        if(member && member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) return true;
+        return false;
+    }
+    moderator(member) {
+        if(member && member.permissions.has([Discord.Permissions.FLAGS.BAN_MEMBERS, Discord.Permissions.FLAGS.KICK_MEMBERS])) return true;
+        return false;
+    }
+    isIgnoredChannel(channelId) {
+        if(
+            config.blacklistChannels.enabled && !config.blacklistChannels.convertToWhitelist && config.blacklistChannels.channels.includes(channelId.toString())
+            || 
+            config.blacklistChannels.enabled && config.blacklistChannels.convertToWhitelist && !config.blacklistChannels.channels.includes(channelId.toString())
+        ) { return true; }
+        return false;
+    }
+}
+
+Client.login(config.token);
+const Actions = new UtilActions();
 
 // Client ready
-Client.on('ready', function() {
+Client.once('ready', async () => {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
-
+    
     // Register commands
-    Actions.registerInteractionCommmands(Client);
+    await Actions.loadScripts();
+    await Actions.registerInteractionCommmands(Client, false, config.guildId);
+});
 
+Client.on('ready', function() {
     // On Interaction commands
     Client.on('interactionCreate', async (interaction) => {
-        if(!interaction.isCommand()) return;
+        if(!interaction.isCommand() || !interaction.member) return;
 
-        const command = Client.commands.get(interaction.commandName);
+        let command = scripts[Client.commands.get(interaction.commandName)];
         if (!command) return;
+        
+        // Check configurations
+        if(!config.slashCommands.enabled || Actions.isIgnoredChannel(interaction.channelId)) { await interaction.reply({ content: language.get(lang.notAvailable), ephemeral: true }).catch(err => log.error(err)); return; }
+        log.warn(`${interaction.member.user.username} executed ${interaction.commandName}`, 'Slash command');
 
-        // Execute interaction
-        log.warn(interaction.member.user.username + ' executed ' + interaction.commandName, 'Slash command');
         try {
-            await command.execute(interaction, Client, Actions);
+            await command['slash'].execute(interaction, Client, Actions);
         } catch (err) {
             log.error(err, 'Interaction');
         }
@@ -82,7 +170,7 @@ Client.on('ready', function() {
     // On Message
     Client.on('messageCreate', async (message) => {
         if(message.author.id === Client.user.id || message.author.bot || message.author.system) return;
-        log.log(message.author.username + ': ' + message.content, 'Message');
+        log.log(`${message.author.username}: ${message.content}`, 'Message');
 
         // Message commands
         if(Util.detectCommand(message.content, config.commandPrefix)){
@@ -90,11 +178,7 @@ Client.on('ready', function() {
             const command = commandConstructor.command.toLowerCase();
 
             // Ignored channels
-            if(
-                config.blacklistChannels.enabled && !config.blacklistChannels.convertToWhitelist && config.blacklistChannels.channels.includes(message.channelId.toString())
-                || 
-                config.blacklistChannels.enabled && config.blacklistChannels.convertToWhitelist && !config.blacklistChannels.channels.includes(message.channelId.toString())
-            ) return;
+            if(Actions.isIgnoredChannel(message.channelId)) return;
 
             // Execute command
             if(scripts.hasOwnProperty(command)){
@@ -104,159 +188,8 @@ Client.on('ready', function() {
     });
 });
 
-function actions() {
-    // scripts
-    this.reload = async () => {
-        parseConfig.parse();
-        config = parseConfig.config;
-    
-        language.parse();
-        lang = language.language;
+// Client error
+Client.on('shardError', (error) => { log.error(error); });
 
-        let success = false;
-
-        // re-login to client
-        await Client.login(config.token).then(function () {
-            success = true;
-        }).catch(err => {
-            log.error(err, 'Reload');
-        });
-
-        // Log script
-        Actions.loadScripts();
-        // Register commands
-        Actions.registerInteractionCommmands(Client);
-
-        return success;
-    }
-    this.loadScripts = () => {
-        // Clear scripts
-        scripts = [];
-        commands = []
-        Client.commands.clear();
-
-        modulesList = Fs.readdirSync(__dirname + '/modules/').filter(file => file.endsWith('.js'));
-
-        // Require scripts
-        for (const file of modulesList) {
-            let name = Path.parse(file).name;
-            let path = __dirname + '/modules/' + file;
-            
-            // Clear cache from previous script
-            if(Object.keys(require.cache).find(module => module == path)) delete require.cache[path];
-            let importModule = require(path);
-            
-            try {
-                // Replace whitespace
-                name = Util.replaceAll(name, ' ', '_').toLowerCase();
-
-                // Check supported version
-                if(!importModule.versions || importModule.versions && !importModule.versions.find(version => version == config.version)) { log.error(`${file} does not support bot version ${config.version}`, file); continue; }
-
-                // Import script
-                scripts[name] = importModule;
-                if(scripts[name].start(Client, Actions, config, lang)) log.log(`Script ${name} ready!`, file);
-
-                // Slash commands
-                if(typeof scripts[name]['slash'] === 'undefined') continue;
-                // if(Client.commands.get(scripts[name]['slash']['command']['name'])) { log.error(`slash command for "${name}" already exists. You may need to restart your bot to reload it.`, file); continue; }
-
-                let slash = scripts[name]['slash'];
-                commands.push(slash['command'].toJSON());
-                Client.commands.set(slash['command']['name'], slash);
-            } catch (err) {
-                log.error(`Coudln't load ${file}: ${err.message}`, file);
-                log.error(err, file);
-            }
-        }
-    }
-
-    // Commands
-    this.messageCommand = (command, message) => {
-        const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
-        log.warn(message.author.username + ' executed ' + config.commandPrefix + command, 'message Command');
-
-        // Check permissions
-        if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.admin(message.member)) { Actions.messageReply(message, language.get(lang.noPerms)); return; }
-        if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.moderator(message.member)) { Actions.messageReply(message, language.get(lang.noPerms)); return; }
-        if(typeof scripts[command].execute === 'undefined') { log.warn(command + ' is not a command'); return; } 
-
-        // Execute
-        scripts[command].execute(args, message, Client, Actions).catch(async err => {
-            log.error(err, command + '.js');
-            await this.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
-        });
-    }
-    this.registerInteractionCommmands = async (client) => {
-        const rest = new REST({ version: '9' }).setToken(config.token);
-
-        try {
-            await rest.put(
-                Routes.applicationCommands(client.user.id),
-                { body: commands },
-            );            
-            log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
-        } catch (err) {
-            log.error(err, 'Register Commands');
-        }
-    }
-
-    // Other utility functions
-    this.get = (object) => {
-        return language.get(object);
-    }
-    this.createInvite = (bot) => {
-        return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
-    }
-    
-    // Permissions
-    this.admin = (member) => {
-        if(member && member.permissions.has(Discord.Permissions.FLAGS.ADMINISTRATOR)) return true;
-        return false;
-    }
-    this.moderator = (member) => {
-        if(member && member.permissions.has([Discord.Permissions.FLAGS.BAN_MEMBERS, Discord.Permissions.FLAGS.KICK_MEMBERS])) return true;
-        return false;
-    }
-
-    // Safe message actions
-    this.messageSend = async (channel, message) => {
-        try {
-            return await channel.send(message).catch(err => { log.error(err, 'Send error'); });
-        } catch (err) {
-            log.error(err, 'Send error');
-            return false;
-        }
-    }
-    this.messageReply = async (message, reply) => {
-        try {
-            return await message.reply(reply).catch(err => { log.error(err, 'Reply error'); });
-        } catch (err) {
-            log.error(err, 'Reply error');
-            return false;
-        }
-    }
-    this.messageDelete = async (message) => {
-        try {
-            return await message.delete().catch( err => { log.error(err, 'Delete error'); });
-        } catch (err) {
-            log.error(err, 'Delete error');
-        }
-    }
-    this.messageReact = async (message, reaction) => {
-        try {
-            return await message.react(reaction).catch( err => { log.error(err, 'Reaction error'); });
-        } catch (err) {
-            log.error(err, 'Reaction error');
-            return false;
-        }
-    }
-    this.messageEdit = async (message, edit) => {
-        try {
-            return await message.edit(edit).catch( err => { log.error(err, 'Edit error'); });
-        } catch (err) {
-            log.error(err, 'Edit error');
-            return false;
-        }
-    }
-}
+// Process warning
+process.on('warning', (warn) => log.warn(warn));

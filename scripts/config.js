@@ -3,7 +3,7 @@ const Yml = require('yaml');
 const Fs = require('fs');
 const Commander = require('commander');
 const Version = require('./version');
-const util = require('fallout-utility');
+const { ask } = require('fallout-utility');
 
 const commands = new Commander.Command;
     
@@ -29,7 +29,7 @@ module.exports = function() {
         return config;
     }
     this.prefill = function() {
-        if(!this.config.token || this.config.token == null) this.config.token = util.ask('Bot Token >>> ');
+        if(!this.config.token || this.config.token == null) this.config.token = ask('Bot Token >>> ');
     }
     this.testmode = function() {
         if(!commands.opts().testmode) return true;
