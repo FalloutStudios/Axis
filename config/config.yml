@@ -35,5 +35,6 @@ presence:
 
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
 language: 'config/language.yml'   # Langage file 
+modulesFolder: 'modules'
 
 version: 1.1.0    # Version (don't modify this value)
