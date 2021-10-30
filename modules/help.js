@@ -26,7 +26,7 @@ let slash = {};
 function create(){
     let config = {};
     let language = {};
-    this.versions = ['1.1.0'];
+    this.versions = ['1.1.1'];
     this.arguments = {
         search: {
             required: false
