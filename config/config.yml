@@ -6,13 +6,21 @@ owner: 'Ghexter'  # Who owns this bot
 
 guildId: # Only register slash commands for the given guild.
 
-# Restrict commands for admin only (This is the script name)
-adminOnlyCommands:
-  - 'stop'
 
-# Command for moderator with kick and ban perms (This is the script name)
-moderatorOnlyCommands: 
-  - 'version'
+
+permissions:
+  # Ids for roles
+  rolesId:
+    admin: ''
+    moderator: ''
+  
+  # Restrict commands for admin only (This is the script name)
+  adminOnlyCommands:
+    - 'stop'
+
+  # Command for moderator with kick and ban perms (This is the script name)
+  moderatorOnlyCommands: 
+    - 'version'
 
 # Slash commands
 slashCommands:
