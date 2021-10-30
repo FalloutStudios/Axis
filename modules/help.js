@@ -5,6 +5,8 @@ const { MessageEmbed, MessageButton } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const interactionPaginationEmbed = require('discordjs-button-pagination');
 const { Pagination } = require("discordjs-button-embed-pagination");
+const SafeMessage = require('../scripts/safeMessage');
+const CommandPermission = require('../scripts/commandPermissions');
 
 const log = new Logger('help.js');
 const interactionTimeout = 20000;
@@ -58,14 +60,18 @@ function create(){
         // Command executed
         let filter = makeSentence(args);
         let visibleCommands = Object.keys(commands);
-            visibleCommands = filterVisibleCommands(visibleCommands, filter, message.member, action, config);
+            visibleCommands = filterVisibleCommands(visibleCommands, filter, message.member, config);
         
         // Create embeds
         let embeds = makePages(visibleCommands, commands, client, action, language, config.commandPrefix, config.embedColor);
 
         // Send response
         try {
-            new Pagination(message.channel, embeds, "Page", interactionTimeout).paginate();
+            if(embeds.length == 1) {
+                SafeMessage.reply(message, { embeds: embeds });
+            } else {
+                new Pagination(message.channel, embeds, "Page", interactionTimeout).paginate().catch(err => { log.error(err); });
+            }
         } catch (err) {
             console.error(err);
         }
@@ -82,7 +88,7 @@ function create(){
             // Command executed
             let filter = !interaction.options.getString('filter') ? '' : interaction.options.getString('filter');
             let visibleCommands = Object.keys(slash);
-                visibleCommands = filterVisibleCommands(visibleCommands, filter, interaction.member, action, config);
+                visibleCommands = filterVisibleCommands(visibleCommands, filter, interaction.member, config);
             
             // Create embeds
             let embeds = makePages(visibleCommands, slash, client, action, language, '/', config.embedColor);
@@ -102,7 +108,11 @@ function create(){
             // Send response
             try {
                 await interaction.deferReply();
-                await interactionPaginationEmbed(interaction, embeds, buttons, interactionTimeout);
+                if(embeds.length == 1) { 
+                    await interaction.editReply({ embeds: embeds });
+                } else {
+                    await interactionPaginationEmbed(interaction, embeds, buttons, interactionTimeout);
+                }
             } catch (err) {
                 console.error(err);
             }
@@ -163,31 +173,17 @@ function addSlash(slashObject) {
     args = args.trim();
     return slashJSON.name + ' ' + args;
 }
-function filterVisibleCommands(allCommands, filter, member, action, config) {
-    if(!filter) return allCommands;
-
-    return allCommands.filter((elmt) => {
+function filterVisibleCommands(allCommands, filter, member, config) {
+    const newCommands = allCommands.filter((elmt) => {
         // Check permissions
-        if(!confPerms(config, action, member, elmt)) return false;
+        if(!CommandPermission(elmt, member, config)) return false;
 
         // Filter
         if(filter && filter.length > 0) { return elmt.toLowerCase().indexOf(filter.toLowerCase()) !== -1; }
         return true;
     });
-}
-function confPerms(config, action, member, elmt) {
-    if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == elmt) && permsLevel(action, member) < 1) return false;
-    if(config.adminOnlyCommands.find(key => key.toLowerCase() == elmt) && permsLevel(action, member) < 2) return false;
 
-    return true;
-}
-function permsLevel(action, member) {
-    if(action.moderator(member)) {
-        return 1;
-    } else if(action.admin(member)) {
-        return 2;
-    }
-    return 0;
+    return Object.keys(newCommands).length ? newCommands : false;
 }
 function ifNewPage(i, intLimit) {
     return i >= (intLimit - 1);
@@ -200,6 +196,7 @@ function makePages(visibleCommands, allCommands, client, action, language, prefi
     let current = 0;
     
     // Separate embeds
+    if(!visibleCommands) return [new MessageEmbed().setTitle(action.get(language.noResponse))];
     for (const value of visibleCommands) {
         // Increment page
         if(ifNewPage(increment, limit)) { current++; increment = 0; } else { increment++; }

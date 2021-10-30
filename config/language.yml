@@ -26,6 +26,10 @@ notAvailable:
   - 'This action is not available <a:lick:901325242830585896>'
   - 'This is not available <:omegalol:901325113369186344>'
   - 'You can''t use this for now <a:sadsponge:901325244353093674>'
+noResponse:
+  - 'I got nothing for you'
+  - 'Sorry, I don''t see anything for you'
+  - 'I can''t get response for this'
 success:
   - 'Successful!'
   - 'Successful <a:boi_shakeangry:898522330765090846>'
