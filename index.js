@@ -152,7 +152,7 @@ Client.on('ready', function() {
         // Execute commands
         if(!interaction.isCommand() || !interaction.member) return;
 
-        let command = scripts[interaction.commandName]['slash'];
+        let command = scripts[interaction.commandName]?.slash;
         if (!command) return;
         
         // Check configurations
