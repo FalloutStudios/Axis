@@ -31,9 +31,8 @@ module.exports = async (location, Actions, config, lang, Client) => {
             // Slash commands
             if (typeof scripts[name]['slash'] === 'undefined') continue;
 
-            const command = scripts[name]['slash']['command']['name'];
+            scripts[name]['slash']['command']['name'] = name;
             commands.push(scripts[name]['slash']['command'].toJSON());
-            Client.commands.set(scripts[name]['slash']['command']['name'], command);
         } catch (err) {
             log.error(`Coudln't load ${file}: ${err.message}`, file);
             log.error(err, file);
