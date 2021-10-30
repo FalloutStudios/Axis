@@ -16,6 +16,7 @@ const Path = require('path');
 const Config = require('./scripts/config');
 const Language = require('./scripts/language');
 const ScriptLoader = require('./scripts/loadScripts');
+const SafeMessage = require('./scripts/safeMessage');
 const Discord = require('discord.js');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
@@ -59,13 +60,18 @@ class UtilActions {
 
     // Commands
     async messageCommand(command, message) {
+        let perms = true;
+
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
         log.warn(`${message.author.username} executed ${config.commandPrefix}${command}`, 'message Command');
 
         // Check permissions
-        if(config.adminOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.admin(message.member)) { Actions.messageReply(message, language.get(lang.noPerms)); return; }
-        if(config.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.moderator(message.member)) { Actions.messageReply(message, language.get(lang.noPerms)); return; }
+        if(config.permissions.adminOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.admin(message.member)) perms = false;
+        if(config.permissions.moderatorOnlyCommands.find(key => key.toLowerCase() == command) && !Actions.moderator(message.member)) perms = false;
         if(typeof scripts[command].execute === 'undefined') { log.warn(`${command} is not a command`); return; } 
+
+        // No permission
+        if(!perms) { SafeMessage.reply(message, language.get(lang.noPerms)); return; }
 
         // Execute
         await scripts[command].execute(args, message, Client, Actions).catch(async err => {
@@ -95,13 +101,14 @@ class UtilActions {
                         Routes.applicationCommands(client.user.id),
                         { body: commands },
                     );
+                    log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
                 } else {
                     await rest.put(
                         Routes.applicationGuildCommands(client.user.id, guild),
                         { body: commands },
                     );
+                    log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a guild.`, 'Register Commands');
                 }
-                log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`, 'Register Commands');
             } catch (err) {
                 log.error(err, 'Register Commands');
             }
