@@ -41,9 +41,8 @@ function Create(){
 
     // Add slash commands. This is optional
     this.slash = {
-        // command: is required for slash command module.
+        // command: is required for slash command module. (Command name will be replaced with parsed file name of this module)
         command: new SlashCommandBuilder()
-            .setName("command")
             .setDescription('This is a test command'),
 
         // This will be called when the slash command is executed.

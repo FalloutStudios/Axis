@@ -18,15 +18,6 @@ function create(){
         await safeMessage.reply(message, action.get(language.stop));
         await stop(client, action);
     }
-    this.slash = {
-        command: new SlashCommandBuilder()
-            .setName("stop")
-            .setDescription("Stop bot"),
-        async execute(interaction, client, action) {
-            await interaction.reply(action.get(language.stop));
-            await stop(client, action);
-        }
-    }
 
     async function stop(client, action) {
         await client.destroy();
