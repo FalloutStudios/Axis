@@ -17,6 +17,14 @@ To run or self-host, the following prerequisites must be installed.
 
 Run `npm install` to install all dependencies then `node index.js` to run the bot.
 
+## Bugs
+
+To report bugs, Create an issue with a full stack trace so that we can easily identify its inconsistency.
+
+## Improvements
+
+If you want to help with the development, you can submit a pull request as well as create your own version of this project.
+
 ## Custom script
 
 This is an example command script file.
