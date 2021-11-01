@@ -83,7 +83,7 @@ class UtilActions {
         // Execute
         await scripts[command].execute(args, message, Client, Actions).catch(async err => {
             log.error(err, `${config.commandPrefix}${command}`);
-            await message.channel.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
+            await SafeMessage.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
     }
     async registerInteractionCommmands(client, force = false, guild = null) {
