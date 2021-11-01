@@ -1,6 +1,6 @@
 module.exports = new create();
 function create(){
-    this.versions = ['1.1.1'];
+    this.versions = ['1.1.2'];
 
     this.start = async (client, action, config, language) => {
         await client.user.setPresence({
