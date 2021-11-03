@@ -28,7 +28,7 @@ const MemberPermission = require('./scripts/memberPermissions');
 // Public vars
 const deployFile = './deploy.txt';
 const log = new Util.Logger('Bot');
-const parseConfig = new Config('./config/config.yml');
+const parseConfig = new Config('./config/config.dev.yml');
 let config = parseConfig.parse();
     config = parseConfig.testmode(config);
     config = parseConfig.prefill(config);

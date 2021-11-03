@@ -7,10 +7,10 @@ module.exports = new create();
 function create(){
     this.versions = ['1.3.0'];
 
-    this.start = (client, action, conf, lang) => {
+    this.start = (client, conf, lang) => {
         return true;
     }
-    this.execute = async (args, message, client, action) => {
+    this.execute = async (args, message, client) => {
         // Command executed
         await safeMessage.send(message.channel, `**${client.user.username} v${Version}**\nBased on Axis bot v${Version}.\nhttps://github.com/FalloutStudios/Axis`);
     }
@@ -18,7 +18,7 @@ function create(){
         command: new SlashCommandBuilder()
             .setName("version")
             .setDescription("Current bot version"),
-        async execute(interaction, client, action) {
+        async execute(interaction, client) {
             await interaction.reply(`**${client.user.username} v${Version}**\nBased on Axis bot v${Version}.\nhttps://github.com/FalloutStudios/Axis`);
         }
     }

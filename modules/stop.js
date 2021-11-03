@@ -1,4 +1,4 @@
-const { Logger } = require('fallout-utility');
+const { Logger, getRandomKey } = require('fallout-utility');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const safeMessage = require('../scripts/safeMessage');
 
@@ -10,16 +10,16 @@ function create(){
     let language = {};
     this.versions = ['1.3.0'];
 
-    this.start = (client, action, conf, lang) => {
+    this.start = (client, conf, lang) => {
         language = lang;
         return true;
     }
-    this.execute = async (args, message, client, action) => {
-        await safeMessage.reply(message, action.get(language.stop));
-        await stop(client, action);
+    this.execute = async (args, message, client) => {
+        await safeMessage.reply(message, getRandomKey(language.stop));
+        await stop(client);
     }
 
-    async function stop(client, action) {
+    async function stop(client) {
         await client.destroy();
         log.warn('Stopping...');
         process.exit(0);
