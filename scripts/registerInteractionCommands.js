@@ -8,6 +8,15 @@ const log = new Logger('Register Commands');
 
 const deployFile = './deploy.txt';
 
+/**
+ * 
+ * @param {Object} client - Discord client instance
+ * @param {Object} config - Parsed config object
+ * @param {Object} commands - List of slash commands
+ * @param {string} guild - register commands to a guild
+ * @param {boolean} force - Force register commands without check deploy file
+ * @returns {Promise<void>}}}
+ */
 module.exports = async (client, config, commands, guild = null, force = false,) => {
     // Deployment
     if(!config.slashCommands.enabled) return;

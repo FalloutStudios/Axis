@@ -29,7 +29,8 @@ module.exports = class {
     }
 
     /**
-     * @param {Object} config parsed config data
+     * @param {Object} config - parsed config data
+     * @returns {Object} returns parsed config data
      */
     prefill(config) {
         if(!config.token || config.token == null) config.token = ask('Bot Token >>> ');
@@ -38,7 +39,8 @@ module.exports = class {
     }
 
     /**
-     * @param {Object} config parsed config data
+     * @param {Object} config - parsed config data
+     * @returns {Object} returns parsed config data
      */
     testmode(config) {
         if(commands.opts().testmode) config.token = process.env['discordtoken'];
