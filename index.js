@@ -28,16 +28,12 @@ const MemberPermission = require('./scripts/memberPermissions');
 // Public vars
 const deployFile = './deploy.txt';
 const log = new Util.Logger('Bot');
-const parseConfig = new Config();
-    parseConfig.location = './config/config.dev.yml';
-    parseConfig.parse();
-    parseConfig.testmode();
-    parseConfig.prefill();
-let config = parseConfig.config;
-const language = new Language();
-    language.location = config.language;
-    language.parse();
-let lang = language.language;
+const parseConfig = new Config('./config/config.yml');
+let config = parseConfig.parse();
+    config = parseConfig.testmode(config);
+    config = parseConfig.prefill(config);
+const language = new Language(config.language);
+let lang = language.parse();
 
 // Client
 const Client = new Discord.Client({
