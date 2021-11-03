@@ -23,17 +23,16 @@ function Create(){
 
 
     // This is required for both script and command. This is called on bot ready
-    this.start = async (client, action, conf, lang) => {
+    this.start = async (client, conf, lang) => {
         return true;    // Return true when it's ready
     }
 
     // This is required for command module. You can delete this to make your script a non executable command
-    this.execute = async (args, message, client, action) => {
+    this.execute = async (args, message, client) => {
         // Message command executed
 
         // args: list of separate words
         // message: raw discord.js message
-        // action: actions from main file
         // client: discord client
 
         await message.reply(`test`);
@@ -46,11 +45,10 @@ function Create(){
             .setDescription('This is a test command'),
 
         // This will be called when the slash command is executed.
-        async execute (interaction, client, action) {
+        async execute (interaction, client) {
             // Slash command executed
 
             // interaction: interaction data from discord.js
-            // action: actions from main file
             // client: discord client
             
             await interaction.reply(`test`);
