@@ -6,7 +6,7 @@ module.exports = {
      * 
      * @param {Object} channel - The channel for message to send
      * @param {*} message - The message to send
-     * @returns {Object} Promise message response
+     * @returns {Promise<void>} Promise message response
      */
     async send (channel, message) {
         try {
@@ -21,7 +21,7 @@ module.exports = {
      * 
      * @param {Object} message - The message to send reply
      * @param {*} reply - The reply to send
-     * @returns {Object} Promise message response
+     * @returns {Promise<void>} Promise message response
      */
     async reply (message, reply) {
         try {
@@ -35,7 +35,7 @@ module.exports = {
     /**
      * 
      * @param {Object} message - The message to delete
-     * @returns {Object} Promise response
+     * @returns {Promise<void>} Promise response
      */
     async delete (message) {
         try {
@@ -49,7 +49,7 @@ module.exports = {
      * 
      * @param {Object} message - The message for reaction
      * @param {*} reaction - The reaction to send 
-     * @returns {Object} Promise response
+     * @returns {Promise<void>} Promise response
      */
     async react (message, reaction) {
         try {
@@ -64,7 +64,7 @@ module.exports = {
      * 
      * @param {*} message - The message to edit
      * @param {*} edit - Edited message content
-     * @returns {Object} Promise response
+     * @returns {Promise<void>} Promise response
      */
     async edit (message, edit) {
         try {
