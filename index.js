@@ -114,7 +114,7 @@ Client.on('ready', function() {
         if (!command) return;
         
         // Check configurations
-        if(!config.slashCommands.enabled || MemberPermission.isIgnoredChannel(interaction.channelId, config.isIgnoredChannel)) { 
+        if(!config.slashCommands.enabled || MemberPermission.isIgnoredChannel(interaction.channelId, config.blacklistChannels)) { 
             await interaction.reply({ 
                 content: Util.getRandomKey(lang.notAvailable),
                 ephemeral: true
@@ -143,7 +143,7 @@ Client.on('ready', function() {
         if(message.author.id === Client.user.id || message.author.bot || message.author.system) return;
 
         // Ignored channels
-        if(MemberPermission.isIgnoredChannel(message.channelId, config.isIgnoredChannel)) return;
+        if(MemberPermission.isIgnoredChannel(message.channelId, config.blacklistChannels)) return;
 
         log.log(`${message.author.username}: ${message.content}`, 'Message');
 
