@@ -1,4 +1,4 @@
-const { makeSentence, replaceAll, Logger } = require('fallout-utility');
+const { makeSentence, replaceAll, Logger, getRandomKey } = require('fallout-utility');
 const Fs = require('fs');
 const Path = require('path');
 const { MessageEmbed, MessageButton } = require('discord.js');
@@ -26,7 +26,7 @@ let slash = {};
 function create(){
     let config = {};
     let language = {};
-    this.versions = ['1.1.2'];
+    this.versions = ['1.3.0'];
     this.arguments = {
         search: {
             required: false
@@ -34,7 +34,7 @@ function create(){
     };
 
     // Load all commands
-    this.start = (client, action, conf, lang) => {
+    this.start = (client, conf, lang) => {
         config = conf;
         language = lang;
 
@@ -56,14 +56,14 @@ function create(){
 
         return true;
     }
-    this.execute = async (args, message, client, action) => {
+    this.execute = async (args, message, client) => {
         // Command executed
         let filter = makeSentence(args);
         let visibleCommands = Object.keys(commands);
             visibleCommands = filterVisibleCommands(visibleCommands, filter, message.member, config);
         
         // Create embeds
-        let embeds = makePages(visibleCommands, commands, client, action, language, config.commandPrefix, config.embedColor);
+        let embeds = makePages(visibleCommands, commands, client, language, config.commandPrefix, config.embedColor);
 
         // Send response
         try {
@@ -84,14 +84,14 @@ function create(){
                 .setDescription("Filter commands")
                 .setRequired(false)
             ),
-        async execute(interaction, client, action) {
+        async execute(interaction, client) {
             // Command executed
             let filter = !interaction.options.getString('filter') ? '' : interaction.options.getString('filter');
             let visibleCommands = Object.keys(slash);
                 visibleCommands = filterVisibleCommands(visibleCommands, filter, interaction.member, config);
             
             // Create embeds
-            let embeds = makePages(visibleCommands, slash, client, action, language, '/', config.embedColor);
+            let embeds = makePages(visibleCommands, slash, client, language, '/', config.embedColor);
             
             // Create buttons
             const buttons = [
@@ -188,7 +188,7 @@ function filterVisibleCommands(allCommands, filter, member, config) {
 function ifNewPage(i, intLimit) {
     return i >= (intLimit - 1);
 }
-function makePages(visibleCommands, allCommands, client, action, language, prefix, embedColor) {
+function makePages(visibleCommands, allCommands, client, language, prefix, embedColor) {
     // Create embeds
     let embeds = [];
     let limit = 5;
@@ -196,7 +196,7 @@ function makePages(visibleCommands, allCommands, client, action, language, prefi
     let current = 0;
     
     // Separate embeds
-    if(!visibleCommands) return [new MessageEmbed().setTitle(action.get(language.noResponse))];
+    if(!visibleCommands) return [new MessageEmbed().setTitle(getRandomKey(language.noResponse))];
     for (const value of visibleCommands) {
         // Increment page
         if(ifNewPage(increment, limit)) { current++; increment = 0; } else { increment++; }
@@ -204,8 +204,8 @@ function makePages(visibleCommands, allCommands, client, action, language, prefi
         // Create embed
         if(!embeds[current]) {
             embeds.push(new MessageEmbed()
-                .setAuthor(action.get(language.help.title), client.user.displayAvatarURL())
-                .setDescription(action.get(language.help.description))
+                .setAuthor(getRandomKey(language.help.title), client.user.displayAvatarURL())
+                .setDescription(getRandomKey(language.help.description))
                 .setColor(embedColor)
                 .setTimestamp());
         }

@@ -1,13 +1,15 @@
+const { getRandomKey } = require('fallout-utility');
+
 module.exports = new create();
 function create(){
-    this.versions = ['1.1.2'];
+    this.versions = ['1.3.0'];
 
-    this.start = async (client, action, config, language) => {
+    this.start = async (client, config, language) => {
         await client.user.setPresence({
-            status: action.get(config.presence.status),
+            status: getRandomKey(config.presence.status),
             activities: [{
-                name: action.get(config.presence.activityName),
-                type: action.get(config.presence.type).toUpperCase()
+                name: getRandomKey(config.presence.activityName),
+                type: getRandomKey(config.presence.type).toUpperCase()
             }]
         });
 

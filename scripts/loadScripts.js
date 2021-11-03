@@ -5,7 +5,14 @@ const { Collection } = require('discord.js');
 
 const log = new Util.Logger('loadScripts');
 
-module.exports = async (location, Actions, config, lang, Client) => {
+   /**
+    * @param {string} location - The path to scripts
+    * @param {Object} config - Parsed config object
+    * @param {Object} lang - Parsed language object
+    * @param {Object} Client - Discord client
+    * @returns {Object} - returns an object with the loaded scripts
+    */
+module.exports = async (location, config, lang, Client) => {
     const scripts = {};
     const commands = [];
 
@@ -25,7 +32,7 @@ module.exports = async (location, Actions, config, lang, Client) => {
 
             // Import script
             scripts[name] = importModule;
-            if (!await scripts[name].start(Client, Actions, config, lang)) throw new Error(`Couldn't start script ${file}`);
+            if (!await scripts[name].start(Client, config, lang)) throw new Error(`Couldn't start script ${file}`);
             log.log(`Script ${name} ready!`, file);
 
             // Slash commands
