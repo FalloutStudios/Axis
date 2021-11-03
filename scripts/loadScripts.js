@@ -5,6 +5,12 @@ const { Collection } = require('discord.js');
 
 const log = new Util.Logger('loadScripts');
 
+   /*
+    * @param {string} location - The path to scripts
+    * @param {Object} config - Parsed config object
+    * @param {Object} lang - Parsed language object
+    * @param {Object} Client - Discord client
+    */
 module.exports = async (location, config, lang, Client) => {
     const scripts = {};
     const commands = [];
