@@ -2,6 +2,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { Logger } = require('fallout-utility');
 const Fs = require('fs');
+const MakeConfig = require('./makeConfig');
 
 const log = new Logger('Register Commands');
 
@@ -16,11 +17,9 @@ module.exports = async (client, config, commands, guild = null, force = false,) 
         if(deploy == 'false') {
             return;
         }
-
-        Fs.writeFileSync(deployFile, 'false');
-    } else {
-        Fs.writeFileSync(deployFile, 'false'); 
     }
+    
+    MakeConfig(deployFile, 'false'); 
 
     // Send
     const rest = new REST({ version: '9' }).setToken(config.token);
