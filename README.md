@@ -9,6 +9,10 @@
 
 Axis bot is named after the Our World's server clan named `Axis` *The reincarnation of Fallout clan*
 
+## About
+
+**Axis** is just a Discord bot which simply loads custom scripts and it can be configured via YAML type configurations, similar to just how Minecraft servers were configured.
+
 ## Installation
 
 To run or self-host, the following prerequisites must be installed.
