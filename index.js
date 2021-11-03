@@ -29,7 +29,7 @@ const MemberPermission = require('./scripts/memberPermissions');
 const deployFile = './deploy.txt';
 const log = new Util.Logger('Bot');
 const parseConfig = new Config();
-    parseConfig.location = './config/config.yml';
+    parseConfig.location = './config/config.dev.yml';
     parseConfig.parse();
     parseConfig.testmode();
     parseConfig.prefill();
@@ -59,7 +59,7 @@ var commands = [];
 class UtilActions {
     // scripts
     async loadScripts() {
-        const scriptsLoader = await ScriptLoader(Path.join(__dirname, config.modulesFolder), Actions, config, lang, Client);
+        const scriptsLoader = await ScriptLoader(Path.join(__dirname, config.modulesFolder), config, lang, Client);
 
         scripts = scriptsLoader.scripts;
         commands = scriptsLoader.commands;
@@ -73,7 +73,7 @@ class UtilActions {
         if(typeof scripts[command].execute === 'undefined') return;
 
         // No permission
-        if(!CommandPermission(command, message.member, config, Actions)) {
+        if(!CommandPermission(command, message.member, config)) {
             SafeMessage.reply(message, language.get(lang.noPerms));
             return;
         }
@@ -81,7 +81,7 @@ class UtilActions {
         log.warn(`${message.author.username} executed ${config.commandPrefix}${command}`, 'message Command');
 
         // Execute
-        await scripts[command].execute(args, message, Client, Actions).catch(async err => {
+        await scripts[command].execute(args, message, Client).catch(async err => {
             log.error(err, `${config.commandPrefix}${command}`);
             await SafeMessage.send(message.channel, language.get(lang.error) + '\n```\n' + err.message + '\n```');
         });
@@ -163,7 +163,7 @@ Client.on('ready', function() {
             }).catch(err => log.error(err));
             return; 
         }
-        if(!CommandPermission(command['command']['name'], interaction.member, config, Actions)) { 
+        if(!CommandPermission(command['command']['name'], interaction.member, config)) { 
             interaction.reply({ 
                 content: language.get(lang.noPerms),
                 ephemeral: true
@@ -174,7 +174,7 @@ Client.on('ready', function() {
         log.warn(`${interaction.member.user.username} executed ${interaction.commandName}`, 'Slash command');
 
         try {
-            await command.execute(interaction, Client, Actions);
+            await command.execute(interaction, Client);
         } catch (err) {
             log.error(err, 'Interaction');
         }
