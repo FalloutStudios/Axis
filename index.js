@@ -48,6 +48,8 @@ const Client = new Discord.Client({
 var scripts = {
     loaded: {},
     unloaded: {}
+}
+var commands = { MessageCommands: [], SlashCommands: [] };
 
 // AxisUtility
 class AxisUtility {
