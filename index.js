@@ -47,16 +47,8 @@ const Client = new Discord.Client({
 var scripts = {};
 var commands = [];
 
-// UtilActions
-class UtilActions {
-    // scripts
-    async loadScripts() {
-        const scriptsLoader = await ScriptLoader(Path.join(__dirname, config.modulesFolder), config, lang, Client);
-
-        scripts = scriptsLoader.scripts;
-        commands = scriptsLoader.commands;
-    }
-
+// AxisUtility
+class AxisUtility {
     // Commands
     async messageCommand(command, message) {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
@@ -79,28 +71,7 @@ class UtilActions {
         });
     }
 
-    // Other utility functions
-    createInvite(bot) {
-        return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
-    }
-}
-
-Client.login(config.token);
-const Actions = new UtilActions();
-
-// Client ready
-Client.once('ready', async () => {
-    log.warn('Client connected!', 'Status');
-    log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
-    
-    // Register commands
-    await Actions.loadScripts();
-    await registerInteractionCommmands(Client, config, commands, config.guildId, false);
-});
-
-Client.on('ready', () => {
-    // On Interaction commands
-    Client.on('interactionCreate', async interaction => {
+    async interactionCommand(interaction) {
         // Execute commands
         if(!interaction.isCommand() || !interaction.member) return;
 
@@ -130,7 +101,33 @@ Client.on('ready', () => {
         } catch (err) {
             log.error(err, 'Interaction');
         }
-    });
+    }
+
+    // Other utility functions
+    createInvite(bot) {
+        return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
+    }
+}
+
+Client.login(config.token);
+Client.AxisUtility = new AxisUtility();
+
+// Client ready
+Client.once('ready', async () => {
+    log.warn('Client connected!', 'Status');
+    log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
+    
+    // Register commands
+    const scriptsLoader = await ScriptLoader(Path.join(__dirname, config.modulesFolder), config, lang, Client);
+
+    scripts = scriptsLoader.scripts;
+    commands = scriptsLoader.commands;
+    await registerInteractionCommmands(Client, config, commands, config.guildId, false);
+});
+
+Client.on('ready', () => {
+    // On Interaction commands
+    Client.on('interactionCreate', async interaction => Client.AxisUtility.interactionCommand(interaction));
 
     // On Message
     Client.on('messageCreate', async message => {
@@ -148,7 +145,7 @@ Client.on('ready', () => {
 
             // Execute command
             if(scripts.hasOwnProperty(command)){
-                Actions.messageCommand(command, message);
+                Client.AxisUtility.messageCommand(command, message);
             }
         }
     });
