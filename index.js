@@ -21,6 +21,7 @@ const Discord = require('discord.js');
 const ScriptLoader = require('./scripts/loadScripts');
 const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 const SafeMessage = require('./scripts/safeMessage');
+const SafeInteraction = require('./scripts/safeInteract');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
 
@@ -80,17 +81,11 @@ class AxisUtility {
         
         // Check configurations
         if(!config.slashCommands.enabled || MemberPermission.isIgnoredChannel(interaction.channelId, config.blacklistChannels)) { 
-            await interaction.reply({ 
-                content: Util.getRandomKey(lang.notAvailable),
-                ephemeral: true
-            }).catch(err => log.error(err));
+            await SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.notAvailable), ephemeral: true });
             return; 
         }
         if(!CommandPermission(command['command']['name'], interaction.member, config)) { 
-            interaction.reply({ 
-                content: Util.getRandomKey(lang.noPerms),
-                ephemeral: true
-            }).catch(err => log.error(err, 'Slash command'));
+            SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.noPerms), ephemeral: true });
             return;
         }
 
