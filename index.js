@@ -59,10 +59,6 @@ class UtilActions {
         commands = scriptsLoader.commands;
     }
 
-    async registerInteractionCommmands() {
-        return registerInteractionCommmands(Client, config, commands, config.guildId, false)
-    }
-
     // Commands
     async messageCommand(command, message) {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
@@ -101,12 +97,12 @@ Client.once('ready', async () => {
     
     // Register commands
     await Actions.loadScripts();
-    await Actions.registerInteractionCommmands();
+    await registerInteractionCommmands(Client, config, commands, config.guildId, false);
 });
 
-Client.on('ready', function() {
+Client.on('ready', () => {
     // On Interaction commands
-    Client.on('interactionCreate', async (interaction) => {
+    Client.on('interactionCreate', async interaction => {
         // Execute commands
         if(!interaction.isCommand() || !interaction.member) return;
 
@@ -139,7 +135,7 @@ Client.on('ready', function() {
     });
 
     // On Message
-    Client.on('messageCreate', async (message) => {
+    Client.on('messageCreate', async message => {
         if(message.author.id === Client.user.id || message.author.bot || message.author.system) return;
 
         // Ignored channels
@@ -161,5 +157,5 @@ Client.on('ready', function() {
 });
 
 // Errors
-Client.on('shardError', (error) => { log.error(error); });
-process.on('warning', (warn) => log.warn(warn));
+Client.on('shardError', error => log.error(error));
+process.on('warning', warn => log.warn(warn));
