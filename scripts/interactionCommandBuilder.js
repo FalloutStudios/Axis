@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = class Builder {
     constructor() {
         this.type = 'InteractionCommand';
+        this.name = null;
         this.command = new SlashCommandBuilder();
         this.execute = () => { /* function */ };
     }
@@ -22,6 +23,7 @@ module.exports = class Builder {
         if(!validateFunction(command)) throw new TypeError('Invalid argument: `command` must be a function');
 
         this.command = command(new SlashCommandBuilder(this)).toJSON();
+        this.name = this.command.name;
         return this;
     }
 }
