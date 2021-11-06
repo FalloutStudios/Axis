@@ -45,8 +45,9 @@ const Client = new Discord.Client({
 });
 
 // Commands
-var scripts = {};
-var commands = [];
+var scripts = {
+    loaded: {},
+    unloaded: {}
 
 // AxisUtility
 class AxisUtility {
