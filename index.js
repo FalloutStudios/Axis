@@ -24,12 +24,12 @@ const SafeMessage = require('./scripts/safeMessage');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
 
-// Public vars
+// Configurations
 const log = new Util.Logger('Bot');
-const parseConfig = new Config('./config/config.yml');
-let config = parseConfig.parse().testmode().prefill().getConfig();
 const language = new Language(config.language);
+const parseConfig = new Config('./config/config.yml');
 let lang = language.parse();
+let config = parseConfig.parse().testmode().prefill().getConfig();
 
 // Client
 const Client = new Discord.Client({
@@ -106,6 +106,14 @@ class AxisUtility {
     // Other utility functions
     createInvite(bot) {
         return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
+    }
+
+    // Language and Config
+    getLanguage() {
+        return lang;
+    }
+    getConfig() {
+        return config;
     }
 }
 
