@@ -47,8 +47,8 @@ const Client = new Discord.Client({
 var scripts = {};
 var commands = [];
 
-// UtilActions
-class UtilActions {
+// AxisUtility
+class AxisUtility {
     // scripts
     async loadScripts() {
         const scriptsLoader = await ScriptLoader(Path.join(__dirname, config.modulesFolder), config, lang, Client);
@@ -86,7 +86,7 @@ class UtilActions {
 }
 
 Client.login(config.token);
-Client.AxisUtility = new UtilActions();
+Client.AxisUtility = new AxisUtility();
 
 // Client ready
 Client.once('ready', async () => {
