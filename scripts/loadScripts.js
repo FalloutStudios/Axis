@@ -12,7 +12,7 @@ const log = new Util.Logger('loadScripts');
 module.exports = async (Client, location) => {
     const config = Client.AxisUtility.getConfig();
     const scripts = {};
-    const commands = { MessageCommands: [], SlashCommands: [] };
+    const commands = { MessageCommands: [], InteractionCommands: [] };
 
     const modulesList = Fs.readdirSync(location).filter(file => { return file.endsWith('.js') && !file.startsWith('_'); });
 
@@ -73,7 +73,7 @@ function parseInteractionCommand(command, commands) {
     if(!command.command || !Object.keys(command.command).length) throw new Error(`Invalid command 'command': ${command.command}`);
     if(!command.execute || !validateFunction(command.execute)) throw new Error(`Invalid command execute function: ${command.execute}`);
 
-    commands.SlashCommands.push(command);
+    commands.InteractionCommands.push(command);
 }
 
 function validateFunction(value) {

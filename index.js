@@ -49,7 +49,7 @@ var scripts = {
     loaded: {},
     unloaded: {}
 }
-var commands = { MessageCommands: [], SlashCommands: [] };
+var commands = { MessageCommands: [], InteractionCommands: [] };
 
 // AxisUtility
 class AxisUtility {
@@ -113,23 +113,19 @@ class AxisUtility {
 
     /**
      * 
-     * @param {string} command - command name to execute
+     * @param {string} name - command name to execute
      * @param {Object} message - message object
      * @returns {Promise<void>}
      */
-    async executeMessageCommand(command, message) {
-        
-    }
+    async executeMessageCommand(name, message) {}
 
     /**
      * 
-     * @param {string} command - command name to execute
+     * @param {string} name - command name to execute
      * @param {Object} interaction - interaction object
      * @returns {Promise<void>}
      */
-    async executeInteractionCommand(command, interaction) {
-
-    }
+    async executeInteractionCommand(name, interaction) {}
 
     /**
      * 
