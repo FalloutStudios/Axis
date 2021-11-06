@@ -59,10 +59,6 @@ class UtilActions {
         commands = scriptsLoader.commands;
     }
 
-    async registerInteractionCommmands() {
-        return registerInteractionCommmands(Client, config, commands, config.guildId, false)
-    }
-
     // Commands
     async messageCommand(command, message) {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
@@ -101,7 +97,7 @@ Client.once('ready', async () => {
     
     // Register commands
     await Actions.loadScripts();
-    await Actions.registerInteractionCommmands();
+    await registerInteractionCommmands(Client, config, commands, config.guildId, false);
 });
 
 Client.on('ready', function() {
