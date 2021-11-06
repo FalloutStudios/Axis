@@ -110,6 +110,12 @@ class AxisUtility {
     getConfig() {
         return config;
     }
+    getScripts() {
+        return scripts;
+    }
+    getCommands() {
+        return commands;
+    }
 }
 
 Client.login(config.token);
