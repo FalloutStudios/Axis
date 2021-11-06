@@ -7,7 +7,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 // Create the command
 function Create(){
     // This is required to specify the supported version of bot
-    this.versions = ['1.3.1'];
+    this.versions = ['1.4.0'];
 
     // If this is a command module, you can optionally add args description for help.js
     this.arguments = {

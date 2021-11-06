@@ -8,7 +8,7 @@ module.exports = new create();
 
 function create(){
     let language = {};
-    this.versions = ['1.3.1'];
+    this.versions = ['1.4.0'];
 
     this.start = (client, conf, lang) => {
         language = lang;
