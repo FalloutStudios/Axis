@@ -121,7 +121,7 @@ Client.once('ready', async () => {
     log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
     
     // Register commands
-    const scriptsLoader = await ScriptLoader(Path.join(__dirname, config.modulesFolder), config, lang, Client);
+    const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, config.modulesFolder));
 
     scripts = scriptsLoader.scripts;
     commands = scriptsLoader.commands;
