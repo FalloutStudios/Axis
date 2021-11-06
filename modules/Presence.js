@@ -2,7 +2,7 @@ const { getRandomKey } = require('fallout-utility');
 
 module.exports = new create();
 function create(){
-    this.versions = ['1.3.0'];
+    this.versions = ['1.3.1'];
 
     this.start = async (client, config, language) => {
         await client.user.setPresence({

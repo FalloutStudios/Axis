@@ -5,7 +5,7 @@ const safeMessage = require('../scripts/safeMessage');
 module.exports = new create();
 
 function create(){
-    this.versions = ['1.3.0'];
+    this.versions = ['1.3.1'];
 
     this.start = (client, conf, lang) => {
         return true;

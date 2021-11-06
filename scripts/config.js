@@ -15,8 +15,12 @@ module.exports = class {
      */
     constructor(location) {
         this.location = location;
+        this.config = null;
     }
 
+    /**
+     * @returns {Object} returns modified config
+     */ 
     parse() {
         if(!this.location || this.location == null) throw new Error('No config file path provided');
         let config = Fs.readFileSync(this.location, 'utf8');
@@ -25,26 +29,32 @@ module.exports = class {
         if(config.version != Version) throw new Error('Config version isn\'t compatible. Version: ' + config.version + '; Supported: ' + Version);
         if(config.token == 'TOKEN') config.token = null;
 
-        return config;
+        this.config = config;
+        return this;
     }
 
     /**
-     * @param {Object} config - parsed config data
-     * @returns {Object} returns parsed config data
+     * @returns {Object} returns modified config
      */
-    prefill(config) {
-        if(!config.token || config.token == null) config.token = ask('Bot Token >>> ');
+    prefill() {
+        if(!this.config.token || this.config.token == null) this.config.token = ask('Bot Token >>> ');
 
-        return config;
+        return this;
     }
 
     /**
-     * @param {Object} config - parsed config data
-     * @returns {Object} returns parsed config data
+     * @returns {Object} returns modified config
      */
-    testmode(config) {
-        if(commands.opts().testmode) config.token = process.env['discordtoken'];
+    testmode() {
+        if(commands.opts().testmode) this.config.token = process.env['discordtoken'];
 
-        return config;
+        return this;
+    }
+
+    /**
+     * @returns {Object} returns parsed config
+     */
+    getConfig() {
+        return this.config;
     }
 }

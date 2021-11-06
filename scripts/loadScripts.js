@@ -28,7 +28,7 @@ module.exports = async (location, config, lang, Client) => {
             if(!name) continue;
 
             // Check supported version
-            if (!importModule.versions || importModule.versions && !importModule.versions.find(version => version == config.version)) { log.error(`${file} (${name}) does not support bot version ${config.version}`, file); continue; }
+            if (!importModule.versions || importModule.versions && !importModule.versions.find(version => version == config.version)) { log.error(`${file} (${name}) does not support Axis version ${config.version}`, file); continue; }
 
             // Import script
             scripts[name] = importModule;
