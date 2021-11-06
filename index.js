@@ -86,15 +86,15 @@ class UtilActions {
 }
 
 Client.login(config.token);
-const Actions = new UtilActions();
+Client.AxisUtility = new UtilActions();
 
 // Client ready
 Client.once('ready', async () => {
     log.warn('Client connected!', 'Status');
-    log.warn(`\nInvite: ${ Actions.createInvite(Client) }\n`, 'Invite');
+    log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
     
     // Register commands
-    await Actions.loadScripts();
+    await Client.AxisUtility.loadScripts();
     await registerInteractionCommmands(Client, config, commands, config.guildId, false);
 });
 
@@ -148,7 +148,7 @@ Client.on('ready', () => {
 
             // Execute command
             if(scripts.hasOwnProperty(command)){
-                Actions.messageCommand(command, message);
+                Client.AxisUtility.messageCommand(command, message);
             }
         }
     });
