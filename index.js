@@ -26,10 +26,10 @@ const MemberPermission = require('./scripts/memberPermissions');
 
 // Configurations
 const log = new Util.Logger('Bot');
-const language = new Language(config.language);
 const parseConfig = new Config('./config/config.yml');
-let lang = language.parse();
 let config = parseConfig.parse().testmode().prefill().getConfig();
+const language = new Language(config.language);
+let lang = language.parse();
 
 // Client
 const Client = new Discord.Client({
