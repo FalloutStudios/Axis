@@ -23,7 +23,7 @@ function Create(){
 
 
     // This is required for both script and command. This is called on bot ready
-    this.start = async (client, conf, lang) => {
+    this.start = async (client) => {
         return true;    // Return true when it's ready
     }
 

@@ -17,8 +17,10 @@ const deployFile = './deploy.txt';
  * @param {boolean} force - Force register commands without check deploy file
  * @returns {Promise<void>}}}
  */
-module.exports = async (client, config, commands, guild = null, force = false,) => {
+module.exports = async (client, commands, guild = null, force = false,) => {
     // Deployment
+    const config = client.AxisUtility.getConfig();
+
     if(!config.slashCommands.enabled) return;
     if(Fs.existsSync(deployFile) && !force && !guild) {
         const deploy = Fs.readFileSync(deployFile).toString().trim();

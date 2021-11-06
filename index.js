@@ -21,10 +21,11 @@ const Discord = require('discord.js');
 const ScriptLoader = require('./scripts/loadScripts');
 const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 const SafeMessage = require('./scripts/safeMessage');
+const SafeInteraction = require('./scripts/safeInteract');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
 
-// Public vars
+// Configurations
 const log = new Util.Logger('Bot');
 const parseConfig = new Config('./config/config.yml');
 let config = parseConfig.parse().testmode().prefill().getConfig();
@@ -80,17 +81,11 @@ class AxisUtility {
         
         // Check configurations
         if(!config.slashCommands.enabled || MemberPermission.isIgnoredChannel(interaction.channelId, config.blacklistChannels)) { 
-            await interaction.reply({ 
-                content: Util.getRandomKey(lang.notAvailable),
-                ephemeral: true
-            }).catch(err => log.error(err));
+            await SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.notAvailable), ephemeral: true });
             return; 
         }
         if(!CommandPermission(command['command']['name'], interaction.member, config)) { 
-            interaction.reply({ 
-                content: Util.getRandomKey(lang.noPerms),
-                ephemeral: true
-            }).catch(err => log.error(err, 'Slash command'));
+            SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.noPerms), ephemeral: true });
             return;
         }
 
@@ -107,6 +102,14 @@ class AxisUtility {
     createInvite(bot) {
         return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
     }
+
+    // Language and Config
+    getLanguage() {
+        return lang;
+    }
+    getConfig() {
+        return config;
+    }
 }
 
 Client.login(config.token);
@@ -118,11 +121,11 @@ Client.once('ready', async () => {
     log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
     
     // Register commands
-    const scriptsLoader = await ScriptLoader(Path.join(__dirname, config.modulesFolder), config, lang, Client);
+    const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, config.modulesFolder));
 
     scripts = scriptsLoader.scripts;
     commands = scriptsLoader.commands;
-    await registerInteractionCommmands(Client, config, commands, config.guildId, false);
+    await registerInteractionCommmands(Client, commands, config.guildId, false);
 });
 
 Client.on('ready', () => {
