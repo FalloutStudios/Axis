@@ -53,7 +53,12 @@ var commands = { MessageCommands: [], SlashCommands: [] };
 
 // AxisUtility
 class AxisUtility {
-    // Commands
+    /**
+     * 
+     * @param {string} command - command name
+     * @param {Object} message - message object
+     * @returns {Promise<void>}
+     */
     async messageCommand(command, message) {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
 
@@ -75,6 +80,11 @@ class AxisUtility {
         });
     }
 
+    /**
+     * 
+     * @param {Object} interaction - Interaction object
+     * @returns {Promise<void>}
+     */
     async interactionCommand(interaction) {
         // Execute commands
         if(!interaction.isCommand() || !interaction.member) return;
@@ -101,7 +111,21 @@ class AxisUtility {
         }
     }
 
-    // Other utility functions
+    /**
+     * 
+     * @param {string} command - command name to execute
+     * @param {Object} message - message object
+     * @returns {Promise<void>}
+     */
+    async executeMessageCommand(command, message) {
+        
+    }
+
+    /**
+     * 
+     * @param {Object} bot - Client object
+     * @returns {string}
+     */
     createInvite(bot) {
         return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
     }
@@ -112,6 +136,12 @@ class AxisUtility {
     }
     getConfig() {
         return config;
+    }
+    getScripts() {
+        return scripts;
+    }
+    getCommands() {
+        return commands;
     }
 }
 
