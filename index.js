@@ -123,6 +123,16 @@ class AxisUtility {
 
     /**
      * 
+     * @param {string} command - command name to execute
+     * @param {Object} interaction - interaction object
+     * @returns {Promise<void>}
+     */
+    async executeInteractionCommand(command, interaction) {
+
+    }
+
+    /**
+     * 
      * @param {Object} bot - Client object
      * @returns {string}
      */
