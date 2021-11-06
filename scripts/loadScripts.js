@@ -62,8 +62,6 @@ function loadCommands(script, commands) {
             throw new Error(`Invalid command type ${command.type}`);
         }
     }
-
-    return;
 }
 function parseMessageCommand(command, commands) {
     if(!command.name || !validateString(command.name)) throw new Error(`Invalid command name: ${command.name}`);
