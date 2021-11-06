@@ -27,9 +27,7 @@ const MemberPermission = require('./scripts/memberPermissions');
 // Public vars
 const log = new Util.Logger('Bot');
 const parseConfig = new Config('./config/config.yml');
-let config = parseConfig.parse();
-    config = parseConfig.testmode(config);
-    config = parseConfig.prefill(config);
+let config = parseConfig.parse().testmode().prefill().getConfig();
 const language = new Language(config.language);
 let lang = language.parse();
 
