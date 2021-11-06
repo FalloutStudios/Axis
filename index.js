@@ -49,14 +49,6 @@ var commands = [];
 
 // AxisUtility
 class AxisUtility {
-    // scripts
-    async loadScripts() {
-        const scriptsLoader = await ScriptLoader(Path.join(__dirname, config.modulesFolder), config, lang, Client);
-
-        scripts = scriptsLoader.scripts;
-        commands = scriptsLoader.commands;
-    }
-
     // Commands
     async messageCommand(command, message) {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
@@ -94,7 +86,10 @@ Client.once('ready', async () => {
     log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
     
     // Register commands
-    await Client.AxisUtility.loadScripts();
+    const scriptsLoader = await ScriptLoader(Path.join(__dirname, config.modulesFolder), config, lang, Client);
+
+    scripts = scriptsLoader.scripts;
+    commands = scriptsLoader.commands;
     await registerInteractionCommmands(Client, config, commands, config.guildId, false);
 });
 
