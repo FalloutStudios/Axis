@@ -125,7 +125,7 @@ Client.once('ready', async () => {
 
     scripts = scriptsLoader.scripts;
     commands = scriptsLoader.commands;
-    await registerInteractionCommmands(Client, config, commands, config.guildId, false);
+    await registerInteractionCommmands(Client, commands, config.guildId, false);
 });
 
 Client.on('ready', () => {
