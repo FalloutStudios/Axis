@@ -129,16 +129,34 @@ class AxisUtility {
         return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
     }
 
-    // Language and Config
+    /**
+     * 
+     * @returns {Object} Returns the language.yml in json
+     */
     getLanguage() {
         return lang;
     }
+
+    /**
+     * 
+     * @returns {Object} Returns the config.yml in json
+     */
     getConfig() {
         return config;
     }
+
+    /**
+     * 
+     * @returns {Object} Returns the loaded scripts files
+     */
     getScripts() {
         return scripts;
     }
+
+    /**
+     * 
+     * @returns {Object} Returns all the available commands
+     */
     getCommands() {
         return commands;
     }
@@ -151,6 +169,12 @@ Client.AxisUtility = new AxisUtility();
 Client.on('ready', async () => {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
+
+    // Execute .loaded method of every scripts
+    for(const script in scripts) {
+        if(!scripts[script]?.loaded) continue;
+        await scripts[script].loaded(Client);
+    }
 
     // Register commands
     const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, config.modulesFolder));
