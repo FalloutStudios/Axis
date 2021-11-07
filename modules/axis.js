@@ -2,6 +2,10 @@ const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder'
 const MessageCommandBuilder = require('../scripts/messageCommandBuilder');
 const SafeMessage = require('../scripts/safeMessage');
 const SafeInteract = require('../scripts/safeInteract');
+const CommandPermission = require('../scripts/commandPermissions');
+const interactionPaginationEmbed = require('discordjs-button-pagination');
+const { Pagination } = require("discordjs-button-embed-pagination");
+const { MessageEmbed, MessageButton } = require("discord.js");
 const Util = require('fallout-utility');
 const Version = require('../scripts/version');
 
@@ -74,13 +78,81 @@ function fetchInteractionCommand(command) {
     }
 
     commandDisplay = commandDisplay + args;
-    commands.InteractionCommands[command.name] = { display: commandDisplay, arguments: args.trim(), description: command?.description };
+    commands.InteractionCommands[command.name] = { display: commandDisplay, arguments: args.trim(), description: command.command?.description };
+}
+function filterVisibleCommands(allCommands, filter, member, commandsPerms) {
+    const newCommands = allCommands.filter((elmt) => {
+        // Check permissions
+        if(!CommandPermission(elmt, member, commandsPerms)) return false;
+
+        // Filter
+        if(filter && filter.length > 0) { return elmt.toLowerCase().indexOf(filter.toLowerCase()) !== -1; }
+        return true;
+    });
+
+    return Object.keys(newCommands).length ? newCommands : false;
+}
+function ifNewPage(i, intLimit) {
+    return i >= (intLimit - 1);
+}
+function makePages(visibleCommands, allCommands, client, language, prefix, embedColor) {
+    // Create embeds
+    let embeds = [];
+    let limit = 5;
+    let increment = -1;
+    let current = 0;
+    
+    // Separate embeds
+    if(!visibleCommands) return [new MessageEmbed().setTitle(Util.getRandomKey(language.noResponse))];
+    for (const value of visibleCommands) {
+        // Increment page
+        if(ifNewPage(increment, limit)) { current++; increment = 0; } else { increment++; }
+
+        // Create embed
+        if(!embeds[current]) {
+            embeds.push(new MessageEmbed()
+                .setAuthor(Util.getRandomKey(language.help.title), client.user.displayAvatarURL())
+                .setDescription(Util.getRandomKey(language.help.description))
+                .setColor(embedColor)
+                .setTimestamp());
+        }
+
+        // Add command
+        embeds[current].addField(value, '*'+ allCommands[value].description +'*\n```'+ prefix + allCommands[value].display +'```', false);
+    }
+
+    return embeds;
 }
 async function getHelpMessage(args, message, Client) {
     console.log(commands);
 }
 async function getHelpInteraction(interaction, Client) {
-    console.log(commands);
+    let filter = !interaction.options.getString('filter') ? '' : interaction.options.getString('filter');
+    let visibleCommands = Object.keys(commands.InteractionCommands);
+        visibleCommands = filterVisibleCommands(visibleCommands, filter, interaction.member, Client.AxisUtility.getConfig().permissions.interactionCommands);
+    
+    // Create embeds
+    let embeds = makePages(visibleCommands, commands.InteractionCommands, Client, Client.AxisUtility.getLanguage(), '/', Client.AxisUtility.getConfig().embedColor);
+    
+    // Create buttons
+    const buttons = [
+        new MessageButton()
+            .setCustomId("previousbtn")
+            .setLabel("Previous")
+            .setStyle("DANGER"),
+        new MessageButton()
+            .setCustomId("nextbtn")
+            .setLabel("Next")
+            .setStyle("SUCCESS")
+    ];
+
+    // Send response
+    await SafeInteract.deferReply(interaction);
+    if(embeds.length == 1) { 
+        await SafeInteract.editReply(interaction, { embeds: embeds });
+    } else {
+        await interactionPaginationEmbed(interaction, embeds, buttons, interactionTimeout).catch( err => log.error(err));
+    }
 }
 
 class Create {
@@ -115,11 +187,17 @@ class Create {
             new MessageCommandBuilder()
                 .setName('help')
                 .setDescription('Get command help')
+                .addArgument('filter', false, 'Filter commands')
                 .setExecute(async (args, message, Client) => getHelpMessage(args, message, Client)),
             new InteractionCommandBuilder()
                 .setCommand(SlashCommandBuilder => SlashCommandBuilder
                     .setName('help')
                     .setDescription('Get command help')
+                    .addStringOption(filter => filter
+                        .setName('filter')
+                        .setRequired(false)
+                        .setDescription('Filter commands')
+                    )
                 )
                 .setExecute(async (interaction, Client) => getHelpInteraction(interaction, Client))
         ]
