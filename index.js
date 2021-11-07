@@ -169,10 +169,7 @@ Client.on('ready', () => {
 
     // On Message
     Client.on('messageCreate', async message => {
-        if(message.author.id === Client.user.id || message.author.bot || message.author.system) return;
-
-        // Ignored channels
-        if(MemberPermission.isIgnoredChannel(message.channelId, config.blacklistChannels)) return;
+        if(message.author.id === Client.user.id || message.author.bot || message.author.system || MemberPermission.isIgnoredChannel(message.channelId, config.blacklistChannels)) return;
 
         log.log(`${message.author.username}: ${message.content}`, 'Message');
 
@@ -182,9 +179,7 @@ Client.on('ready', () => {
             const command = commandConstructor.command.toLowerCase();
 
             // Execute command
-            if(scripts.hasOwnProperty(command)){
-                Client.AxisUtility.messageCommand(command, message);
-            }
+            Client.AxisUtility.messageCommand(command, message);
         }
     });
 });
