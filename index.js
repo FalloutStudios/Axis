@@ -148,19 +148,17 @@ Client.login(config.token);
 Client.AxisUtility = new AxisUtility();
 
 // Client ready
-Client.once('ready', async () => {
+Client.on('ready', async () => {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
-    
+
     // Register commands
     const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, config.modulesFolder));
 
     scripts = scriptsLoader.scripts;
     commands = scriptsLoader.commands;
     await registerInteractionCommmands(Client, commands.InteractionCommands, config.guildId, false);
-});
 
-Client.on('ready', () => {
     // On Interaction commands
     Client.on('interactionCreate', async interaction => Client.AxisUtility.interactionCommand(interaction));
 
