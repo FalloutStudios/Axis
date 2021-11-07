@@ -21,7 +21,7 @@ module.exports = async (client, commands, guild = null, force = false,) => {
     // Deployment
     const config = client.AxisUtility.getConfig();
 
-    if(!config.slashCommands.enabled) return;
+    if(!config.permissions.interactionCommands.registerSlashCommands) return;
     if(Fs.existsSync(deployFile) && !force && !guild) {
         const deploy = Fs.readFileSync(deployFile).toString().trim();
 

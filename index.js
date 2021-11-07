@@ -63,7 +63,7 @@ class AxisUtility {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
 
         // No permission
-        if(!CommandPermission(command, message.member, config)) {
+        if(!CommandPermission(command, message.member, config.permissions.messageCommands)) {
             SafeMessage.reply(message, Util.getRandomKey(lang.noPerms));
             return;
         }
@@ -82,11 +82,11 @@ class AxisUtility {
         if(!interaction.isCommand() || !interaction.member) return;
         
         // Check configurations
-        if(!config.slashCommands.enabled || MemberPermission.isIgnoredChannel(interaction.channelId, config.blacklistChannels)) { 
+        if(MemberPermission.isIgnoredChannel(interaction.channelId, config.blacklistChannels)) { 
             await SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.notAvailable), ephemeral: true });
             return; 
         }
-        if(!CommandPermission(interaction.commandName, interaction.member, config)) { 
+        if(!CommandPermission(interaction.commandName, interaction.member, config.permissions.interactionCommands)) { 
             SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.noPerms), ephemeral: true });
             return;
         }
