@@ -44,7 +44,10 @@ class Create {
                     .setName('stop')
                     .setDescription('Stop the bot')
                 )
-                .setExecute(async (interaction, Client) => { await SafeInteract.reply(interaction, StopMessage(Client)); process.exit(0); })
+                .setExecute(async (interaction, Client) => { await SafeInteract.reply(interaction, StopMessage(Client)); process.exit(0); }),
+            
+            // Help command
+            // Breh
         ]
     }
     start = async (Client) => {
