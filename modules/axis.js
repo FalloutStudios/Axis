@@ -124,7 +124,18 @@ function makePages(visibleCommands, allCommands, client, language, prefix, embed
     return embeds;
 }
 async function getHelpMessage(args, message, Client) {
-    console.log(commands);
+    let filter = args.join(' ');
+    let visibleCommands = Object.keys(commands.MessageCommands);
+        visibleCommands = filterVisibleCommands(visibleCommands, filter, message.member, Client.AxisUtility.getConfig().permissions.messageCommands);
+    
+    // Create embeds
+    let embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.getLanguage(), '/', Client.AxisUtility.getConfig().embedColor);
+    
+    if(embeds.length == 1) {
+        await SafeMessage.reply(message, { embeds: embeds });
+    } else {
+        await new Pagination(message.channel, embeds, "Page", interactionTimeout).paginate().catch(err => log.error(err));
+    }
 }
 async function getHelpInteraction(interaction, Client) {
     let filter = !interaction.options.getString('filter') ? '' : interaction.options.getString('filter');
