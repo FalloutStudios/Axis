@@ -170,18 +170,18 @@ Client.on('ready', async () => {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
 
-    // Execute .loaded method of every scripts
-    for(const script in scripts) {
-        if(!scripts[script]?.loaded) continue;
-        await scripts[script].loaded(Client);
-    }
-
     // Register commands
     const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, config.modulesFolder));
 
     scripts = scriptsLoader.scripts;
     commands = scriptsLoader.commands;
     await registerInteractionCommmands(Client, commands.InteractionCommands, config.guildId, false);
+
+    // Execute .loaded method of every scripts
+    for(const script in scripts) {
+        if(!scripts[script]?.loaded) continue;
+        await scripts[script].loaded(Client);
+    }
 
     // On Interaction commands
     Client.on('interactionCreate', async interaction => Client.AxisUtility.interactionCommand(interaction));
