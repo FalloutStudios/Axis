@@ -62,19 +62,14 @@ class AxisUtility {
     async messageCommand(command, message) {
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
 
-        // Check permissions
-        if(typeof scripts[command].execute === 'undefined') return;
-
         // No permission
         if(!CommandPermission(command, message.member, config)) {
             SafeMessage.reply(message, Util.getRandomKey(lang.noPerms));
             return;
         }
 
-        log.warn(`${message.author.username} executed ${config.commandPrefix}${command}`, 'message Command');
-
         // Execute
-        await scripts[command].execute(args, message, Client).catch(async err => {
+        await this.executeMessageCommand(command, message, args).catch(async err => {
             log.error(err, `${config.commandPrefix}${command}`);
             await SafeMessage.send(message.channel, Util.getRandomKey(lang.error) + '\n```\n' + err.message + '\n```');
         });
@@ -115,9 +110,16 @@ class AxisUtility {
      * 
      * @param {string} name - command name to execute
      * @param {Object} message - message object
+     * @param {Object} args - command arguments
      * @returns {Promise<void>}
      */
-    async executeMessageCommand(name, message) {}
+    async executeMessageCommand(name, message, args) {
+        const command = commands.MessageCommands.find(property => property.name === name);
+        if(!command) throw new Error(`Command \`${name}\` does not exist`);
+
+        log.warn(`${message.author.username} executed ${config.commandPrefix}${command.name}`, 'MessageCommand');
+        await command.execute(args, message, Client);
+    }
 
     /**
      * 
