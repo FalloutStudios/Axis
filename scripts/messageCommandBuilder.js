@@ -1,5 +1,6 @@
 module.exports = class Builder {
     constructor() {
+        this.type = 'MessageCommand';
         this.name = null;
         this.description = null;
         this.arguments = [];
