@@ -69,10 +69,7 @@ class AxisUtility {
         }
 
         // Execute
-        await this.executeMessageCommand(command, message, args).catch(async err => {
-            log.error(err, `${config.commandPrefix}${command}`);
-            await SafeMessage.send(message.channel, Util.getRandomKey(lang.error) + '\n```\n' + err.message + '\n```');
-        });
+        await this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${config.commandPrefix}${command}`));
     }
 
     /**
@@ -122,7 +119,7 @@ class AxisUtility {
         const command = commands.InteractionCommands.find(property => property.name === name);
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
-        log.warn(`${interaction.member.user.username} executed ${interaction.commandName}`, 'InteractionCommand');
+        log.warn(`${interaction.member.user.username} executed /${interaction.commandName}`, 'InteractionCommand');
         await command.execute(interaction, Client);
     }
 
