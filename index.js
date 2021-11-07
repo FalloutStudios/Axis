@@ -83,27 +83,18 @@ class AxisUtility {
     async interactionCommand(interaction) {
         // Execute commands
         if(!interaction.isCommand() || !interaction.member) return;
-
-        let command = scripts[interaction.commandName]?.slash;
-        if (!command) return;
         
         // Check configurations
         if(!config.slashCommands.enabled || MemberPermission.isIgnoredChannel(interaction.channelId, config.blacklistChannels)) { 
             await SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.notAvailable), ephemeral: true });
             return; 
         }
-        if(!CommandPermission(command['command']['name'], interaction.member, config)) { 
+        if(!CommandPermission(interaction.commandName, interaction.member, config)) { 
             SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.noPerms), ephemeral: true });
             return;
         }
 
-        log.warn(`${interaction.member.user.username} executed ${interaction.commandName}`, 'Slash command');
-
-        try {
-            await command.execute(interaction, Client);
-        } catch (err) {
-            log.error(err, 'Interaction');
-        }
+        await this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err));
     }
 
     /**
@@ -127,7 +118,13 @@ class AxisUtility {
      * @param {Object} interaction - interaction object
      * @returns {Promise<void>}
      */
-    async executeInteractionCommand(name, interaction) {}
+    async executeInteractionCommand(name, interaction) {
+        const command = commands.InteractionCommands.find(property => property.name === name);
+        if(!command) throw new Error(`Command \`${name}\` does not exist`);
+
+        log.warn(`${interaction.member.user.username} executed ${interaction.commandName}`, 'InteractionCommand');
+        await command.execute(interaction, Client);
+    }
 
     /**
      * 
@@ -166,7 +163,7 @@ Client.once('ready', async () => {
 
     scripts = scriptsLoader.scripts;
     commands = scriptsLoader.commands;
-    await registerInteractionCommmands(Client, commands, config.guildId, false);
+    await registerInteractionCommmands(Client, commands.InteractionCommands, config.guildId, false);
 });
 
 Client.on('ready', () => {
