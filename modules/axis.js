@@ -17,6 +17,12 @@ function StopMessage(Client) {
     log.warn("Stopping...");
     return Util.getRandomKey(Client.AxisUtility.getLanguage().stop);
 }
+async function getHelpMessage(args, message, Client) {
+    // Soon...
+}
+async function getHelpInteraction(interaction, Client) {
+    // Soon...
+}
 
 class Create {
     constructor() {
@@ -47,7 +53,16 @@ class Create {
                 .setExecute(async (interaction, Client) => { await SafeInteract.reply(interaction, StopMessage(Client)); process.exit(0); }),
             
             // Help command
-            // Breh
+            new MessageCommandBuilder()
+                .setName('help')
+                .setDescription('Get command help')
+                .setExecute(async (args, message, Client) => getHelpMessage(args, message, Client)),
+            new InteractionCommandBuilder()
+                .setCommand(SlashCommandBuilder => SlashCommandBuilder
+                    .setName('help')
+                    .setDescription('Get command help')
+                )
+                .setExecute(async (interaction, Client) => getHelpInteraction(interaction, Client))
         ]
     }
     start = async (Client) => {
