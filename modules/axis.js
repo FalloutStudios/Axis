@@ -23,7 +23,7 @@ function StopMessage(Client) {
     return Util.getRandomKey(Client.AxisUtility.getLanguage().stop);
 }
 
-const commands = { MessageCommands: [], InteractionCommands: []};
+const commands = { MessageCommands: {}, InteractionCommands: {}};
 
 function fetchCommands(object) {
     for (const command of object) {
@@ -38,19 +38,18 @@ function fetchMessageCommand(command) {
     let commandDisplay = command.name;
     let args = '';
 
-    for(let name in command.arguments){
+    for(let name of command.arguments){
         let values = "";
-        let arg = command.arguments[name].required ? argTypes['required'] : argTypes['optional'];
-            arg = Util.replaceAll(arg, '%arg%', name);
+        let arg = name.required ? argTypes['required'] : argTypes['optional'];
+            arg = Util.replaceAll(arg, '%arg%', name.name);
 
-        if(command.arguments[name]?.values && command.arguments[name].values.length > 0){
-            let endLength = command.arguments[name].values.length;
+        if(name?.values && name.values.length > 0){
+            let endLength = name.values.length;
             let increment = 0;
             values += ': ';
 
-            for (const value of command.arguments[name].values) {
+            for (const value of name.values) {
                 increment++;
-
                 values += value;
                 if(increment < endLength) values += ", ";
             }
@@ -60,7 +59,7 @@ function fetchMessageCommand(command) {
     }
 
     commandDisplay = commandDisplay + args;
-    commands.MessageCommands[command.name] = { display: commandDisplay, arguments: args, description: command?.description };
+    commands.MessageCommands[command.name] = { display: commandDisplay, arguments: args.trim(), description: command?.description };
 }
 function fetchInteractionCommand(command) {
     let commandDisplay = command.name;
@@ -75,7 +74,7 @@ function fetchInteractionCommand(command) {
     }
 
     commandDisplay = commandDisplay + args;
-    commands.MessageCommands[command.name] = { display: commandDisplay, arguments: args, description: command?.description };
+    commands.InteractionCommands[command.name] = { display: commandDisplay, arguments: args.trim(), description: command?.description };
 }
 async function getHelpMessage(args, message, Client) {
     console.log(commands);
@@ -92,11 +91,18 @@ class Create {
             new MessageCommandBuilder()
                 .setName('version')
                 .setDescription('Displays the current version of your Axis bot.')
+                .addArgument('info', true, ['boi', 'sus'])
+                .addArgument('version', false, null)
                 .setExecute((args, message, Client) => getVersionMessage(args, message, Client)),
             new InteractionCommandBuilder()
                 .setCommand(SlashCommandBuilder => SlashCommandBuilder
                     .setName('version')
                     .setDescription('Displays the current version of your Axis bot.')
+                    .addStringOption(string => string
+                        .setName('version')
+                        .setDescription('Displays the current version of your Axis')
+                        .setRequired(false)    
+                    )
                 )
                 .setExecute((interaction, Client) => getVersionInteraction(interaction, Client)),
 
@@ -144,6 +150,7 @@ class Create {
     loaded(Client) {
         fetchCommands(Client.AxisUtility.getCommands().MessageCommands);
         fetchCommands(Client.AxisUtility.getCommands().InteractionCommands);
+        console.log(commands);
     }
 }
 
