@@ -91,18 +91,11 @@ class Create {
             new MessageCommandBuilder()
                 .setName('version')
                 .setDescription('Displays the current version of your Axis bot.')
-                .addArgument('info', true, ['boi', 'sus'])
-                .addArgument('version', false, null)
                 .setExecute((args, message, Client) => getVersionMessage(args, message, Client)),
             new InteractionCommandBuilder()
                 .setCommand(SlashCommandBuilder => SlashCommandBuilder
                     .setName('version')
                     .setDescription('Displays the current version of your Axis bot.')
-                    .addStringOption(string => string
-                        .setName('version')
-                        .setDescription('Displays the current version of your Axis')
-                        .setRequired(false)    
-                    )
                 )
                 .setExecute((interaction, Client) => getVersionInteraction(interaction, Client)),
 
@@ -150,7 +143,6 @@ class Create {
     loaded(Client) {
         fetchCommands(Client.AxisUtility.getCommands().MessageCommands);
         fetchCommands(Client.AxisUtility.getCommands().InteractionCommands);
-        console.log(commands);
     }
 }
 
