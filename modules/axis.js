@@ -142,7 +142,8 @@ class Create {
     }
     
     loaded(Client) {
-        fetchCommands(Client.AxisUtility.getCommands());
+        fetchCommands(Client.AxisUtility.getCommands().MessageCommands);
+        fetchCommands(Client.AxisUtility.getCommands().InteractionCommands);
     }
 }
 
