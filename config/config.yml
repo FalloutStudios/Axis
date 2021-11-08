@@ -28,7 +28,7 @@ permissions:
     registerSlashCommands: true
 
     # Restrict commands for admin only (This is the command name)
-    adminOnlyCommands: []
+    adminOnlyCommands: ['stop']
 
     # Command for moderator with kick and ban perms (This is the command name)
     moderatorOnlyCommands: []
