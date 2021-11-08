@@ -213,7 +213,8 @@ class Create {
                 .setExecute(async (interaction, Client) => getHelpInteraction(interaction, Client))
         ]
     }
-    start = async (Client) => {
+
+    async start(Client) {
         log.log('Axis default command module has started!');
         log.log('Configuring bot presence...');
 
