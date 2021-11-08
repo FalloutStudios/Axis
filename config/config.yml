@@ -8,17 +8,30 @@ guildId: # Only register slash commands for the given guild.
 
 # Command permissions
 permissions:
-  # Restrict commands for admin only (This is the script name)
-  adminOnlyCommands:
-    - 'stop'
+  # Message commands permissions
+  messageCommands:
+    # Enable message command permissions
+    enable: true
 
-  # Command for moderator with kick and ban perms (This is the script name)
-  moderatorOnlyCommands: 
-    - 'version'
+    # Restrict commands for admin only (This is the command name)
+    adminOnlyCommands: ['stop']
 
-# Slash commands
-slashCommands:
-  enabled: true
+    # Command for moderator with kick and ban perms (This is the command name)
+    moderatorOnlyCommands: []
+  
+  # Slash commands permissions
+  interactionCommands:
+    # Enable slash commands permissions
+    enable: true
+
+    # Register slash commands
+    registerSlashCommands: true
+
+    # Restrict commands for admin only (This is the command name)
+    adminOnlyCommands: ['stop']
+
+    # Command for moderator with kick and ban perms (This is the command name)
+    moderatorOnlyCommands: []
 
 # Ignored channels based on IDs
 blacklistChannels:            
@@ -39,4 +52,4 @@ inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&
 language: 'config/language.yml'   # Langage file 
 modulesFolder: 'modules'  # Define where's your modules
 
-version: 1.3.1    # Version (don't modify this value)
+version: 1.4.0    # Version (don't modify this value)
