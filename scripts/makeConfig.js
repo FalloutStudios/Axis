@@ -16,5 +16,5 @@ module.exports = (location, contents) => {
         Fs.writeFileSync(location, contents.toString());
     }
 
-    return Fs.readFileSync(location);
+    return Fs.readFileSync(location, 'utf-8');
 }
