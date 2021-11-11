@@ -16,5 +16,5 @@ module.exports = (location, contents) => {
         Fs.writeFileSync(location, contents.toString());
     }
 
-    return Yml.parse(Fs.readFileSync(location, 'utf8'));
+    return Fs.readFileSync(location);
 }
