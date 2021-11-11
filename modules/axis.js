@@ -21,7 +21,7 @@ let options = getConfig('./config/axisConfig.yml');
 
 class Create {
     constructor() {
-        this.versions = ['1.4.0'];
+        this.versions = ['1.4.1'];
         this.commands = setCommands();
     }
 
