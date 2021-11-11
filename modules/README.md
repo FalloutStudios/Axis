@@ -7,7 +7,7 @@ const MessageCommandBuilder = require('../scripts/messageCommandBuilder.js');
 // Builder
 class Create {
     constructor() {
-        this.versions = ['1.4.0']; // Specify the versions that this command is compatible with
+        this.versions = ['1.4.1']; // Specify the versions that this command is compatible with
         this.commands = [
             // Creating a message command
             new MessageCommandBuilder()
