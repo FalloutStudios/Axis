@@ -19,8 +19,6 @@ const argTypes = {
 }
 let options = getConfig('./config/axisConfig.yml');
 
-console.log(options);
-
 class Create {
     constructor() {
         this.versions = ['1.4.0'];
@@ -53,7 +51,6 @@ function setCommands() {
     setCommandStop();
     setCommandHelp();
 
-    console.log(registerCommands);
     return registerCommands;
 
     // Version Command
@@ -104,14 +101,14 @@ function setCommands() {
 
     // Stop Command
     function setCommandStop() {
-        if(options?.messageCommands.help.enabled)
+        if(options?.messageCommands.stop.enabled)
             registerCommands = registerCommands.concat([
                 new MessageCommandBuilder()
                     .setName('stop')
                     .setDescription('Stop the bot')
                     .setExecute(async (args, message, Client) => { await SafeMessage.reply(message, StopMessage(Client)); process.exit(0); })
             ]);
-        if(options?.interactionCommands.help.enabled)
+        if(options?.interactionCommands.stop.enabled)
             registerCommands = registerCommands.concat([
                 new InteractionCommandBuilder()
                     .setCommand(SlashCommandBuilder => SlashCommandBuilder
