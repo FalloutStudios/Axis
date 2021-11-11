@@ -35,7 +35,7 @@ module.exports = async (client, commands, guild = null, force = false,) => {
     // Send
     const rest = new REST({ version: '9' }).setToken(config.token);
     try {
-        if(!Object.keys(commands).length) return;
+        if(!Object.keys(commands).length) { log.warn('No interaction commands found.'); return; }
         if(!guild){
             await rest.put(
                 Routes.applicationCommands(client.user.id),
