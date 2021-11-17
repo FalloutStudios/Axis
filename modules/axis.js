@@ -279,7 +279,7 @@ async function getHelpMessage(args, message, Client) {
     let embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.getLanguage(), Client.AxisUtility.getConfig().commandPrefix, Client.AxisUtility.getConfig().embedColor);
     
     if(embeds.length == 1) {
-        await SafeMessage.reply(message, { embeds: embeds });
+        await SafeMessage.send(message.channel, { embeds: embeds });
     } else {
         await new Pagination(message.channel, embeds, "Page", interactionTimeout).paginate().catch(err => log.error(err));
     }
