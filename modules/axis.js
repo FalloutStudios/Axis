@@ -276,7 +276,7 @@ async function getHelpMessage(args, message, Client) {
         visibleCommands = filterVisibleCommands(visibleCommands, filter, message.member, Client.AxisUtility.getConfig().permissions.messageCommands);
     
     // Create embeds
-    let embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.getLanguage(), '/', Client.AxisUtility.getConfig().embedColor);
+    let embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.getLanguage(), Client.AxisUtility.getConfig().commandPrefix, Client.AxisUtility.getConfig().embedColor);
     
     if(embeds.length == 1) {
         await SafeMessage.reply(message, { embeds: embeds });
