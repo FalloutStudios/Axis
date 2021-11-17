@@ -281,7 +281,33 @@ async function getHelpMessage(args, message, Client) {
     if(embeds.length == 1) {
         await SafeMessage.send(message.channel, { embeds: embeds });
     } else {
-        await new Pagination(message.channel, embeds, "Page", interactionTimeout).paginate().catch(err => log.error(err));
+        await new Pagination(message.channel, embeds, "Page", interactionTimeout, [
+            {
+                style: "SECONDARY",
+                label: "Start",
+                emoji: ""
+            },
+            {
+                style: "PRIMARY",
+                label: "Previous",
+                emoji: ""
+            },
+            {
+                style: "DANGER",
+                label: "Cancel",
+                emoji: ""
+            },
+            {
+                style: "SUCCESS",
+                label: "Next",
+                emoji: ""
+            },
+            {
+                style: "SECONDARY",
+                label: "Last",
+                emoji: ""
+            },
+        ]).paginate().catch(err => log.error(err));
     }
 }
 async function getHelpInteraction(interaction, Client) {
@@ -297,7 +323,7 @@ async function getHelpInteraction(interaction, Client) {
         new MessageButton()
             .setCustomId("previousbtn")
             .setLabel("Previous")
-            .setStyle("DANGER"),
+            .setStyle("PRIMARY"),
         new MessageButton()
             .setCustomId("nextbtn")
             .setLabel("Next")
