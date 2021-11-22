@@ -56,7 +56,11 @@ class AxisUtility {
      * @returns {Promise<void>}
      */
     async messageCommand(command, message) {
+        const cmd = commands.MessageCommands.find(property => property.name === command);
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
+
+        // If the command exists
+        if(!cmd) return;
 
         // No permission
         if(!CommandPermission(command, message.member, config.permissions.messageCommands)) {
@@ -74,13 +78,18 @@ class AxisUtility {
      */
     async interactionCommand(interaction) {
         // Execute commands
-        if(!interaction.isCommand()) return;
+        const cmd = interaction.isCommand() ? commands.InteractionCommands.find(property => property.name === interaction.commandName) : null;
         
+        // If command exists
+        if(!cmd) return;
+
         // Check configurations
-        if(MemberPermission.isIgnoredChannel(interaction.channelId, config.blacklistChannels)) { 
+        if(MemberPermission.isIgnoredChannel(interaction.channelId, config.blacklistChannels) || !cmd.allowExecViaDm && !interaction?.member) { 
             return SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.notAvailable), ephemeral: true });
         }
-        if(interaction.member && !CommandPermission(interaction.commandName, interaction.member, config.permissions.interactionCommands)) { 
+
+        // No permission
+        if(!CommandPermission(interaction.commandName, interaction.member, config.permissions.interactionCommands)) { 
             return SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.noPerms), ephemeral: true });
         }
 
