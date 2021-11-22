@@ -63,4 +63,4 @@ inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&
 language: 'config/language.yml'   # Langage file 
 modulesFolder: 'modules'  # Define where's your modules
 
-version: 1.4.1    # Version (don't modify this value)
+version: 1.4.2    # Version (don't modify this value)
