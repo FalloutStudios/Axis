@@ -157,6 +157,15 @@ class AxisUtility {
     getCommands() {
         return commands;
     }
+
+    /**
+     * 
+     * @param {string} directory - directory to search
+     * @returns {Promise<Object>} returns the loaded scripts files
+     */
+    async loadModules(directory) {
+        return ScriptLoader(Client, Path.join(__dirname, directory))
+    }
 }
 
 Client.login(config.token);
@@ -168,7 +177,7 @@ Client.on('ready', async () => {
     log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
 
     // Register commands
-    const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, config.modulesFolder));
+    const scriptsLoader = await Client.AxisUtility.loadModules(config.modulesFolder);
 
     scripts = scriptsLoader.scripts;
     commands = scriptsLoader.commands;
