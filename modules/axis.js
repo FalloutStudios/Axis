@@ -59,6 +59,7 @@ function setCommands() {
             registerCommands = registerCommands.concat([
                 new MessageCommandBuilder()
                     .setName('version')
+                    .setAllowExecuteViaDm(true)
                     .setDescription('Displays the current version of your Axis bot.')
                     .setExecute((args, message, Client) => getVersionMessage(args, message, Client))
             ]);
