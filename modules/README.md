@@ -4,6 +4,8 @@
 // Require command builders if this is a command module
 const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder.js');
 const MessageCommandBuilder = require('../scripts/messageCommandBuilder.js');
+
+
 // Builder
 class Create {
     constructor() {
@@ -41,6 +43,7 @@ class Create {
         console.log(`Loaded test module with Axis v${Client.AxisUtility.getConfig().version}`);
     }
 }
+
 
 // Export the module
 module.exports = new Create();
