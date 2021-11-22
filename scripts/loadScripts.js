@@ -14,6 +14,8 @@ module.exports = async (Client, location) => {
     const scripts = {};
     const commands = { MessageCommands: [], InteractionCommands: [] };
 
+    if(!Fs.existsSync(location)) Fs.mkdirSync(location, { recursive: true });
+
     const modulesList = Fs.readdirSync(location).filter(file => { return file.endsWith('.js') && !file.startsWith('_'); });
 
     for (const file of modulesList) {
