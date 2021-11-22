@@ -11,7 +11,6 @@ require('./scripts/startup')();
 
 // Modules
 const Util = require('fallout-utility');
-const Fs = require('fs');
 const Path = require('path');
 const Config = require('./scripts/config');
 const Language = require('./scripts/language');
@@ -21,7 +20,7 @@ const Discord = require('discord.js');
 const ScriptLoader = require('./scripts/loadScripts');
 const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 const SafeMessage = require('./scripts/safeMessage');
-const SafeInteraction = require('./scripts/safeInteract');
+const SafeInteract = require('./scripts/safeInteract');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
 
@@ -57,16 +56,19 @@ class AxisUtility {
      * @returns {Promise<void>}
      */
     async messageCommand(command, message) {
-        const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
+        const cmd = this.getCommands().MessageCommands.find(property => property.name === command);
+        const args = Util.getCommand(message.content.trim(), this.getConfig().commandPrefix).args;
 
-        // No permission
-        if(!CommandPermission(command, message.member, config.permissions.messageCommands)) {
-            SafeMessage.reply(message, Util.getRandomKey(lang.noPerms));
-            return;
+        // If the command exists
+        if(!cmd) return;
+
+        // Check permission
+        if(!CommandPermission(command, message.member, this.getConfig().permissions.messageCommands)) {
+            return SafeMessage.reply(message, Util.getRandomKey(this.getLanguage().noPerms));
         }
 
         // Execute
-        await this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${config.commandPrefix}${command}`));
+        await this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${this.getConfig().commandPrefix}${command}`));
     }
 
     /**
@@ -76,19 +78,22 @@ class AxisUtility {
      */
     async interactionCommand(interaction) {
         // Execute commands
-        if(!interaction.isCommand() || !interaction.member) return;
+        const cmd = interaction.isCommand() ? commands.InteractionCommands.find(property => property.name === interaction.commandName) : null;
         
+        // If command exists
+        if(!cmd) return;
+
         // Check configurations
-        if(MemberPermission.isIgnoredChannel(interaction.channelId, config.blacklistChannels)) { 
-            await SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.notAvailable), ephemeral: true });
-            return; 
-        }
-        if(!CommandPermission(interaction.commandName, interaction.member, config.permissions.interactionCommands)) { 
-            SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.noPerms), ephemeral: true });
-            return;
+        if(MemberPermission.isIgnoredChannel(interaction.channelId, this.getConfig().blacklistChannels) || !cmd.allowExecViaDm && !interaction?.member) { 
+            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.getLanguage().notAvailable), ephemeral: true });
         }
 
-        await this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err));
+        // Check permission
+        if(!CommandPermission(interaction.commandName, interaction.member, this.getConfig().permissions.interactionCommands)) { 
+            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.getLanguage().noPerms), ephemeral: true });
+        }
+
+        await this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err, `/${interaction.commandName}`));
     }
 
     /**
@@ -102,7 +107,7 @@ class AxisUtility {
         const command = commands.MessageCommands.find(property => property.name === name);
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
-        log.warn(`${message.author.username} executed ${config.commandPrefix}${command.name}`, 'MessageCommand');
+        log.warn(`${message.author.username} executed ${this.getConfig().commandPrefix}${command.name}`, 'MessageCommand');
         await command.execute(args, message, Client);
     }
 
@@ -116,7 +121,7 @@ class AxisUtility {
         const command = commands.InteractionCommands.find(property => property.name === name);
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
-        log.warn(`${interaction.member.user.username} executed /${interaction.commandName}`, 'InteractionCommand');
+        log.warn(`${ (interaction?.user.username ? interaction.user.username + ' ' : '') }executed /${interaction.commandName}`, 'InteractionCommand');
         await command.execute(interaction, Client);
     }
 
@@ -126,7 +131,16 @@ class AxisUtility {
      * @returns {string}
      */
     createInvite(bot) {
-        return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
+        return Util.replaceAll(this.getConfig().inviteFormat, '%id%', bot.user.id);
+    }
+
+    /**
+     * 
+     * @param {string} directory - directory to search
+     * @returns {Promise<Object>} returns the loaded scripts files
+     */
+     async loadModules(directory) {
+        return ScriptLoader(Client, Path.join(__dirname, directory))
     }
 
     /**
@@ -171,7 +185,7 @@ Client.on('ready', async () => {
     log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
 
     // Register commands
-    const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, config.modulesFolder));
+    const scriptsLoader = await Client.AxisUtility.loadModules(config.modulesFolder);
 
     scripts = scriptsLoader.scripts;
     commands = scriptsLoader.commands;
@@ -203,6 +217,11 @@ Client.on('ready', async () => {
     });
 });
 
-// Errors
-Client.on('shardError', error => log.error(error));
-process.on('warning', warn => log.warn(warn));
+// Errors and warnings
+if(config.processErrors) {
+    if(config.processErrors.clientShardError) Client.on('shardError', error => log.error(error, 'ShardError'));
+
+    if(config.processErrors.processUncaughtException) process.on("unhandledRejection", reason => log.error(reason, 'Process'));
+    if(config.processErrors.processUncaughtException) process.on("uncaughtException", (err, origin) => log.error(err, 'Process') && log.error(origin, 'Process'));
+    if(config.processErrors.processWarning) process.on('warning', warn => log.warn(warn, 'Process'));
+}

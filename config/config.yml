@@ -48,8 +48,19 @@ presence:
   type: ['playing']  # Type of status (playing, listening, watching, streaming) or enter a custom status  [this can be a string or an object for random value]
   activityName: ['Minecraft']  # Name your activity [this can be a string or an object for random value]
 
+
+# Danger Zone!
+# Edit this values below if you know what you're doing
+
+# process errors logging. (Few options can stop some crashes)
+processErrors:
+  clientShardError: true
+  processWarning: true
+  processUnhandledRejection: false
+  processUncaughtException: false
+
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
 language: 'config/language.yml'   # Langage file 
-modulesFolder: 'modules'  # Define where's your modules
+modulesFolder: 'modules'  # Define where's your modules (Changing this might cause problems to other modules)
 
-version: 1.4.1    # Version (don't modify this value)
+version: 1.4.2    # Version (don't modify this value)
