@@ -56,15 +56,19 @@ class AxisUtility {
      * @returns {Promise<void>}
      */
     async messageCommand(command, message) {
-        const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
+        const cmd = this.getCommands().MessageCommands.find(property => property.name === command);
+        const args = Util.getCommand(message.content.trim(), this.getConfig().commandPrefix).args;
+
+        // If the command exists
+        if(!cmd) return;
 
         // No permission
-        if(!CommandPermission(command, message.member, config.permissions.messageCommands)) {
-            return SafeMessage.reply(message, Util.getRandomKey(lang.noPerms));
+        if(!CommandPermission(command, message.member, this.getConfig().permissions.messageCommands)) {
+            return SafeMessage.reply(message, Util.getRandomKey(this.getLanguage().noPerms));
         }
 
         // Execute
-        await this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${config.commandPrefix}${command}`));
+        await this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${this.getConfig().commandPrefix}${command}`));
     }
 
     /**
@@ -74,14 +78,19 @@ class AxisUtility {
      */
     async interactionCommand(interaction) {
         // Execute commands
-        if(!interaction.isCommand()) return;
+        const cmd = interaction.isCommand() ? commands.InteractionCommands.find(property => property.name === interaction.commandName) : null;
         
+        // If command exists
+        if(!cmd) return;
+
         // Check configurations
-        if(MemberPermission.isIgnoredChannel(interaction.channelId, config.blacklistChannels)) { 
-            return SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.notAvailable), ephemeral: true });
+        if(MemberPermission.isIgnoredChannel(interaction.channelId, this.getConfig().blacklistChannels) || !cmd.allowExecViaDm && !interaction?.member) { 
+            return SafeInteraction.reply(interaction, { content: Util.getRandomKey(this.getLanguage().notAvailable), ephemeral: true });
         }
-        if(interaction.member && !CommandPermission(interaction.commandName, interaction.member, config.permissions.interactionCommands)) { 
-            return SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.noPerms), ephemeral: true });
+
+        // No permission
+        if(!CommandPermission(interaction.commandName, interaction.member, this.getConfig().permissions.interactionCommands)) { 
+            return SafeInteraction.reply(interaction, { content: Util.getRandomKey(this.getLanguage().noPerms), ephemeral: true });
         }
 
         await this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err, `/${interaction.commandName}`));
@@ -98,7 +107,7 @@ class AxisUtility {
         const command = commands.MessageCommands.find(property => property.name === name);
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
-        log.warn(`${message.author.username} executed ${config.commandPrefix}${command.name}`, 'MessageCommand');
+        log.warn(`${message.author.username} executed ${this.getConfig().commandPrefix}${command.name}`, 'MessageCommand');
         await command.execute(args, message, Client);
     }
 
@@ -112,7 +121,7 @@ class AxisUtility {
         const command = commands.InteractionCommands.find(property => property.name === name);
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
-        log.warn(`${(interaction?.user.username ? interaction.user.username + ' ' : '')}executed /${interaction.commandName}`, 'InteractionCommand');
+        log.warn(`${ (interaction?.user.username ? interaction.user.username + ' ' : '') }executed /${interaction.commandName}`, 'InteractionCommand');
         await command.execute(interaction, Client);
     }
 
@@ -122,7 +131,16 @@ class AxisUtility {
      * @returns {string}
      */
     createInvite(bot) {
-        return Util.replaceAll(config.inviteFormat, '%id%', bot.user.id);
+        return Util.replaceAll(this.getConfig().inviteFormat, '%id%', bot.user.id);
+    }
+
+    /**
+     * 
+     * @param {string} directory - directory to search
+     * @returns {Promise<Object>} returns the loaded scripts files
+     */
+     async loadModules(directory) {
+        return ScriptLoader(Client, Path.join(__dirname, directory))
     }
 
     /**
@@ -155,15 +173,6 @@ class AxisUtility {
      */
     getCommands() {
         return commands;
-    }
-
-    /**
-     * 
-     * @param {string} directory - directory to search
-     * @returns {Promise<Object>} returns the loaded scripts files
-     */
-    async loadModules(directory) {
-        return ScriptLoader(Client, Path.join(__dirname, directory))
     }
 }
 
