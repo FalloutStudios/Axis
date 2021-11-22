@@ -204,8 +204,10 @@ Client.on('ready', async () => {
 });
 
 // Errors and warnings
-Client.on('shardError', error => log.error(error, 'ShardError'));
+if(config.processErrors) {
+    if(config.processErrors.clientShardError) Client.on('shardError', error => log.error(error, 'ShardError'));
 
-process.on("unhandledRejection", reason => log.error(reason, 'Process'));
-process.on("uncaughtException", (err, origin) => log.error(err, 'Process') && log.error(origin, 'Process'));
-process.on('warning', warn => log.warn(warn, 'Process'));
+    if(config.processErrors.processUncaughtException) process.on("unhandledRejection", reason => log.error(reason, 'Process'));
+    if(config.processErrors.processUncaughtException) process.on("uncaughtException", (err, origin) => log.error(err, 'Process') && log.error(origin, 'Process'));
+    if(config.processErrors.processWarning) process.on('warning', warn => log.warn(warn, 'Process'));
+}
