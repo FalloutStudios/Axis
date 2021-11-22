@@ -20,7 +20,7 @@ const Discord = require('discord.js');
 const ScriptLoader = require('./scripts/loadScripts');
 const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 const SafeMessage = require('./scripts/safeMessage');
-const SafeInteraction = require('./scripts/safeInteract');
+const SafeInteract = require('./scripts/safeInteract');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
 
@@ -62,7 +62,7 @@ class AxisUtility {
         // If the command exists
         if(!cmd) return;
 
-        // No permission
+        // Check permission
         if(!CommandPermission(command, message.member, this.getConfig().permissions.messageCommands)) {
             return SafeMessage.reply(message, Util.getRandomKey(this.getLanguage().noPerms));
         }
@@ -85,12 +85,12 @@ class AxisUtility {
 
         // Check configurations
         if(MemberPermission.isIgnoredChannel(interaction.channelId, this.getConfig().blacklistChannels) || !cmd.allowExecViaDm && !interaction?.member) { 
-            return SafeInteraction.reply(interaction, { content: Util.getRandomKey(this.getLanguage().notAvailable), ephemeral: true });
+            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.getLanguage().notAvailable), ephemeral: true });
         }
 
-        // No permission
+        // Check permission
         if(!CommandPermission(interaction.commandName, interaction.member, this.getConfig().permissions.interactionCommands)) { 
-            return SafeInteraction.reply(interaction, { content: Util.getRandomKey(this.getLanguage().noPerms), ephemeral: true });
+            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.getLanguage().noPerms), ephemeral: true });
         }
 
         await this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err, `/${interaction.commandName}`));
