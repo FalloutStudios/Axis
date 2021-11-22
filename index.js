@@ -61,8 +61,7 @@ class AxisUtility {
 
         // No permission
         if(!CommandPermission(command, message.member, config.permissions.messageCommands)) {
-            SafeMessage.reply(message, Util.getRandomKey(lang.noPerms));
-            return;
+            return SafeMessage.reply(message, Util.getRandomKey(lang.noPerms));
         }
 
         // Execute
@@ -76,19 +75,17 @@ class AxisUtility {
      */
     async interactionCommand(interaction) {
         // Execute commands
-        if(!interaction.isCommand() || !interaction.member) return;
+        if(!interaction.isCommand()) return;
         
         // Check configurations
         if(MemberPermission.isIgnoredChannel(interaction.channelId, config.blacklistChannels)) { 
-            await SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.notAvailable), ephemeral: true });
-            return; 
+            return SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.notAvailable), ephemeral: true });
         }
-        if(!CommandPermission(interaction.commandName, interaction.member, config.permissions.interactionCommands)) { 
-            SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.noPerms), ephemeral: true });
-            return;
+        if(interaction.member && !CommandPermission(interaction.commandName, interaction.member, config.permissions.interactionCommands)) { 
+            return SafeInteraction.reply(interaction, { content: Util.getRandomKey(lang.noPerms), ephemeral: true });
         }
 
-        await this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err));
+        await this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err, `/${interaction.commandName}`));
     }
 
     /**
@@ -116,7 +113,7 @@ class AxisUtility {
         const command = commands.InteractionCommands.find(property => property.name === name);
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
-        log.warn(`${interaction.member.user.username} executed /${interaction.commandName}`, 'InteractionCommand');
+        log.warn(`${(interaction?.user.username ? interaction.user.username + ' ' : '')}executed /${interaction.commandName}`, 'InteractionCommand');
         await command.execute(interaction, Client);
     }
 
