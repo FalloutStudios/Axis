@@ -203,6 +203,9 @@ Client.on('ready', async () => {
     });
 });
 
-// Errors
-Client.on('shardError', error => log.error(error));
-process.on('warning', warn => log.warn(warn));
+// Errors and warnings
+Client.on('shardError', error => log.error(error, 'ShardError'));
+
+process.on("unhandledRejection", reason => log.error(reason, 'Process'));
+process.on("uncaughtException", (err, origin) => log.error(err, 'Process') && log.error(origin, 'Process'));
+process.on('warning', warn => log.warn(warn, 'Process'));
