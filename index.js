@@ -26,7 +26,7 @@ const MemberPermission = require('./scripts/memberPermissions');
 
 // Configurations
 const log = new Util.Logger('Bot');
-const parseConfig = new Config('./config/config.yml');
+const parseConfig = new Config('./config/config.dev.yml');
 let config = parseConfig.parse().testmode().prefill().getConfig();
 const language = new Language(config.language);
 let lang = language.parse();
@@ -56,7 +56,7 @@ class AxisUtility {
      * @returns {Promise<void>}
      */
     async messageCommand(command, message) {
-        const cmd = commands.MessageCommands.find(property => property.name === command);
+        const cmd = this.getCommands().MessageCommands.find(property => property.name === command);
         const args = Util.getCommand(message.content.trim(), config.commandPrefix).args;
 
         // If the command exists
@@ -78,7 +78,7 @@ class AxisUtility {
      */
     async interactionCommand(interaction) {
         // Execute commands
-        const cmd = interaction.isCommand() ? commands.InteractionCommands.find(property => property.name === interaction.commandName) : null;
+        const cmd = interaction.isCommand() ? this.getCommands().InteractionCommands.find(property => property.name === interaction.commandName) : null;
         
         // If command exists
         if(!cmd) return;
@@ -104,7 +104,7 @@ class AxisUtility {
      * @returns {Promise<void>}
      */
     async executeMessageCommand(name, message, args) {
-        const command = commands.MessageCommands.find(property => property.name === name);
+        const command = this.getCommands().MessageCommands.find(property => property.name === name);
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
         log.warn(`${message.author.username} executed ${config.commandPrefix}${command.name}`, 'MessageCommand');
@@ -118,7 +118,7 @@ class AxisUtility {
      * @returns {Promise<void>}
      */
     async executeInteractionCommand(name, interaction) {
-        const command = commands.InteractionCommands.find(property => property.name === name);
+        const command = this.getCommands().InteractionCommands.find(property => property.name === name);
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
         log.warn(`${(interaction?.user.username ? interaction.user.username + ' ' : '')}executed /${interaction.commandName}`, 'InteractionCommand');
