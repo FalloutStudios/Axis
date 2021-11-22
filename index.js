@@ -11,7 +11,6 @@ require('./scripts/startup')();
 
 // Modules
 const Util = require('fallout-utility');
-const Fs = require('fs');
 const Path = require('path');
 const Config = require('./scripts/config');
 const Language = require('./scripts/language');
