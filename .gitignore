@@ -109,3 +109,4 @@ config/spam.yml
 deploy.txt
 config/axisConfig.yml
 modules/test.js
+plugins/
