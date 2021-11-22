@@ -8,11 +8,12 @@ module.exports = {
      * @param {*} reply - The reply to send
      * @returns {Promise<void>} Promise response
      */
-    async reply(interaction, reply) {
+    async reply(interaction, reply, verboseError = true) {
         try {
             return await interaction.reply(reply).catch( err => { log.error(err); });
         } catch (err) {
-            log.error(err);
+            log.error(verboseError ? err : err.message);
+            return false;
         }
     },
 
@@ -22,11 +23,12 @@ module.exports = {
      * @param {(string|Object)} options - Options for defered reply 
      * @returns {Promise<void>} Promise response
      */
-    async deferReply(interaction, options) {
+    async deferReply(interaction, options, verboseError = true) {
         try {
             return await interaction.deferReply(options).catch( err => { log.error(err); });
         } catch (err) {
-            log.error(err);
+            log.error(verboseError ? err : err.message);
+            return false;
         }
     },
 
@@ -36,11 +38,12 @@ module.exports = {
      * @param {*} edit - Edit sent reply
      * @returns {Promise<void>} Promise response
      */
-    async editReply(interaction, edit) {
+    async editReply(interaction, edit, verboseError = true) {
         try {
             return await interaction.editReply(edit).catch( err => { log.error(err); });
         } catch (err) {
-            log.error(err);
+            log.error(verboseError ? err : err.message);
+            return false;
         }
     },
 
@@ -50,11 +53,12 @@ module.exports = {
      * @param {*} followUp - Send a follow up reply
      * @returns {Promise<void>} Promise response
      */
-    async followUp(interaction, followUp) {
+    async followUp(interaction, followUp, verboseError = true) {
         try {
             return await interaction.followUp(followUp).catch( err => { log.error(err); });
         } catch (err) {
-            log.error(err);
+            log.error(verboseError ? err : err.message);
+            return false;
         }
     }
 }
