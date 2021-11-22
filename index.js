@@ -136,6 +136,15 @@ class AxisUtility {
 
     /**
      * 
+     * @param {string} directory - directory to search
+     * @returns {Promise<Object>} returns the loaded scripts files
+     */
+     async loadModules(directory) {
+        return ScriptLoader(Client, Path.join(__dirname, directory))
+    }
+
+    /**
+     * 
      * @returns {Object} Returns the language.yml in json
      */
     getLanguage() {
@@ -164,15 +173,6 @@ class AxisUtility {
      */
     getCommands() {
         return commands;
-    }
-
-    /**
-     * 
-     * @param {string} directory - directory to search
-     * @returns {Promise<Object>} returns the loaded scripts files
-     */
-    async loadModules(directory) {
-        return ScriptLoader(Client, Path.join(__dirname, directory))
     }
 }
 
