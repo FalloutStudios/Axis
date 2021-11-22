@@ -8,11 +8,11 @@ module.exports = {
      * @param {*} message - The message to send
      * @returns {Promise<void>} Promise message response
      */
-    async send (channel, message) {
+    async send (channel, message, verboseError = true) {
         try {
             return await channel.send(message).catch(err => { log.error(err); });
         } catch (err) {
-            log.error(err);
+            log.error(verboseError ? err : err?.message);
             return false;
         }
     },
@@ -23,11 +23,11 @@ module.exports = {
      * @param {*} reply - The reply to send
      * @returns {Promise<void>} Promise message response
      */
-    async reply (message, reply) {
+    async reply (message, reply, verboseError = true) {
         try {
             return await message.reply(reply).catch(err => { log.error(err); });
         } catch (err) {
-            log.error(err);
+            log.error(verboseError ? err : err?.message);
             return false;
         }
     },
@@ -37,11 +37,12 @@ module.exports = {
      * @param {Object} message - The message to delete
      * @returns {Promise<void>} Promise response
      */
-    async delete (message) {
+    async delete (message, verboseError = true) {
         try {
             return await message.delete().catch( err => { log.error(err); });
         } catch (err) {
-            log.error(err);
+            log.error(verboseError ? err : err?.message);
+            return false;
         }
     },
 
@@ -51,11 +52,11 @@ module.exports = {
      * @param {*} reaction - The reaction to send 
      * @returns {Promise<void>} Promise response
      */
-    async react (message, reaction) {
+    async react (message, reaction, verboseError = true) {
         try {
             return await message.react(reaction).catch( err => { log.error(err); });
         } catch (err) {
-            log.error(err);
+            log.error(verboseError ? err : err?.message);
             return false;
         }
     },
@@ -66,11 +67,11 @@ module.exports = {
      * @param {*} edit - Edited message content
      * @returns {Promise<void>} Promise response
      */
-    async edit (message, edit) {
+    async edit (message, edit, verboseError = true) {
         try {
             return await message.edit(edit).catch( err => { log.error(err); });
         } catch (err) {
-            log.error(err);
+            log.error(verboseError ? err : err?.message);
             return false;
         }
     }
