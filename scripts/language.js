@@ -25,7 +25,8 @@ module.exports = class {
 }
 
 function generateLang() {
-    return `error:
+    return `# Values can be either strings or objects. If the value type is object it will be randomly selected.
+error:
   - 'Error!'
   - 'An error!'
   - 'Error occurred'
@@ -52,14 +53,15 @@ noPerms:
 notAvailable:
   - 'This action is not available'
   - 'This is not available'
-  - 'You can''t use this for now'
+  - 'You can''t use this!'
 noResponse:
   - 'I got nothing for you'
   - 'Sorry, I don''t see anything for you'
-  - 'I can''t get response for this'
+  - 'I can''t get contents for this'
 success:
   - 'Successful!'
   - 'Successful'
+  - 'Done!'
   - 'Noice! It''s done'
 tooLarge:
   - 'This is too large'
@@ -74,7 +76,6 @@ tooSmall:
 stop: 
   - 'Ok'
   - 'Shut up! I''ll stop now'
-  - 'Ok bitch'
   - 'Stopping...'
 help:
   title: 'Command Help'
