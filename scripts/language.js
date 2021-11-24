@@ -80,5 +80,5 @@ help:
   title: 'Command Help'
   description: 'Here''s a list of the current commands:'
 
-version: 1.4.2 # Version (don't modify this value)`;
+version: ${Version} # Version (don't modify this value)`;
 }
