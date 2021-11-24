@@ -1,4 +1,4 @@
-module.exports = class Builder {
+module.exports = class MessageCommandBuilder {
     constructor() {
         this.type = 'MessageCommand';
         this.name = null;
