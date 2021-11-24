@@ -104,11 +104,7 @@ dist
 .tern-port
 
 # Development config
-*.dev.yml
-config/spam.yml
 deploy.txt
-config/axisConfig.yml
-config/config.yml
-config/language.yml
+/config/
 modules/test.js
 plugins/
