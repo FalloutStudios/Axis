@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-module.exports = class Builder {
+module.exports = class InteractionCommandBuilder {
     constructor() {
         this.type = 'InteractionCommand';
         this.name = null;
