@@ -202,7 +202,7 @@ Client.on('ready', async () => {
     log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
 
     // Register interaction commands
-    const scriptsLoader = await Client.AxisUtility.loadModules(config.modulesFolder);
+    await Client.AxisUtility.loadModules(config.modulesFolder);
 
     // Execute .loaded method of every scripts
     for(const script in scripts) {
