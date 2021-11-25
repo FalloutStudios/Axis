@@ -5,6 +5,11 @@
     #########     ## ##       ##           ## 
     ##     ##    ##   ##      ##     ##    ## 
     ##     ##   ##     ##   ######    ######  
+
+    ClassNames: PascalCase
+    PropertyNames: camelCase
+    VariableNames: camelCase (Constants: PascalCase)
+    FunctionNames: camelCase
 **/
 
 require('./scripts/startup')();
