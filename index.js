@@ -212,8 +212,6 @@ Client.on('ready', async () => {
 
     // On command execution
     Client.on('interactionCreate', async interaction => Client.AxisUtility.interactionCommand(interaction));
-
-    // On Message
     Client.on('messageCreate', async message => {
         if(message.author.id === Client.user.id || message.author.bot || message.author.system || MemberPermission.isIgnoredChannel(message.channelId, config.blacklistChannels)) return;
 
