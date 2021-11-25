@@ -2,7 +2,7 @@ const Path = require('path');
 const Util = require('fallout-utility');
 const Fs = require('fs');
 
-const log = new Util.Logger('loadScripts');
+const log = new Util.Logger('ScriptsLoader');
 
    /**
     * @param {string} location - The path to scripts

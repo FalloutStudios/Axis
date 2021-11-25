@@ -1,5 +1,5 @@
 const { Logger } = require('fallout-utility');
-const log = new Logger('Safe Interact');
+const log = new Logger('SafeInteract');
 
 module.exports = {
     /**

@@ -4,7 +4,7 @@ const { Logger } = require('fallout-utility');
 const Fs = require('fs');
 const MakeConfig = require('./makeConfig');
 
-const log = new Logger('Register Commands');
+const log = new Logger('RegisterCommands');
 
 const deployFile = './deploy.txt';
 
