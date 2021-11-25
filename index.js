@@ -8,7 +8,7 @@
 
     ClassNames: PascalCase
     PropertyNames: camelCase
-    VariableNames: camelCase (ConstantsConstructor: PascalCase )
+    VariableNames: camelCase (Constants<Imports>: PascalCase )
     FunctionNames: camelCase
 **/
 
