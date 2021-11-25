@@ -157,6 +157,12 @@ class AxisUtility {
         
         await registerInteractionCommmands(Client, commands.InteractionCommands, config.guildId, false);
         
+        // Execute .loaded method of every scripts
+        for(const script in scripts) {
+            if(!scripts[script]?.loaded) continue;
+            await scripts[script].loaded(Client);
+        }
+
         return scriptsLoader;
     }
 
@@ -204,13 +210,7 @@ Client.on('ready', async () => {
     // Register interaction commands
     await Client.AxisUtility.loadModules(config.modulesFolder);
 
-    // Execute .loaded method of every scripts
-    for(const script in scripts) {
-        if(!scripts[script]?.loaded) continue;
-        await scripts[script].loaded(Client);
-    }
-
-    // On Interaction commands
+    // On command execution
     Client.on('interactionCreate', async interaction => Client.AxisUtility.interactionCommand(interaction));
 
     // On Message
