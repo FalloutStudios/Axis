@@ -30,7 +30,7 @@ module.exports = class {
             config = Yml.parse(config);
         
         if(config.version != Version) throw new Error('Config version isn\'t compatible. Version: ' + config.version + '; Supported: ' + Version);
-        if(config.token == 'TOKEN') config.token = null;
+        config.token = config.token == 'TOKEN' ? null : config.token;
 
         this.config = config;
         return this;
@@ -40,7 +40,7 @@ module.exports = class {
      * @returns {Object} returns modified config
      */
     prefill() {
-        if(!this.config.token || this.config.token == null) this.config.token = ask('Bot Token >>> ');
+        this.config.token = !this.config.token || this.config.token == null ? ask('Bot Token >>> ') : this.config.token;
 
         return this;
     }
@@ -49,7 +49,7 @@ module.exports = class {
      * @returns {Object} returns modified config
      */
     testmode() {
-        if(commands.opts().testmode) this.config.token = process.env['discordtoken'];
+        this.config.token = commands.opts().testmode ? process.env['discordtoken'] : this.config.token;
 
         return this;
     }
