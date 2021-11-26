@@ -1,4 +1,3 @@
-const Fs = require('fs');
 const Yml = require('yaml');
 const MakeConfig = require('./makeConfig');
 const Version = require('./version');
@@ -13,14 +12,17 @@ module.exports = class {
 
     parse() {
         if(!this.location || this.location == null) throw new Error("No language location specified");
-        if(!Fs.existsSync(this.location)) MakeConfig(this.location, generateLang());
 
-        let language = Fs.readFileSync(this.location, 'utf8');
-            language = Yml.parse(language);
+        const language = Yml.parse(MakeConfig(this.location, generateLang()));
         
         if(language.version != Version) throw new Error("Unsupported language version. Version:" + language.version + "; Supported: " + Version);
+        this.language = language;
 
-        return language;
+        return this;
+    }
+
+    getLanguage() {
+        return this.language;
     }
 }
 

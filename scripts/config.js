@@ -1,5 +1,4 @@
 // Modules
-const Fs = require('fs');
 const Yml = require('yaml');
 const MakeConfig = require('./makeConfig');
 const Commander = require('commander');
@@ -24,15 +23,21 @@ module.exports = class {
      */ 
     parse() {
         if(!this.location || this.location == null) throw new Error('No config file path provided');
-        if(!Fs.existsSync(this.location)) MakeConfig(this.location, generateConfig());
 
-        let config = Fs.readFileSync(this.location, 'utf8');
-            config = Yml.parse(config);
-        
+        const config = Yml.parse(MakeConfig(this.location, generateConfig()));
+
         if(config.version != Version) throw new Error('Config version isn\'t compatible. Version: ' + config.version + '; Supported: ' + Version);
-        config.token = config.token == 'TOKEN' ? null : config.token;
-
         this.config = config;
+
+        return this
+    }
+
+    /**
+     * @returns {Object} returns modified config
+     */
+    testmode() {
+        this.config.token = commands.opts().testmode ? process.env['discordtoken'] : this.config.token;
+
         return this;
     }
 
@@ -41,15 +46,6 @@ module.exports = class {
      */
     prefill() {
         this.config.token = !this.config.token || this.config.token == null ? ask('Bot Token >>> ') : this.config.token;
-
-        return this;
-    }
-
-    /**
-     * @returns {Object} returns modified config
-     */
-    testmode() {
-        this.config.token = commands.opts().testmode ? process.env['discordtoken'] : this.config.token;
 
         return this;
     }

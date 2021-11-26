@@ -38,7 +38,7 @@ let config = parseConfig.parse().testmode().prefill().getConfig();
 
 // Language
 const language = new Language(config.language);
-let lang = language.parse();
+let lang = language.parse().getLanguage();
 
 
 // Client
