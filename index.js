@@ -33,12 +33,10 @@ const log = new Util.Logger('Bot');
 const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 
 // Config
-const parseConfig = new Config('./config/config.yml');
-let config = parseConfig.parse().testmode().prefill().getConfig();
+let config = new Config('./config/config.yml').parse().testmode().prefill().getConfig();
 
 // Language
-const language = new Language(config.language);
-let lang = language.parse().getLanguage();
+let lang = new Language(config.language).parse().getLanguage();
 
 
 // Client
@@ -150,7 +148,7 @@ class AxisUtility {
      * @returns {Promise<Object>} returns the loaded scripts files
      */
      async loadModules(directory) {
-        const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, directory));
+        const scriptsLoader = ScriptLoader(Client, Path.join(__dirname, directory));
 
         scripts = scriptsLoader.scripts;
         commands = scriptsLoader.commands;
@@ -160,7 +158,7 @@ class AxisUtility {
         // Execute .loaded method of every scripts
         for(const script in scripts) {
             if(!scripts[script]?.loaded) continue;
-            await scripts[script].loaded(Client);
+            Promise.resolve(scripts[script].loaded(Client));
         }
 
         return scriptsLoader;
