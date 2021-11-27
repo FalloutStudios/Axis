@@ -148,7 +148,7 @@ class AxisUtility {
      * @returns {Promise<Object>} returns the loaded scripts files
      */
      async loadModules(directory) {
-        const scriptsLoader = ScriptLoader(Client, Path.join(__dirname, directory));
+        const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, directory));
 
         scripts = scriptsLoader.scripts;
         commands = scriptsLoader.commands;
@@ -158,7 +158,7 @@ class AxisUtility {
         // Execute .loaded method of every scripts
         for(const script in scripts) {
             if(!scripts[script]?.loaded) continue;
-            Promise.resolve(scripts[script].loaded(Client));
+            await Promise.resolve(scripts[script].loaded(Client));
         }
 
         return scriptsLoader;
