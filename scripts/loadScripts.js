@@ -16,7 +16,7 @@ module.exports = async (Client, location) => {
 
     if(!Fs.existsSync(location)) Fs.mkdirSync(location, { recursive: true });
 
-    const modulesList = Fs.readdirSync(location).filter(file => { return file.endsWith('.js') && !file.startsWith('_'); });
+    const modulesList = Fs.readdirSync(location).filter(file => file.endsWith('.js') && !file.startsWith('_'));
 
     for (const file of modulesList) {
         const path = Path.join(location , file);
