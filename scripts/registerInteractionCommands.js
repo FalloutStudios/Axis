@@ -4,7 +4,7 @@ const { Logger } = require('fallout-utility');
 const Fs = require('fs');
 const MakeConfig = require('./makeConfig');
 
-const log = new Logger('Register Commands');
+const log = new Logger('RegisterCommands');
 
 const deployFile = './deploy.txt';
 
@@ -21,12 +21,12 @@ module.exports = async (client, commands, guild = null, force = false,) => {
     // Deployment
     const config = client.AxisUtility.getConfig();
 
-    if(!config.permissions.interactionCommands.registerSlashCommands) return;
+    if(!config.permissions.interactionCommands.registerSlashCommands) return log.log('RegisterSlashCommands commands are disabled');
     if(Fs.existsSync(deployFile) && !force && !guild) {
         const deploy = Fs.readFileSync(deployFile).toString().trim();
 
         if(deploy == 'false') {
-            return;
+            return log.log('Deployment file found, skipping register commands');
         }
     }
 
@@ -35,7 +35,7 @@ module.exports = async (client, commands, guild = null, force = false,) => {
     // Send
     const rest = new REST({ version: '9' }).setToken(config.token);
     try {
-        if(!Object.keys(commands).length) { log.warn('No interaction commands found.'); return; }
+        if(!Object.keys(commands).length) { return log.warn('No interaction commands found.'); }
         if(!guild){
             await rest.put(
                 Routes.applicationCommands(client.user.id),

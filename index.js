@@ -5,6 +5,11 @@
     #########     ## ##       ##           ## 
     ##     ##    ##   ##      ##     ##    ## 
     ##     ##   ##     ##   ######    ######  
+
+    ClassNames: PascalCase
+    PropertyNames: camelCase
+    VariableNames: camelCase (Constants<Imports>: PascalCase )
+    FunctionNames: camelCase
 **/
 
 require('./scripts/startup')();
@@ -18,7 +23,6 @@ const Discord = require('discord.js');
 
 // Local actions
 const ScriptLoader = require('./scripts/loadScripts');
-const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 const SafeMessage = require('./scripts/safeMessage');
 const SafeInteract = require('./scripts/safeInteract');
 const CommandPermission = require('./scripts/commandPermissions');
@@ -26,10 +30,16 @@ const MemberPermission = require('./scripts/memberPermissions');
 
 // Configurations
 const log = new Util.Logger('Bot');
+const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
+
+// Config
 const parseConfig = new Config('./config/config.yml');
 let config = parseConfig.parse().testmode().prefill().getConfig();
+
+// Language
 const language = new Language(config.language);
-let lang = language.parse();
+let lang = language.parse().getLanguage();
+
 
 // Client
 const Client = new Discord.Client({
@@ -140,7 +150,20 @@ class AxisUtility {
      * @returns {Promise<Object>} returns the loaded scripts files
      */
      async loadModules(directory) {
-        return ScriptLoader(Client, Path.join(__dirname, directory))
+        const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, directory));
+
+        scripts = scriptsLoader.scripts;
+        commands = scriptsLoader.commands;
+        
+        await registerInteractionCommmands(Client, commands.InteractionCommands, config.guildId, false);
+        
+        // Execute .loaded method of every scripts
+        for(const script in scripts) {
+            if(!scripts[script]?.loaded) continue;
+            await scripts[script].loaded(Client);
+        }
+
+        return scriptsLoader;
     }
 
     /**
@@ -176,31 +199,19 @@ class AxisUtility {
     }
 }
 
+// Client start
 Client.login(config.token);
 Client.AxisUtility = new AxisUtility();
 
-// Client ready
 Client.on('ready', async () => {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
 
-    // Register commands
-    const scriptsLoader = await Client.AxisUtility.loadModules(config.modulesFolder);
+    // Register interaction commands
+    await Client.AxisUtility.loadModules(config.modulesFolder);
 
-    scripts = scriptsLoader.scripts;
-    commands = scriptsLoader.commands;
-    await registerInteractionCommmands(Client, commands.InteractionCommands, config.guildId, false);
-
-    // Execute .loaded method of every scripts
-    for(const script in scripts) {
-        if(!scripts[script]?.loaded) continue;
-        await scripts[script].loaded(Client);
-    }
-
-    // On Interaction commands
+    // On command execution
     Client.on('interactionCreate', async interaction => Client.AxisUtility.interactionCommand(interaction));
-
-    // On Message
     Client.on('messageCreate', async message => {
         if(message.author.id === Client.user.id || message.author.bot || message.author.system || MemberPermission.isIgnoredChannel(message.channelId, config.blacklistChannels)) return;
 

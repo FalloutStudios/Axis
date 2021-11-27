@@ -17,8 +17,9 @@ module.exports = () => {
     log.log('  ░   ▒    ░    ░   ▒ ░░  ░  ░  ');
     log.log('      ░  ░ ░    ░   ░        ░  ');
 
-    let length = 32;
-    let version = 'v' + Version;
-    let bar = loopString((length / 2) - (version.length - 2),'=');
-    log.warn(bar + ' ' + version + ' ' + bar);
+    const length = 32;
+    const version = 'v' + Version;
+    const bar = loopString((length / 2) - (version.length - 2), '=');
+
+    log.warn(`${bar} ${version} ${bar}`);
 }

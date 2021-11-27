@@ -8,7 +8,7 @@ const Yml = require('yaml');
     * @returns {Object} yml parsed object
     */
 module.exports = (location, contents) => {
-    if(Path.extname(location) === '.yml' && typeof contents === 'object') contents = Yml.stringify(contents);
+    if((Path.extname(location) === '.yml' || Path.extname(location) === '.yaml') && typeof contents === 'object') contents = Yml.stringify(contents);
     if(typeof contents === 'object') contents = JSON.stringify(contents);
     
     if(!Fs.existsSync(location)) {
