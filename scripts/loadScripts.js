@@ -4,11 +4,11 @@ const Fs = require('fs');
 
 const log = new Util.Logger('ScriptsLoader');
 
-   /**
-    * @param {string} location - The path to scripts
-    * @param {Object} Client - Discord client
-    * @returns {Object} - returns an object with the loaded scripts
-    */
+/**
+* @param {string} location - The path to scripts
+* @param {Object} Client - Discord client
+* @returns {Object} - returns an object with the loaded scripts
+*/
 module.exports = async (Client, location) => {
     const config = Client.AxisUtility.getConfig();
     const scripts = {};
@@ -33,7 +33,7 @@ module.exports = async (Client, location) => {
             // Import script
             scripts[name] = importModule;
             scripts[name]['_information'] = {file: file, name: name, path: path};
-            if (!await scripts[name].start(Client)) { delete scripts[name]; throw new Error(`Couldn't start script ${file}`); }
+            if (!await Promise.resolve(scripts[name].start(Client))) { delete scripts[name]; throw new Error(`Couldn't start script ${file}`); }
 
             // Register Commands
             loadCommands(scripts[name], commands);

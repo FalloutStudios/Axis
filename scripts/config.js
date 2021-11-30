@@ -45,6 +45,7 @@ module.exports = class {
      * @returns {Object} returns modified config
      */
     prefill() {
+        this.config.token = this.config.token === 'TOKEN' ? null : this.config.token;
         this.config.token = !this.config.token || this.config.token == null ? ask('Bot Token >>> ') : this.config.token;
 
         return this;
