@@ -1,8 +1,8 @@
 // Modules
 const Yml = require('yaml');
-const MakeConfig = require('./makeConfig');
+const MakeConfig = require('../makeConfig');
 const Commander = require('commander');
-const Version = require('./version');
+const Version = require('../version');
 const { ask } = require('fallout-utility');
 
 const commands = new Commander.Command;
