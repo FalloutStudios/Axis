@@ -21,11 +21,11 @@ let options = getConfig('./config/axisConfig.yml');
 
 class Create {
     constructor() {
-        this.versions = ['1.4.4'];
+        this.versions = ['1.5.0'];
         this.commands = setCommands();
     }
 
-    async start(Client) {
+    async onStart(Client) {
         log.log('Axis default command module has started!');
         log.log('Configuring bot presence...');
 
@@ -34,7 +34,7 @@ class Create {
         return true;
     }
     
-    loaded(Client) {
+    onLoad(Client) {
         fetchCommands(Client.AxisUtility.getCommands().MessageCommands);
         fetchCommands(Client.AxisUtility.getCommands().InteractionCommands);
     }
