@@ -21,15 +21,15 @@ let options = getConfig('./config/axisConfig.yml');
 
 class Create {
     constructor() {
-        this.versions = ['1.4.4'];
+        this.versions = ['1.5.0'];
         this.commands = setCommands();
     }
 
-    async start(Client) {
+    start(Client) {
         log.log('Axis default command module has started!');
         log.log('Configuring bot presence...');
 
-        await setPresence(Client);
+        Client.on('ready', async () => setPresence(Client));
 
         return true;
     }
