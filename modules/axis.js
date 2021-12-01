@@ -1,7 +1,5 @@
-const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder');
-const MessageCommandBuilder = require('../scripts/messageCommandBuilder');
-const SafeMessage = require('../scripts/safeMessage');
-const SafeInteract = require('../scripts/safeInteract');
+const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts/builders/');
+const { SafeMessage, SafeInteract } = require('../scripts/safeActions/');
 const CommandPermission = require('../scripts/commandPermissions');
 const interactionPaginationEmbed = require('discordjs-button-pagination');
 const { Pagination } = require("discordjs-button-embed-pagination");
