@@ -23,8 +23,7 @@ const Discord = require('discord.js');
 
 // Local actions
 const ScriptLoader = require('./scripts/loadScripts');
-const SafeMessage = require('./scripts/safeMessage');
-const SafeInteract = require('./scripts/safeInteract');
+const { SafeMessage, SafeInteract } = require('./scripts/safeActions/');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
 
