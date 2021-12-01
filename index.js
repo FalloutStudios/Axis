@@ -17,8 +17,8 @@ require('./scripts/startup')();
 // Modules
 const Util = require('fallout-utility');
 const Path = require('path');
-const Config = require('./scripts/config');
-const Language = require('./scripts/language');
+const Config = require('./scripts/config/config');
+const Language = require('./scripts/config/language');
 const Discord = require('discord.js');
 
 // Local actions
