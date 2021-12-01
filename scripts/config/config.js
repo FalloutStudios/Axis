@@ -122,6 +122,9 @@ processErrors:
   processUnhandledRejection: false
   processUncaughtException: false
 
+client:
+  intents: 14023 # Use https://ziad87.net/intents/ to valid bitfield intent
+
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
 language: 'config/language.yml'   # Langage file 
 modulesFolder: 'modules'  # Define where's your modules (Changing this might cause problems to other modules)
