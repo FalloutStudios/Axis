@@ -40,21 +40,12 @@ let lang = new Language(config.language).parse().getLanguage();
 
 
 // Client
-const Client = new Discord.Client({
-    intents: [
-        Discord.Intents.FLAGS.GUILDS,
-        Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
-        Discord.Intents.FLAGS.GUILD_BANS,
-        Discord.Intents.FLAGS.GUILD_MEMBERS,
-        Discord.Intents.FLAGS.GUILD_MESSAGES,
-        Discord.Intents.FLAGS.GUILD_PRESENCES,
-        Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    ]
-});
+const Client = new Discord.Client(config.client);
 
 // Commands
 var scripts = {};
 var commands = { MessageCommands: [], InteractionCommands: [] };
+var intents = config.client.intents;
 
 // AxisUtility
 class AxisUtility {
