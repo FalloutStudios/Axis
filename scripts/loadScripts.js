@@ -33,7 +33,7 @@ module.exports = async (Client, location) => {
             // Import script
             scripts[name] = importModule;
             scripts[name]['_information'] = {file: file, name: name, path: path};
-            if (!await Promise.resolve(scripts[name].onStart(Client))) { delete scripts[name]; throw new Error(`Couldn't start script ${file}`); }
+            if (!await Promise.resolve(scripts[name].onStart(Client))) { delete scripts[name]; throw new Error(`Couldn't start script ${file}. Returned false`); }
 
             // Register Commands
             loadCommands(scripts[name], commands);
