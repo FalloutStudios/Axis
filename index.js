@@ -156,8 +156,8 @@ class AxisUtility {
         
         // Execute .loaded method of every scripts
         for(const script in scripts) {
-            if(!scripts[script]?.loaded) continue;
-            await Promise.resolve(scripts[script].loaded(Client));
+            if(!scripts[script]?.onLoad) continue;
+            await Promise.resolve(scripts[script].onLoad(Client));
         }
 
         Client.once('ready', async () => registerInteractionCommmands(Client, commands.InteractionCommands, config.guildId, false));

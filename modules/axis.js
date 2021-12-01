@@ -25,7 +25,7 @@ class Create {
         this.commands = setCommands();
     }
 
-    start(Client) {
+    onStart(Client) {
         log.log('Axis default command module has started!');
         log.log('Configuring bot presence...');
 
@@ -34,7 +34,7 @@ class Create {
         return true;
     }
     
-    loaded(Client) {
+    onLoad(Client) {
         fetchCommands(Client.AxisUtility.getCommands().MessageCommands);
         fetchCommands(Client.AxisUtility.getCommands().InteractionCommands);
     }
