@@ -17,14 +17,13 @@ require('./scripts/startup')();
 // Modules
 const Util = require('fallout-utility');
 const Path = require('path');
-const Config = require('./scripts/config');
-const Language = require('./scripts/language');
+const Config = require('./scripts/config/config');
+const Language = require('./scripts/config/language');
 const Discord = require('discord.js');
 
 // Local actions
 const ScriptLoader = require('./scripts/loadScripts');
-const SafeMessage = require('./scripts/safeMessage');
-const SafeInteract = require('./scripts/safeInteract');
+const { SafeMessage, SafeInteract } = require('./scripts/safeActions/');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
 
@@ -40,21 +39,12 @@ let lang = new Language(config.language).parse().getLanguage();
 
 
 // Client
-const Client = new Discord.Client({
-    intents: [
-        Discord.Intents.FLAGS.GUILDS,
-        Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
-        Discord.Intents.FLAGS.GUILD_BANS,
-        Discord.Intents.FLAGS.GUILD_MEMBERS,
-        Discord.Intents.FLAGS.GUILD_MESSAGES,
-        Discord.Intents.FLAGS.GUILD_PRESENCES,
-        Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    ]
-});
+const Client = new Discord.Client(config.client);
 
 // Commands
 var scripts = {};
 var commands = { MessageCommands: [], InteractionCommands: [] };
+var intents = config.client.intents;
 
 // AxisUtility
 class AxisUtility {
@@ -158,8 +148,8 @@ class AxisUtility {
         
         // Execute .loaded method of every scripts
         for(const script in scripts) {
-            if(!scripts[script]?.loaded) continue;
-            await Promise.resolve(scripts[script].loaded(Client));
+            if(!scripts[script]?.onLoad) continue;
+            await Promise.resolve(scripts[script].onLoad(Client));
         }
 
         return scriptsLoader;
@@ -167,35 +157,33 @@ class AxisUtility {
 
     /**
      * 
-     * @returns {Object} Returns the language.yml in json
+     * @returns {Object} Returns the config.yml in json
      */
-    getLanguage() {
-        return lang;
-    }
+    getConfig() { return config; }
 
     /**
      * 
-     * @returns {Object} Returns the config.yml in json
+     * @returns {Object} Returns the language.yml in json
      */
-    getConfig() {
-        return config;
-    }
+     getLanguage() { return lang; }
 
     /**
      * 
      * @returns {Object} Returns the loaded scripts files
      */
-    getScripts() {
-        return scripts;
-    }
+    getScripts() { return scripts; }
 
     /**
      * 
      * @returns {Object} Returns all the available commands
      */
-    getCommands() {
-        return commands;
-    }
+    getCommands() { return commands; }
+
+    /**
+     * 
+     * @returns {Object} Returns the Client object
+     */
+    getIntents() { return intents; }
 }
 
 // Client start

@@ -1,7 +1,5 @@
-const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder');
-const MessageCommandBuilder = require('../scripts/messageCommandBuilder');
-const SafeMessage = require('../scripts/safeMessage');
-const SafeInteract = require('../scripts/safeInteract');
+const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts/builders/');
+const { SafeMessage, SafeInteract } = require('../scripts/safeActions/');
 const CommandPermission = require('../scripts/commandPermissions');
 const interactionPaginationEmbed = require('discordjs-button-pagination');
 const { Pagination } = require("discordjs-button-embed-pagination");
@@ -21,11 +19,11 @@ let options = getConfig('./config/axisConfig.yml');
 
 class Create {
     constructor() {
-        this.versions = ['1.4.4'];
+        this.versions = ['1.5.0'];
         this.commands = setCommands();
     }
 
-    async start(Client) {
+    async onStart(Client) {
         log.log('Axis default command module has started!');
         log.log('Configuring bot presence...');
 
@@ -34,7 +32,7 @@ class Create {
         return true;
     }
     
-    loaded(Client) {
+    onLoad(Client) {
         fetchCommands(Client.AxisUtility.getCommands().MessageCommands);
         fetchCommands(Client.AxisUtility.getCommands().InteractionCommands);
     }

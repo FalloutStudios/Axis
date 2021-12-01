@@ -1,6 +1,6 @@
 const Yml = require('yaml');
-const MakeConfig = require('./makeConfig');
-const Version = require('./version');
+const MakeConfig = require('../makeConfig');
+const Version = require('../version');
 
 module.exports = class {
     /**
