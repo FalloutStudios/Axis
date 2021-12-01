@@ -158,8 +158,8 @@ class AxisUtility {
         
         // Execute .loaded method of every scripts
         for(const script in scripts) {
-            if(!scripts[script]?.loaded) continue;
-            await Promise.resolve(scripts[script].loaded(Client));
+            if(!scripts[script]?.onLoad) continue;
+            await Promise.resolve(scripts[script].onLoad(Client));
         }
 
         return scriptsLoader;
@@ -167,35 +167,33 @@ class AxisUtility {
 
     /**
      * 
-     * @returns {Object} Returns the language.yml in json
+     * @returns {Object} Returns the config.yml in json
      */
-    getLanguage() {
-        return lang;
-    }
+    getConfig() { return config; }
 
     /**
      * 
-     * @returns {Object} Returns the config.yml in json
+     * @returns {Object} Returns the language.yml in json
      */
-    getConfig() {
-        return config;
-    }
+     getLanguage() { return lang; }
 
     /**
      * 
      * @returns {Object} Returns the loaded scripts files
      */
-    getScripts() {
-        return scripts;
-    }
+    getScripts() { return scripts; }
 
     /**
      * 
      * @returns {Object} Returns all the available commands
      */
-    getCommands() {
-        return commands;
-    }
+    getCommands() { return commands; }
+
+    /**
+     * 
+     * @returns {Object} Returns the Client object
+     */
+    getIntents() { return intents; }
 }
 
 // Client start
