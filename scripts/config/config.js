@@ -9,7 +9,7 @@ const commands = new Commander.Command;
     commands.option('-t, --testmode');
     commands.parse();
 
-module.exports = class {
+module.exports = class Config {
     /**
      * @param {string} location config file location
      */
