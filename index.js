@@ -171,9 +171,25 @@ class AxisUtility {
 
     /**
      * 
-     * @returns {Object} Returns the Client object
+     * @returns {Object} returns methods to parse configurations
      */
-    getIntents() { return intents; }
+    parse() {
+        return {
+            /**
+             * @returns {void}
+             */
+            config() {
+                config = new Config('./config/config.yml').parse().testmode().getConfig();
+            },
+
+            /**
+             * @returns {void}
+             */
+            language() {
+                lang = new Language(config.language).parse().getLanguage();
+            }
+        }
+    }
 }
 
 // Client start
