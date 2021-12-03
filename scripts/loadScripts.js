@@ -11,7 +11,7 @@ const log = new Util.Logger('ScriptsLoader');
 * @returns {Object} - returns an object with the loaded scripts
 */
 module.exports = async (Client, location) => {
-    const config = Client.AxisUtility.getConfig();
+    const config = Client.AxisUtility.get().config;
     const scripts = {};
     const commands = { MessageCommands: [], InteractionCommands: [] };
 

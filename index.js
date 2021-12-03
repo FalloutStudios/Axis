@@ -55,19 +55,19 @@ class AxisUtility {
      * @returns {Promise<void>}
      */
     async messageCommand(command, message) {
-        const cmd = this.getCommands().MessageCommands.find(property => property.name === command);
-        const args = Util.getCommand(message.content.trim(), this.getConfig().commandPrefix).args;
+        const cmd = this.get().commands.MessageCommands.find(property => property.name === command);
+        const args = Util.getCommand(message.content.trim(), this.get().config.commandPrefix).args;
 
         // If the command exists
         if(!cmd) return;
 
         // Check permission
-        if(!CommandPermission(command, message.member, this.getConfig().permissions.messageCommands)) {
-            return SafeMessage.reply(message, Util.getRandomKey(this.getLanguage().noPerms));
+        if(!CommandPermission(command, message.member, this.get().config.permissions.messageCommands)) {
+            return SafeMessage.reply(message, Util.getRandomKey(this.get().language.noPerms));
         }
 
         // Execute
-        await this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${this.getConfig().commandPrefix}${command}`));
+        await this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${this.get().config.commandPrefix}${command}`));
     }
 
     /**
@@ -83,13 +83,13 @@ class AxisUtility {
         if(!cmd) return;
 
         // Check configurations
-        if(MemberPermission.isIgnoredChannel(interaction.channelId, this.getConfig().blacklistChannels) || !cmd.allowExecViaDm && !interaction?.member) { 
-            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.getLanguage().notAvailable), ephemeral: true });
+        if(MemberPermission.isIgnoredChannel(interaction.channelId, this.get().config.blacklistChannels) || !cmd.allowExecViaDm && !interaction?.member) { 
+            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.get().language.notAvailable), ephemeral: true });
         }
 
         // Check permission
-        if(!CommandPermission(interaction.commandName, interaction.member, this.getConfig().permissions.interactionCommands)) { 
-            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.getLanguage().noPerms), ephemeral: true });
+        if(!CommandPermission(interaction.commandName, interaction.member, this.get().config.permissions.interactionCommands)) { 
+            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.get().language.noPerms), ephemeral: true });
         }
 
         await this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err, `/${interaction.commandName}`));
@@ -106,7 +106,7 @@ class AxisUtility {
         const command = commands.MessageCommands.find(property => property.name === name);
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
-        log.warn(`${message.author.username} executed ${this.getConfig().commandPrefix}${command.name}`, 'MessageCommand');
+        log.warn(`${message.author.username} executed ${this.get().config.commandPrefix}${command.name}`, 'MessageCommand');
         await command.execute(args, message, Client);
     }
 
@@ -130,7 +130,7 @@ class AxisUtility {
      * @returns {string}
      */
     createInvite(bot) {
-        return Util.replaceAll(this.getConfig().inviteFormat, '%id%', bot.user.id);
+        return Util.replaceAll(this.get().config.inviteFormat, '%id%', bot.user.id);
     }
 
     /**

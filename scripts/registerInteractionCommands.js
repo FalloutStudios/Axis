@@ -19,7 +19,7 @@ const deployFile = './deploy.txt';
  */
 module.exports = async (client, commands, guild = null, force = false,) => {
     // Deployment
-    const config = client.AxisUtility.getConfig();
+    const config = client.AxisUtility.get().config;
 
     if(!config.permissions.interactionCommands.registerSlashCommands) return log.log('RegisterSlashCommands commands are disabled');
     if(Fs.existsSync(deployFile) && !force && !guild) {
