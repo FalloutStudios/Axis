@@ -1,7 +1,7 @@
 const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts/builders/');
 const { SafeMessage, SafeInteract } = require('../scripts/safeActions/');
 const CommandPermission = require('../scripts/commandPermissions');
-const interactionPaginationEmbed = require('discordjs-button-pagination');
+const InteractionPaginationEmbed = require('discordjs-button-pagination');
 const { Pagination } = require("discordjs-button-embed-pagination");
 const { MessageEmbed, MessageButton } = require("discord.js");
 const Util = require('fallout-utility');
@@ -334,6 +334,6 @@ async function getHelpInteraction(interaction, Client) {
     if(embeds.length == 1) { 
         await SafeInteract.editReply(interaction, { embeds: embeds });
     } else {
-        await interactionPaginationEmbed(interaction, embeds, buttons, interactionTimeout).catch( err => log.error(err));
+        await InteractionPaginationEmbed(interaction, embeds, buttons, interactionTimeout).catch( err => log.error(err));
     }
 }
