@@ -138,7 +138,7 @@ class AxisUtility {
      * @param {string} directory - directory to search
      * @returns {Promise<Object>} returns the loaded scripts files
      */
-     async loadModules(directory) {
+    async loadModules(directory) {
         const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, directory));
 
         scripts = scriptsLoader.scripts;
@@ -157,33 +157,39 @@ class AxisUtility {
 
     /**
      * 
-     * @returns {Object} Returns the config.yml in json
+     * @returns {Object[]} returns the loaded scripts and bot configurations
      */
-    getConfig() { return config; }
+    get() {
+        return {
+            intents: intents,
+            commands: commands,
+            scripts: scripts,
+            config: config,
+            language: lang
+        }
+    }
 
     /**
      * 
-     * @returns {Object} Returns the language.yml in json
+     * @returns {Object} returns methods to parse configurations
      */
-     getLanguage() { return lang; }
+    parse() {
+        return {
+            /**
+             * @returns {void}
+             */
+            config() {
+                config = new Config('./config/config.yml').parse().testmode().getConfig();
+            },
 
-    /**
-     * 
-     * @returns {Object} Returns the loaded scripts files
-     */
-    getScripts() { return scripts; }
-
-    /**
-     * 
-     * @returns {Object} Returns all the available commands
-     */
-    getCommands() { return commands; }
-
-    /**
-     * 
-     * @returns {Object} Returns the Client object
-     */
-    getIntents() { return intents; }
+            /**
+             * @returns {void}
+             */
+            language() {
+                lang = new Language(config.language).parse().getLanguage();
+            }
+        }
+    }
 }
 
 // Client start
