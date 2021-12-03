@@ -138,7 +138,7 @@ class AxisUtility {
      * @param {string} directory - directory to search
      * @returns {Promise<Object>} returns the loaded scripts files
      */
-     async loadModules(directory) {
+    async loadModules(directory) {
         const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, directory));
 
         scripts = scriptsLoader.scripts;
@@ -157,27 +157,17 @@ class AxisUtility {
 
     /**
      * 
-     * @returns {Object} Returns the config.yml in json
+     * @returns {Object[]} returns the loaded scripts and bot configurations
      */
-    getConfig() { return config; }
-
-    /**
-     * 
-     * @returns {Object} Returns the language.yml in json
-     */
-     getLanguage() { return lang; }
-
-    /**
-     * 
-     * @returns {Object} Returns the loaded scripts files
-     */
-    getScripts() { return scripts; }
-
-    /**
-     * 
-     * @returns {Object} Returns all the available commands
-     */
-    getCommands() { return commands; }
+    get() {
+        return {
+            intents: intents,
+            commands: commands,
+            scripts: scripts,
+            config: config,
+            language: lang
+        }
+    }
 
     /**
      * 
