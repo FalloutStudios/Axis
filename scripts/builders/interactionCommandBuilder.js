@@ -1,3 +1,4 @@
+const DataTypeValidator = require('../dataTypeValidator');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = class InteractionCommandBuilder {
     constructor() {
@@ -14,7 +15,7 @@ module.exports = class InteractionCommandBuilder {
      * @returns 
      */
     setExecute(execute) {
-        if(!validateFunction(execute)) throw new TypeError('Invalid argument: `execute` must be a function');
+        if(!DataTypeValidator.function(execute)) throw new TypeError('Invalid argument: `execute` must be a function');
         this.execute = execute;
         return this;
     }
@@ -24,7 +25,7 @@ module.exports = class InteractionCommandBuilder {
      * @param {boolean} allow - Set whether the command can be executed via DM. 
      */
     setAllowExecuteViaDm(allow) {
-        if(!validateBoolean(allow)) throw new TypeError('Invalid argument: `allow` must be a boolean');
+        if(!DataTypeValidator.boolean(allow)) throw new TypeError('Invalid argument: `allow` must be a boolean');
         this.allowExecViaDm = allow;
         return this;
     }
@@ -35,18 +36,10 @@ module.exports = class InteractionCommandBuilder {
      * @returns 
      */
     setCommand(command) {
-        if(!validateFunction(command) || typeof command === 'object') throw new TypeError('Invalid argument: `command` must be a function');
+        if(!(DataTypeValidator.function(command) || DataTypeValidator.object(command))) throw new TypeError('Invalid argument: `command` must be a function');
 
         this.command = typeof command === 'object' ? command : command(new SlashCommandBuilder(this)).toJSON();
         this.name = this.command.name;
         return this;
     }
-}
-
-function validateFunction(value) {
-    return typeof value === 'function';
-}
-
-function validateBoolean(value) {
-    return typeof value === 'boolean';
 }

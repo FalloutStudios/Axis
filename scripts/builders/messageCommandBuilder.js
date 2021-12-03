@@ -1,3 +1,5 @@
+const dataTypeValidator = require('../dataTypeValidator');
+
 module.exports = class MessageCommandBuilder {
     constructor() {
         this.type = 'MessageCommand';
@@ -12,7 +14,7 @@ module.exports = class MessageCommandBuilder {
      * @param {string} name - The name. Needs to be lowercase and without spaces or special characters.
      */
     setName(name) {
-        if(!validateString(name)) throw new TypeError('Name must be a lowercase string without special characters and whitespace');
+        if(!dataTypeValidator.moduleName(name)) throw new TypeError('Name must be a lowercase string without special characters and whitespace');
         this.name = name;
         return this;
     }
@@ -33,7 +35,7 @@ module.exports = class MessageCommandBuilder {
      * @returns 
      */
     setExecute(execute) {
-        if(!validateFunction(execute)) throw new TypeError('Invalid argument: `execute` must be a function');
+        if(!dataTypeValidator.function(execute)) throw new TypeError('Invalid argument: `execute` must be a function');
         this.execute = execute;
         return this;
     }
@@ -47,9 +49,9 @@ module.exports = class MessageCommandBuilder {
      * @returns 
      */
     addArgument(name = '', required = false, description = '', values = []) {
-        if(!validateString(name)) throw new TypeError('Invalid argument: Argument `name` must be a lowercase string without special characters and whitespace');
-        if(!validateBoolean(required)) throw new TypeError('Invalid argument: `required` must be a boolean');
-        if(!validateStringArray(values)) throw new TypeError('Invalid argument: `values` must be an array of strings');
+        if(!dataTypeValidator.moduleName(name)) throw new TypeError('Invalid argument: Argument `name` must be a lowercase string without special characters and whitespace');
+        if(!dataTypeValidator.boolean(required)) throw new TypeError('Invalid argument: `required` must be a boolean');
+        if(!dataTypeValidator.arrayDataTypeProperties(values, 'string')) throw new TypeError('Invalid argument: `values` must be an array of strings');
 
         this.arguments.push({
             name: name,
@@ -59,20 +61,4 @@ module.exports = class MessageCommandBuilder {
         });
         return this;
     }
-}
-
-function validateBoolean(value) {
-    return value === true || value === false;
-}
-
-function validateStringArray(value) {
-    return Array.isArray(value) && value.every(v => typeof v === 'string');
-}
-
-function validateFunction(value) {
-    return typeof value === 'function';
-}
-
-function validateString(value) {
-    return typeof value === 'string' && value.match(/^[a-z]+$/);
 }
