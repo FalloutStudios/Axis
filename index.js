@@ -40,7 +40,7 @@ let lang = new Language(config.language).parse().getLanguage();
 // Client
 const Client = new Discord.Client(config.client);
 
-// Commands
+// Data
 var scripts = {};
 var commands = { MessageCommands: [], InteractionCommands: [] };
 var intents = config.client.intents;
