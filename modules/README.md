@@ -2,14 +2,13 @@
 
 ```js
 // Require command builders if this is a command module
-const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder.js');
-const MessageCommandBuilder = require('../scripts/messageCommandBuilder.js');
+const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts/builders');
 
 
 // Builder
 class Create {
     constructor() {
-        this.versions = ['1.4.4'];  // Specify the versions that this command is compatible with
+        this.versions = ['1.5.0'];  // Specify the versions that this command is compatible with
         this.commands = [
             // Creating a message command
             new MessageCommandBuilder()
@@ -34,12 +33,12 @@ class Create {
     }
 
     // This will be executed when loading the module
-    async start(Client) {
+    onStart(Client) {
         return true;    // Return true if the module is loaded
     }
 
     // This will be executed when the module is loaded
-    async loaded(Client) {
+    onLoaded(Client) {
         console.log(`Loaded test module with Axis v${Client.AxisUtility.getConfig().version}`);
     }
 }
