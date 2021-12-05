@@ -3,7 +3,7 @@ const { SafeMessage, SafeInteract } = require('../scripts/safeActions/');
 const CommandPermission = require('../scripts/commandPermissions');
 const InteractionPaginationEmbed = require('discordjs-button-pagination');
 const { Pagination } = require("discordjs-button-embed-pagination");
-const { MessageEmbed, MessageButton } = require("discord.js");
+const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
 const Util = require('fallout-utility');
 const Version = require('../scripts/version');
 const MakeConfig = require('../scripts/makeConfig');
@@ -16,6 +16,7 @@ const argTypes = {
     optional: "[%arg%%values%]"
 }
 let options = getConfig('./config/axisConfig.yml');
+let versionMessageReply = "";
 
 class Create {
     constructor() {
@@ -28,6 +29,7 @@ class Create {
         log.log('Configuring bot presence...');
 
         await setPresence(Client);
+        versionMessageReply = getVersionMessageReply(Client);
 
         return true;
     }
@@ -58,7 +60,7 @@ function setCommands() {
                 new MessageCommandBuilder()
                     .setName('version')
                     .setDescription('Displays the current version of your Axis bot.')
-                    .setExecute((args, message, Client) => getVersionMessage(args, message, Client))
+                    .setExecute((args, message, Client) => SafeMessage.reply(message, versionMessageReply))
             ]);
         if(options?.interactionCommands.version.enabled)
             registerCommands = registerCommands.concat([
@@ -68,7 +70,7 @@ function setCommands() {
                         .setName('version')
                         .setDescription('Displays the current version of your Axis bot.')
                     )
-                    .setExecute((interaction, Client) => getVersionInteraction(interaction, Client))
+                    .setExecute((interaction, Client) => SafeMessage.reply(interaction, versionMessageReply))
             ])
     }
 
@@ -143,7 +145,24 @@ function getConfig(location) {
                 enabled: true
             }
         },
-        setPresence: true
+        setPresence: true,
+        version: {
+            message: '**${Client.user.username} v${Version}**\nBased on Axis bot v${Version}.\nhttps://github.com/FalloutStudios/Axis',
+            linkButtons: [
+                {
+                    name: 'View on Github',
+                    link: 'https://github.com/FalloutStudios/Axis'
+                },
+                {
+                    name: 'Submit an issue',
+                    link: 'https://github.com/FalloutStudios/Axis/issues'
+                },
+                {
+                    name: 'View wiki',
+                    link: 'https://github.com/FalloutStudios/Axis/wiki'
+                }
+            ]
+        }
     }));
 }
 
@@ -160,11 +179,24 @@ async function setPresence(Client) {
 }
 
 // Version command
-async function getVersionMessage(args, message, Client) {
-    await SafeMessage.reply(message, `**${Client.user.username} v${Version}**\nBased on Axis bot v${Version}.\nhttps://github.com/FalloutStudios/Axis`);
-}
-async function getVersionInteraction(interaction, Client) {
-    await SafeInteract.reply(interaction, `**${Client.user.username} v${Version}**\nBased on Axis bot v${Version}.\nhttps://github.com/FalloutStudios/Axis`);
+function getVersionMessageReply(Client) {
+    const buttons = new MessageActionRow();
+
+    for (const button of options.version.linkButtons) {
+        buttons.addComponents(
+            new MessageButton()
+                .setStyle("LINK")
+                .setLabel(button.name)
+                .setURL(button.link)
+        );
+    }
+
+    let strMessage = Util.getRandomKey(options.version.message);
+    strMessage = Util.replaceAll(strMessage, '{username}', Client.user.username);
+    strMessage = Util.replaceAll(strMessage, '{tag}', Client.user.tag);
+    strMessage = Util.replaceAll(strMessage, '{version}', Version);
+
+    return { content: strMessage, components: [buttons] };
 }
 
 // Stop command
