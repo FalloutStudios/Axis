@@ -147,7 +147,7 @@ function getConfig(location) {
         },
         setPresence: true,
         version: {
-            message: '**${Client.user.username} v${Version}**\nBased on Axis bot v${Version}.\nhttps://github.com/FalloutStudios/Axis',
+            message: '**{username} v{version}**\nBased on Axis bot v{version}.\nhttps://github.com/FalloutStudios/Axis',
             linkButtons: [
                 {
                     name: 'View on Github',
