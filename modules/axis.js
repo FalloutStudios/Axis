@@ -1,11 +1,9 @@
-const InteractionCommandBuilder = require('../scripts/interactionCommandBuilder');
-const MessageCommandBuilder = require('../scripts/messageCommandBuilder');
-const SafeMessage = require('../scripts/safeMessage');
-const SafeInteract = require('../scripts/safeInteract');
+const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts/builders/');
+const { SafeMessage, SafeInteract } = require('../scripts/safeActions/');
 const CommandPermission = require('../scripts/commandPermissions');
-const interactionPaginationEmbed = require('discordjs-button-pagination');
+const InteractionPaginationEmbed = require('discordjs-button-pagination');
 const { Pagination } = require("discordjs-button-embed-pagination");
-const { MessageEmbed, MessageButton } = require("discord.js");
+const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
 const Util = require('fallout-utility');
 const Version = require('../scripts/version');
 const MakeConfig = require('../scripts/makeConfig');
@@ -18,25 +16,27 @@ const argTypes = {
     optional: "[%arg%%values%]"
 }
 let options = getConfig('./config/axisConfig.yml');
+let versionMessageReply = "";
 
 class Create {
     constructor() {
-        this.versions = ['1.4.4'];
+        this.versions = ['1.5.0'];
         this.commands = setCommands();
     }
 
-    async start(Client) {
+    async onStart(Client) {
         log.log('Axis default command module has started!');
         log.log('Configuring bot presence...');
 
         await setPresence(Client);
+        versionMessageReply = getVersionMessageReply(Client);
 
         return true;
     }
     
-    loaded(Client) {
-        fetchCommands(Client.AxisUtility.getCommands().MessageCommands);
-        fetchCommands(Client.AxisUtility.getCommands().InteractionCommands);
+    onLoad(Client) {
+        fetchCommands(Client.AxisUtility.get().commands.MessageCommands);
+        fetchCommands(Client.AxisUtility.get().commands.InteractionCommands);
     }
 }
 
@@ -60,7 +60,7 @@ function setCommands() {
                 new MessageCommandBuilder()
                     .setName('version')
                     .setDescription('Displays the current version of your Axis bot.')
-                    .setExecute((args, message, Client) => getVersionMessage(args, message, Client))
+                    .setExecute((args, message, Client) => SafeMessage.reply(message, versionMessageReply))
             ]);
         if(options?.interactionCommands.version.enabled)
             registerCommands = registerCommands.concat([
@@ -70,7 +70,7 @@ function setCommands() {
                         .setName('version')
                         .setDescription('Displays the current version of your Axis bot.')
                     )
-                    .setExecute((interaction, Client) => getVersionInteraction(interaction, Client))
+                    .setExecute((interaction, Client) => SafeMessage.reply(interaction, versionMessageReply))
             ])
     }
 
@@ -145,13 +145,30 @@ function getConfig(location) {
                 enabled: true
             }
         },
-        setPresence: true
+        setPresence: true,
+        version: {
+            message: '**{username} v{version}**\nBased on Axis bot v{version}.\nhttps://github.com/FalloutStudios/Axis',
+            linkButtons: [
+                {
+                    name: 'View on Github',
+                    link: 'https://github.com/FalloutStudios/Axis'
+                },
+                {
+                    name: 'Submit an issue',
+                    link: 'https://github.com/FalloutStudios/Axis/issues'
+                },
+                {
+                    name: 'View wiki',
+                    link: 'https://github.com/FalloutStudios/Axis/wiki'
+                }
+            ]
+        }
     }));
 }
 
 // Presence
 async function setPresence(Client) {
-    const config = Client.AxisUtility.getConfig();
+    const config = Client.AxisUtility.get().config;
     return options?.setPresence ? Client.user.setPresence({
         status: Util.getRandomKey(config.presence.status),
         activities: [{
@@ -162,17 +179,30 @@ async function setPresence(Client) {
 }
 
 // Version command
-async function getVersionMessage(args, message, Client) {
-    await SafeMessage.reply(message, `**${Client.user.username} v${Version}**\nBased on Axis bot v${Version}.\nhttps://github.com/FalloutStudios/Axis`);
-}
-async function getVersionInteraction(interaction, Client) {
-    await SafeInteract.reply(interaction, `**${Client.user.username} v${Version}**\nBased on Axis bot v${Version}.\nhttps://github.com/FalloutStudios/Axis`);
+function getVersionMessageReply(Client) {
+    const buttons = new MessageActionRow();
+
+    for (const button of options.version.linkButtons) {
+        buttons.addComponents(
+            new MessageButton()
+                .setStyle("LINK")
+                .setLabel(button.name)
+                .setURL(button.link)
+        );
+    }
+
+    let strMessage = Util.getRandomKey(options.version.message);
+    strMessage = Util.replaceAll(strMessage, '{username}', Client.user.username);
+    strMessage = Util.replaceAll(strMessage, '{tag}', Client.user.tag);
+    strMessage = Util.replaceAll(strMessage, '{version}', Version);
+
+    return { content: strMessage, components: [buttons] };
 }
 
 // Stop command
 function StopMessage(Client) {
     log.warn("Stopping...");
-    return Util.getRandomKey(Client.AxisUtility.getLanguage().stop);
+    return Util.getRandomKey(Client.AxisUtility.get().language.stop);
 }
 
 // Help command
@@ -274,10 +304,10 @@ function makePages(visibleCommands, allCommands, client, language, prefix, embed
 async function getHelpMessage(args, message, Client) {
     let filter = args.join(' ');
     let visibleCommands = Object.keys(commands.MessageCommands);
-        visibleCommands = filterVisibleCommands(visibleCommands, filter, message.member, Client.AxisUtility.getConfig().permissions.messageCommands);
+        visibleCommands = filterVisibleCommands(visibleCommands, filter, message.member, Client.AxisUtility.get().config.permissions.messageCommands);
     
     // Create embeds
-    let embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.getLanguage(), Client.AxisUtility.getConfig().commandPrefix, Client.AxisUtility.getConfig().embedColor);
+    let embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.get().language, Client.AxisUtility.get().config.commandPrefix, Client.AxisUtility.get().config.embedColor);
     
     if(embeds.length == 1) {
         await SafeMessage.send(message.channel, { embeds: embeds });
@@ -314,10 +344,10 @@ async function getHelpMessage(args, message, Client) {
 async function getHelpInteraction(interaction, Client) {
     let filter = !interaction.options.getString('filter') ? '' : interaction.options.getString('filter');
     let visibleCommands = Object.keys(commands.InteractionCommands);
-        visibleCommands = filterVisibleCommands(visibleCommands, filter, interaction.member, Client.AxisUtility.getConfig().permissions.interactionCommands);
+        visibleCommands = filterVisibleCommands(visibleCommands, filter, interaction.member, Client.AxisUtility.get().config.permissions.interactionCommands);
     
     // Create embeds
-    let embeds = makePages(visibleCommands, commands.InteractionCommands, Client, Client.AxisUtility.getLanguage(), '/', Client.AxisUtility.getConfig().embedColor);
+    let embeds = makePages(visibleCommands, commands.InteractionCommands, Client, Client.AxisUtility.get().language, '/', Client.AxisUtility.get().config.embedColor);
     
     // Create buttons
     const buttons = [
@@ -336,6 +366,6 @@ async function getHelpInteraction(interaction, Client) {
     if(embeds.length == 1) { 
         await SafeInteract.editReply(interaction, { embeds: embeds });
     } else {
-        await interactionPaginationEmbed(interaction, embeds, buttons, interactionTimeout).catch( err => log.error(err));
+        await InteractionPaginationEmbed(interaction, embeds, buttons, interactionTimeout).catch( err => log.error(err));
     }
 }

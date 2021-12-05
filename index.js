@@ -17,14 +17,12 @@ require('./scripts/startup')();
 // Modules
 const Util = require('fallout-utility');
 const Path = require('path');
-const Config = require('./scripts/config');
-const Language = require('./scripts/language');
+const { Config, Language } = require('./scripts/config/');
 const Discord = require('discord.js');
 
 // Local actions
 const ScriptLoader = require('./scripts/loadScripts');
-const SafeMessage = require('./scripts/safeMessage');
-const SafeInteract = require('./scripts/safeInteract');
+const { SafeMessage, SafeInteract } = require('./scripts/safeActions/');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
 
@@ -40,21 +38,12 @@ let lang = new Language(config.language).parse().getLanguage();
 
 
 // Client
-const Client = new Discord.Client({
-    intents: [
-        Discord.Intents.FLAGS.GUILDS,
-        Discord.Intents.FLAGS.GUILD_INTEGRATIONS,
-        Discord.Intents.FLAGS.GUILD_BANS,
-        Discord.Intents.FLAGS.GUILD_MEMBERS,
-        Discord.Intents.FLAGS.GUILD_MESSAGES,
-        Discord.Intents.FLAGS.GUILD_PRESENCES,
-        Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    ]
-});
+const Client = new Discord.Client(config.client);
 
-// Commands
+// Data
 var scripts = {};
 var commands = { MessageCommands: [], InteractionCommands: [] };
+var intents = config.client.intents;
 
 // AxisUtility
 class AxisUtility {
@@ -65,19 +54,19 @@ class AxisUtility {
      * @returns {Promise<void>}
      */
     async messageCommand(command, message) {
-        const cmd = this.getCommands().MessageCommands.find(property => property.name === command);
-        const args = Util.getCommand(message.content.trim(), this.getConfig().commandPrefix).args;
+        const cmd = this.get().commands.MessageCommands.find(property => property.name === command);
+        const args = Util.getCommand(message.content.trim(), this.get().config.commandPrefix).args;
 
         // If the command exists
         if(!cmd) return;
 
         // Check permission
-        if(!CommandPermission(command, message.member, this.getConfig().permissions.messageCommands)) {
-            return SafeMessage.reply(message, Util.getRandomKey(this.getLanguage().noPerms));
+        if(!CommandPermission(command, message.member, this.get().config.permissions.messageCommands)) {
+            return SafeMessage.reply(message, Util.getRandomKey(this.get().language.noPerms));
         }
 
         // Execute
-        await this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${this.getConfig().commandPrefix}${command}`));
+        await this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${this.get().config.commandPrefix}${command}`));
     }
 
     /**
@@ -93,13 +82,13 @@ class AxisUtility {
         if(!cmd) return;
 
         // Check configurations
-        if(MemberPermission.isIgnoredChannel(interaction.channelId, this.getConfig().blacklistChannels) || !cmd.allowExecViaDm && !interaction?.member) { 
-            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.getLanguage().notAvailable), ephemeral: true });
+        if(MemberPermission.isIgnoredChannel(interaction.channelId, this.get().config.blacklistChannels) || !cmd.allowExecViaDm && !interaction?.member) { 
+            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.get().language.notAvailable), ephemeral: true });
         }
 
         // Check permission
-        if(!CommandPermission(interaction.commandName, interaction.member, this.getConfig().permissions.interactionCommands)) { 
-            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.getLanguage().noPerms), ephemeral: true });
+        if(!CommandPermission(interaction.commandName, interaction.member, this.get().config.permissions.interactionCommands)) { 
+            return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.get().language.noPerms), ephemeral: true });
         }
 
         await this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err, `/${interaction.commandName}`));
@@ -116,7 +105,7 @@ class AxisUtility {
         const command = commands.MessageCommands.find(property => property.name === name);
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
-        log.warn(`${message.author.username} executed ${this.getConfig().commandPrefix}${command.name}`, 'MessageCommand');
+        log.warn(`${message.author.username} executed ${this.get().config.commandPrefix}${command.name}`, 'MessageCommand');
         await command.execute(args, message, Client);
     }
 
@@ -140,7 +129,7 @@ class AxisUtility {
      * @returns {string}
      */
     createInvite(bot) {
-        return Util.replaceAll(this.getConfig().inviteFormat, '%id%', bot.user.id);
+        return Util.replaceAll(this.get().config.inviteFormat, '%id%', bot.user.id);
     }
 
     /**
@@ -148,7 +137,7 @@ class AxisUtility {
      * @param {string} directory - directory to search
      * @returns {Promise<Object>} returns the loaded scripts files
      */
-     async loadModules(directory) {
+    async loadModules(directory) {
         const scriptsLoader = await ScriptLoader(Client, Path.join(__dirname, directory));
 
         scripts = scriptsLoader.scripts;
@@ -158,8 +147,8 @@ class AxisUtility {
         
         // Execute .loaded method of every scripts
         for(const script in scripts) {
-            if(!scripts[script]?.loaded) continue;
-            await Promise.resolve(scripts[script].loaded(Client));
+            if(!scripts[script]?.onLoad) continue;
+            await Promise.resolve(scripts[script].onLoad(Client));
         }
 
         return scriptsLoader;
@@ -167,34 +156,38 @@ class AxisUtility {
 
     /**
      * 
-     * @returns {Object} Returns the language.yml in json
+     * @returns {Object[]} returns the loaded scripts and bot configurations
      */
-    getLanguage() {
-        return lang;
+    get() {
+        return {
+            intents: intents,
+            commands: commands,
+            scripts: scripts,
+            config: config,
+            language: lang
+        }
     }
 
     /**
      * 
-     * @returns {Object} Returns the config.yml in json
+     * @returns {Object} returns methods to parse configurations
      */
-    getConfig() {
-        return config;
-    }
+    parse() {
+        return {
+            /**
+             * @returns {void}
+             */
+            config() {
+                config = new Config('./config/config.yml').parse().testmode().getConfig();
+            },
 
-    /**
-     * 
-     * @returns {Object} Returns the loaded scripts files
-     */
-    getScripts() {
-        return scripts;
-    }
-
-    /**
-     * 
-     * @returns {Object} Returns all the available commands
-     */
-    getCommands() {
-        return commands;
+            /**
+             * @returns {void}
+             */
+            language() {
+                lang = new Language(config.language).parse().getLanguage();
+            }
+        }
     }
 }
 

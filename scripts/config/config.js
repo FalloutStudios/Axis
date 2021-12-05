@@ -1,15 +1,15 @@
 // Modules
 const Yml = require('yaml');
-const MakeConfig = require('./makeConfig');
+const MakeConfig = require('../makeConfig');
 const Commander = require('commander');
-const Version = require('./version');
+const Version = require('../version');
 const { ask } = require('fallout-utility');
 
 const commands = new Commander.Command;
     commands.option('-t, --testmode');
     commands.parse();
 
-module.exports = class {
+module.exports = class Config {
     /**
      * @param {string} location config file location
      */
@@ -121,6 +121,9 @@ processErrors:
   processWarning: true
   processUnhandledRejection: false
   processUncaughtException: false
+
+client:
+  intents: 14023 # Use https://ziad87.net/intents/ to valid bitfield intent
 
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
 language: 'config/language.yml'   # Langage file 

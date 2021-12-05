@@ -1,8 +1,8 @@
 const Yml = require('yaml');
-const MakeConfig = require('./makeConfig');
-const Version = require('./version');
+const MakeConfig = require('../makeConfig');
+const Version = require('../version');
 
-module.exports = class {
+module.exports = class Language {
     /**
      * @param {string} language location of the language file
      */
