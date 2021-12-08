@@ -1,4 +1,4 @@
-module.exports = class userGuild {
+module.exports = class UserGuild {
     /**
      * 
      * @param {Object} Client - Discord Client
