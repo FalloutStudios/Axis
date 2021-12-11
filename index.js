@@ -216,9 +216,8 @@ Client.on('ready', async () => {
     // On command execution
     Client.on('interactionCreate', async interaction => Client.AxisUtility.interactionCommand(interaction));
     Client.on('messageCreate', async message => {
+        if(config.messageLogging.enabled && (!config.messageLogging.ignoreBotSystem || config.messageLogging.ignoreBotSystem && !(message.author.bot || message.author.system))) log.log(`${message.author.username}: ${message.content}`, 'Message');
         if(message.author.id === Client.user.id || message.author.bot || message.author.system || MemberPermission.isIgnoredChannel(message.channelId, config.blacklistChannels)) return;
-
-        log.log(`${message.author.username}: ${message.content}`, 'Message');
 
         // Message commands
         if(Util.detectCommand(message.content, config.commandPrefix)){
