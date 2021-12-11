@@ -20,7 +20,7 @@ let versionMessageReply = "";
 
 class Create {
     constructor() {
-        this.versions = ['1.5.0'];
+        this.versions = ['1.5.1'];
         this.commands = setCommands();
     }
 

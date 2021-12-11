@@ -1,7 +1,10 @@
-const { Logger } = require('fallout-utility');
-const log = new Logger('SafeInteract');
+module.exports = (log) => {
 
-module.exports = {
+    if(!log) {
+        const { Logger } = require('fallout-utility');
+        log = new Logger('safeInteract');
+    }
+
     /**
      * 
      * @param {Object} interaction - The interaction object
@@ -9,14 +12,14 @@ module.exports = {
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response
      */
-    async reply(interaction, reply, verboseError = true) {
+    this.reply = async (interaction, reply, verboseError = true) => {
         try {
             return await interaction.reply(reply).catch( err => { log.error(verboseError ? err : err?.message); });
         } catch (err) {
             log.error(verboseError ? err : err?.message);
             return false;
         }
-    },
+    }
 
     /**
      * 
@@ -25,14 +28,14 @@ module.exports = {
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response
      */
-    async deferReply(interaction, options, verboseError = true) {
+    this.deferReply = async (interaction, options, verboseError = true) => {
         try {
             return await interaction.deferReply(options).catch( err => { log.error(verboseError ? err : err?.message); });
         } catch (err) {
             log.error(verboseError ? err : err?.message);
             return false;
         }
-    },
+    }
 
     /**
      * 
@@ -41,14 +44,14 @@ module.exports = {
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response
      */
-    async editReply(interaction, edit, verboseError = true) {
+    this.editReply = async (interaction, edit, verboseError = true) => {
         try {
             return await interaction.editReply(edit).catch( err => { log.error(verboseError ? err : err?.message); });
         } catch (err) {
             log.error(verboseError ? err : err?.message);
             return false;
         }
-    },
+    }
 
     /**
      * 
@@ -57,7 +60,7 @@ module.exports = {
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response
      */
-    async followUp(interaction, followUp, verboseError = true) {
+    this.followUp = async (interaction, followUp, verboseError = true) => {
         try {
             return await interaction.followUp(followUp).catch( err => { log.error(verboseError ? err : err?.message); });
         } catch (err) {
