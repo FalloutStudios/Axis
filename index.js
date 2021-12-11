@@ -12,8 +12,6 @@
     FunctionNames: camelCase
 **/
 
-require('./scripts/startup')();
-
 // Modules
 const Util = require('fallout-utility');
 const Path = require('path');
@@ -27,7 +25,7 @@ const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
 
 // Configurations
-const log = new Util.Logger('Bot');
+const log = new Util.Logger('Main');
 const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 
 // Config
@@ -44,6 +42,10 @@ const Client = new Discord.Client(config.client);
 var scripts = {};
 var commands = { MessageCommands: [], InteractionCommands: [] };
 var intents = config.client.intents;
+
+// Logging
+if(config.logging.enabled) log.logFile(config.logging.logFilePath);
+require('./scripts/startup')(log);
 
 // AxisUtility
 class AxisUtility {

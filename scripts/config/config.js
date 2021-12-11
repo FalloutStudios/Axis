@@ -115,6 +115,12 @@ presence:
 # Danger Zone!
 # Edit this values below if you know what you're doing
 
+# Logging
+logging:
+  # Enable logging
+  enabled: true
+  logFilePath: './logs/latest.log'
+
 # process errors logging. (Few options can stop some crashes)
 processErrors:
   clientShardError: true
