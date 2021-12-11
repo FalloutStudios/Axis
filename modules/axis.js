@@ -227,7 +227,7 @@ function fetchMessageCommand(command) {
     for(let name of command.arguments){
         let values = "";
         let arg = name.required ? argTypes['required'] : argTypes['optional'];
-            arg = Util.replaceAll(arg, '%arg%', name.name);
+            arg = Util.replaceeAll(arg, '%arg%', name.name);
 
         if(name?.values && name.values.length > 0){
             let endLength = name.values.length;

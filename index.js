@@ -235,7 +235,24 @@ Client.on('ready', async () => {
 if(config.processErrors) {
     if(config.processErrors.clientShardError) Client.on('shardError', error => log.error(error, 'ShardError'));
 
-    if(config.processErrors.processUncaughtException) process.on("unhandledRejection", reason => log.error(reason, 'Process'));
-    if(config.processErrors.processUncaughtException) process.on("uncaughtException", (err, origin) => log.error(err, 'Process') && log.error(origin, 'Process'));
-    if(config.processErrors.processWarning) process.on('warning', warn => log.warn(warn, 'Process'));
+    process.on("unhandledRejection", reason => {
+        log.error(reason, 'unhandledRejection');
+
+        if(!config.processErrors.processUncaughtException) setTimeout(() => process.exit(1), 10);
+    });
+    process.on("uncaughtException", (err, origin) => {
+        log.error(err, 'uncaughtException');
+        log.error(origin, 'uncaughtException');
+
+        if(config.processErrors.processUncaughtException) setTimeout(() => process.exit(1), 10);
+    });
+
+    process.on('warning', warn => {
+        log.warn(warn, 'Warning');
+        if(config.processErrors.processWarning) setTimeout(() => process.exit(1), 10);
+    });
+
+    process.on('exit', code => {
+        log.warn(`Process exited with code ${code}`, 'Exit');
+    });
 }
