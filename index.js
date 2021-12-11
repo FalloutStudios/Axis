@@ -162,6 +162,7 @@ class AxisUtility {
      */
     get() {
         return {
+            logger: log,
             intents: intents,
             commands: commands,
             scripts: scripts,
