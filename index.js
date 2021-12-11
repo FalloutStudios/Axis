@@ -44,7 +44,15 @@ var commands = { MessageCommands: [], InteractionCommands: [] };
 var intents = config.client.intents;
 
 // Logging
-if(config.logging.enabled) log.logFile(config.logging.logFilePath);
+if(config.logging.enabled) {
+    log.logFile(config.logging.logFilePath);
+
+    SafeMessage.setLogger(log);
+    SafeInteract.setLogger(log);
+}
+
+
+// Startup
 require('./scripts/startup')(log);
 
 // AxisUtility

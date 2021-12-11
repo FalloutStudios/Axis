@@ -9,7 +9,7 @@ const Version = require('../scripts/version');
 const MakeConfig = require('../scripts/makeConfig');
 const Yml = require('yaml');
 
-const log = new Util.Logger('Axis');
+let log = new Util.Logger('Axis');
 const interactionTimeout = 20000;
 const argTypes = {
     required: "<%arg%%values%>",
@@ -25,8 +25,12 @@ class Create {
     }
 
     async onStart(Client) {
+        log = Client.AxisUtility.get().logger;
         log.log('Axis default command module has started!');
         log.log('Configuring bot presence...');
+
+        SafeMessage.setLogger(log);
+        SafeInteract.setLogger(log);
 
         await setPresence(Client);
         versionMessageReply = getVersionMessageReply(Client);
