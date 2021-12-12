@@ -26,11 +26,13 @@ class Create {
 
     async onStart(Client) {
         log = Client.AxisUtility.get().logger;
-        log.log('Axis default command module has started!');
 
         SafeMessage.setLogger(log);
         SafeInteract.setLogger(log);
 
+        log.log('Axis default command module has started!');
+        log.log('Configuring bot presence...');
+        
         await setPresence(Client);
         versionMessageReply = getVersionMessageReply(Client);
 
