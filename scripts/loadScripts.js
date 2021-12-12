@@ -3,14 +3,13 @@ const Util = require('fallout-utility');
 const DataTypeValidator = require('./dataTypeValidator');
 const Fs = require('fs');
 
-const log = new Util.Logger('ScriptsLoader');
-
 /**
 * @param {string} location - The path to scripts
 * @param {Object} Client - Discord client
 * @returns {Object} - returns an object with the loaded scripts
 */
 module.exports = async (Client, location) => {
+    const log = Client.AxisUtility.get().logger;
     const config = Client.AxisUtility.get().config;
     const scripts = {};
     const commands = { MessageCommands: [], InteractionCommands: [] };

@@ -1,25 +1,23 @@
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { Logger } = require('fallout-utility');
 const Fs = require('fs');
 const MakeConfig = require('./makeConfig');
-
-const log = new Logger('RegisterCommands');
 
 const deployFile = './deploy.txt';
 
 /**
  * 
- * @param {Object} client - Discord client instance
+ * @param {Object} Client - Discord Client instance
  * @param {Object} config - Parsed config object
  * @param {Object} commands - List of slash commands
  * @param {string} guild - register commands to a guild
  * @param {boolean} force - Force register commands without check deploy file
  * @returns {Promise<void>}
  */
-module.exports = async (client, commands, guild = null, force = false,) => {
+module.exports = async (Client, commands, guild = null, force = false,) => {
     // Deployment
-    const config = client.AxisUtility.get().config;
+    const log = Client.AxisUtility.get().logger;
+    const config = Client.AxisUtility.get().config;
 
     if(!config.permissions.interactionCommands.registerSlashCommands) return log.log('RegisterSlashCommands is disabled');
     if(Fs.existsSync(deployFile) && !force && !guild) {
@@ -38,13 +36,13 @@ module.exports = async (client, commands, guild = null, force = false,) => {
         if(!Object.keys(commands).length) { return log.warn('No interaction commands found.'); }
         if(!guild){
             await rest.put(
-                Routes.applicationCommands(client.user.id),
+                Routes.applicationCommands(Client.user.id),
                 { body: commands }
             );
             log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`);
         } else {
             await rest.put(
-                Routes.applicationGuildCommands(client.user.id, guild),
+                Routes.applicationGuildCommands(Client.user.id, guild),
                 { body: commands }
             );
             log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a guild.`);

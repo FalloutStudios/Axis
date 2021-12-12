@@ -115,6 +115,16 @@ presence:
 # Danger Zone!
 # Edit this values below if you know what you're doing
 
+# Logging
+logging:
+  enabled: true # Enable logging
+  logFilePath: './logs/latest.log' # Log file directory
+
+# Message logging (This is is against Discord TOS!!!) use for testing porpuses only
+messageLogging:
+  enabled: false # Enable logging
+  ignoreBotSystem: true # Ignore bot chats
+
 # process errors logging. (Few options can stop some crashes)
 processErrors:
   clientShardError: true

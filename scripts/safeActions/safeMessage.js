@@ -1,7 +1,15 @@
 const { Logger } = require('fallout-utility');
-const log = new Logger('SafeMessage');
+let log = new Logger('SafeMessage');
 
 module.exports = {
+    /**
+     * 
+     * @param {Object[]} logger - Logger instance
+     */
+    setLogger(logger) {
+        log = logger;
+    },
+
     /**
      * 
      * @param {Object} channel - The channel for message to send

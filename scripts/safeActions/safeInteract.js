@@ -1,7 +1,15 @@
 const { Logger } = require('fallout-utility');
-const log = new Logger('SafeInteract');
+let log = new Logger('SafeInteract');
 
 module.exports = {
+    /**
+     * 
+     * @param {Object[]} logger - Logger instance
+     */
+    setLogger(logger) {
+        log = logger;
+    },
+
     /**
      * 
      * @param {Object} interaction - The interaction object

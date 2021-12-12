@@ -9,7 +9,7 @@ const Version = require('../scripts/version');
 const MakeConfig = require('../scripts/makeConfig');
 const Yml = require('yaml');
 
-const log = new Util.Logger('Axis');
+let log = new Util.Logger('Axis');
 const interactionTimeout = 20000;
 const argTypes = {
     required: "<%arg%%values%>",
@@ -20,14 +20,19 @@ let versionMessageReply = "";
 
 class Create {
     constructor() {
-        this.versions = ['1.5.0'];
+        this.versions = ['1.5.1'];
         this.commands = setCommands();
     }
 
     async onStart(Client) {
+        log = Client.AxisUtility.get().logger;
+
+        SafeMessage.setLogger(log);
+        SafeInteract.setLogger(log);
+
         log.log('Axis default command module has started!');
         log.log('Configuring bot presence...');
-
+        
         await setPresence(Client);
         versionMessageReply = getVersionMessageReply(Client);
 
@@ -168,6 +173,8 @@ function getConfig(location) {
 
 // Presence
 async function setPresence(Client) {
+    log.log('Configuring bot presence...');
+
     const config = Client.AxisUtility.get().config;
     return options?.setPresence ? Client.user.setPresence({
         status: Util.getRandomKey(config.presence.status),

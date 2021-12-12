@@ -12,8 +12,6 @@
     FunctionNames: camelCase
 **/
 
-require('./scripts/startup')();
-
 // Modules
 const Util = require('fallout-utility');
 const Path = require('path');
@@ -27,7 +25,7 @@ const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
 
 // Configurations
-const log = new Util.Logger('Bot');
+const log = new Util.Logger('Main');
 const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 
 // Config
@@ -44,6 +42,18 @@ const Client = new Discord.Client(config.client);
 var scripts = {};
 var commands = { MessageCommands: [], InteractionCommands: [] };
 var intents = config.client.intents;
+
+// Logging
+if(config.logging.enabled) {
+    log.logFile(config.logging.logFilePath);
+
+    SafeMessage.setLogger(log);
+    SafeInteract.setLogger(log);
+}
+
+
+// Startup
+require('./scripts/startup')(log);
 
 // AxisUtility
 class AxisUtility {
@@ -160,6 +170,7 @@ class AxisUtility {
      */
     get() {
         return {
+            logger: log,
             intents: intents,
             commands: commands,
             scripts: scripts,
@@ -205,9 +216,8 @@ Client.on('ready', async () => {
     // On command execution
     Client.on('interactionCreate', async interaction => Client.AxisUtility.interactionCommand(interaction));
     Client.on('messageCreate', async message => {
+        if(config.messageLogging.enabled && (!config.messageLogging.ignoreBotSystem || config.messageLogging.ignoreBotSystem && !(message.author.bot || message.author.system))) log.log(`${message.author.username}: ${message.content}`, 'Message');
         if(message.author.id === Client.user.id || message.author.bot || message.author.system || MemberPermission.isIgnoredChannel(message.channelId, config.blacklistChannels)) return;
-
-        log.log(`${message.author.username}: ${message.content}`, 'Message');
 
         // Message commands
         if(Util.detectCommand(message.content, config.commandPrefix)){
@@ -224,7 +234,24 @@ Client.on('ready', async () => {
 if(config.processErrors) {
     if(config.processErrors.clientShardError) Client.on('shardError', error => log.error(error, 'ShardError'));
 
-    if(config.processErrors.processUncaughtException) process.on("unhandledRejection", reason => log.error(reason, 'Process'));
-    if(config.processErrors.processUncaughtException) process.on("uncaughtException", (err, origin) => log.error(err, 'Process') && log.error(origin, 'Process'));
-    if(config.processErrors.processWarning) process.on('warning', warn => log.warn(warn, 'Process'));
+    process.on("unhandledRejection", reason => {
+        log.error(reason, 'unhandledRejection');
+
+        if(!config.processErrors.processUncaughtException) setTimeout(() => process.exit(1), 10);
+    });
+    process.on("uncaughtException", (err, origin) => {
+        log.error(err, 'uncaughtException');
+        log.error(origin, 'uncaughtException');
+
+        if(config.processErrors.processUncaughtException) setTimeout(() => process.exit(1), 10);
+    });
+
+    process.on('warning', warn => {
+        log.warn(warn, 'Warning');
+        if(config.processErrors.processWarning) setTimeout(() => process.exit(1), 10);
+    });
+
+    process.on('exit', code => {
+        log.warn(`Process exited with code ${code}`, 'Exit');
+    });
 }

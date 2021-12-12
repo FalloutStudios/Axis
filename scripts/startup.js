@@ -1,12 +1,9 @@
 // Modules
-const { Logger, loopString } = require('fallout-utility');
+const { loopString } = require('fallout-utility');
 const Version = require('./version');
 
-
-let log = new Logger('Startup');
-
 // Export
-module.exports = () => {
+module.exports = (log) => {
     log.log(' ▄▄▄      ▒██   ██▒ ██▓  ██████ ');
     log.log('▒████▄    ▒▒ █ █ ▒░▓██▒▒██    ▒ ');
     log.log('▒██  ▀█▄  ░░  █   ░▒██▒░ ▓██▄   ');
