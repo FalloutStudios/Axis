@@ -27,7 +27,6 @@ class Create {
     async onStart(Client) {
         log = Client.AxisUtility.get().logger;
         log.log('Axis default command module has started!');
-        log.log('Configuring bot presence...');
 
         SafeMessage.setLogger(log);
         SafeInteract.setLogger(log);
@@ -172,6 +171,8 @@ function getConfig(location) {
 
 // Presence
 async function setPresence(Client) {
+    log.log('Configuring bot presence...');
+
     const config = Client.AxisUtility.get().config;
     return options?.setPresence ? Client.user.setPresence({
         status: Util.getRandomKey(config.presence.status),
