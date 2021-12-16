@@ -38,7 +38,7 @@ class Create {
     }
 
     // This will be executed when the module is loaded
-    onLoaded(Client) {
+    onLoad(Client) {
         console.log(`Loaded test module with Axis v${Client.AxisUtility.getConfig().version}`);
     }
 }
