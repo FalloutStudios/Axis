@@ -4,19 +4,21 @@ module.exports = {
     /**
      * 
      * @param {Object} member - Guild member object
+     * @param {Object} permissions - Discord permissions flags
      * @returns {boolean} Returns if member is administrator
      */
-    admin(member) {
-        if(member && member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return true;
+    admin(member, permissions = Permissions.FLAGS.ADMINISTRATOR) {
+        if(member && member.permissions.has(permissions)) return true;
         return false;
     },
 
     /**
      * @param {Object} member - Guild member object
+     * @param {Object} permissions - Discord permissions flags
      * @returns {boolean} Returns if member is moderator
     */
-    moderator(member) {
-        if(member && member.permissions.has([Permissions.FLAGS.BAN_MEMBERS, Permissions.FLAGS.KICK_MEMBERS])) return true;
+    moderator(member, permissions = [Permissions.FLAGS.BAN_MEMBERS, Permissions.FLAGS.KICK_MEMBERS]) {
+        if(member && member.permissions.has(permissions)) return true;
         return false;
     },
 
