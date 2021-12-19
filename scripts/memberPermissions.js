@@ -29,11 +29,12 @@ module.exports = {
      * @returns {boolean} Returns if channel is accessible
     */
     isIgnoredChannel(channelId, blacklistChannels) {
-        if(
-            blacklistChannels.enabled && !blacklistChannels.convertToWhitelist && blacklistChannels.channels.includes(channelId.toString())
+        if(blacklistChannels.enabled && (
+            !blacklistChannels.convertToWhitelist && blacklistChannels.channels.includes(channelId.toString())
             || 
             blacklistChannels.enabled && blacklistChannels.convertToWhitelist && !blacklistChannels.channels.includes(channelId.toString())
-        ) { return true; }
+        )) { return true; }
+
         return false;
     }
 }
