@@ -252,6 +252,11 @@ if(config.processErrors) {
     });
 
     process.on('exit', code => {
-        log.warn(`Process exited with code ${code}`, 'Exit');
+        log.warn(`Process exited with code ${code}`, 'Status');
     });
 }
+
+// Exit Events
+process.on('SIGINT', () => process.exit(0));
+process.on('SIGUSR1', () => process.exit(0));
+process.on('SIGUSR2', () => process.exit(0));
