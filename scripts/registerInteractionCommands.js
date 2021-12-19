@@ -14,17 +14,17 @@ const deployFile = './deploy.txt';
  * @param {boolean} force - Force register commands without check deploy file
  * @returns {Promise<void>}
  */
-module.exports = async (Client, commands, guild = null, force = false,) => {
+module.exports = async (Client, commands, guild = null, force = false) => {
     // Deployment
     const log = Client.AxisUtility.get().logger;
     const config = Client.AxisUtility.get().config;
 
-    if(!config.permissions.interactionCommands.registerSlashCommands) return log.log('RegisterSlashCommands is disabled');
+    if(!config.permissions.interactionCommands.registerSlashCommands) return log.warn('RegisterSlashCommands is disabled');
     if(Fs.existsSync(deployFile) && !force && !guild) {
         const deploy = Fs.readFileSync(deployFile).toString().trim();
 
         if(deploy == 'false') {
-            return log.log('Deployment file found, skipping register commands');
+            return log.warn('Deployment file found, skipping register commands');
         }
     }
 
