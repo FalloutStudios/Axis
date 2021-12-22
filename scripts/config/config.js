@@ -143,7 +143,14 @@ processErrors:
   processUncaughtException: false
 
 client:
-  intents: 14023 # Use https://ziad87.net/intents/ to valid bitfield intent
+  # Bot intents
+  intents:
+    - 'GUILDS'
+    - 'GUILD_MEMBERS'
+    - 'GUILD_INVITES'
+    - 'GUILD_VOICE_STATES'
+    - 'GUILD_MESSAGES'
+    - 'GUILD_MESSAGE_REACTIONS'
 
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
 language: 'config/language.yml'   # Langage file 
