@@ -11,7 +11,7 @@ Axis bot is named after the Our World's server clan named `Axis` *The reincarnat
 
 ## About
 
-**Axis** is just an empty Discord bot which simply loads custom javascript file in a specified folder.
+**Axis** is just a Discord bot that loads modules that contains commands and other functions to easily build your bot by adding those scrips made for your supported **Axis** version.
 
 ## Installation
 
