@@ -76,6 +76,11 @@ permissions:
     # Enable message command permissions
     enable: true
 
+    # Permission keys
+    permissions:
+      admin: ['ADMINISTRATOR']
+      moderator: ['BAN_MEMBERS','KICK_MEMBERS']
+
     # Restrict commands for admin only (This is the command name)
     adminOnlyCommands: ['stop']
 
@@ -86,6 +91,11 @@ permissions:
   interactionCommands:
     # Enable slash commands permissions
     enable: true
+
+    # Permission keys
+    permissions:
+      admin: ['ADMINISTRATOR']
+      moderator: ['BAN_MEMBERS','KICK_MEMBERS']
 
     # Register slash commands
     registerSlashCommands: true
