@@ -4,7 +4,7 @@ const Yml = require('yaml');
 
 /**
 * @param {string} location - The location of the yml config file.
-* @param {*} content - The content of the file. This will automatically be converted to yml if it's an object
+* @param {*} contents - The content of the file. This will automatically be converted to yml if it's an object
 * @returns {Object} yml parsed object
 */
 module.exports = (location, contents) => {

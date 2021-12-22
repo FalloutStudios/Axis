@@ -1,5 +1,5 @@
-const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts/builders/');
-const { SafeMessage, SafeInteract } = require('../scripts/safeActions/');
+const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts/builders');
+const { SafeMessage, SafeInteract } = require('../scripts/safeActions');
 const CommandPermission = require('../scripts/commandPermissions');
 const InteractionPaginationEmbed = require('discordjs-button-pagination');
 const { Pagination } = require("discordjs-button-embed-pagination");
@@ -15,13 +15,15 @@ const argTypes = {
     required: "<%arg%%values%>",
     optional: "[%arg%%values%]"
 }
-let options = getConfig('./config/axisConfig.yml');
+let options = null;
 let versionMessageReply = "";
 
-class Create {
+class AxisCommands {
     constructor() {
-        this.versions = ['1.5.1'];
-        this.commands = setCommands();
+        options = this.getConfig('./config/axis.yml');
+
+        this.versions = ['1.5.1', '1.5.2'];
+        this.commands = this.setCommands();
     }
 
     async onStart(Client) {
@@ -33,8 +35,8 @@ class Create {
         log.log('Axis default command module has started!');
         log.log('Configuring bot presence...');
         
-        await setPresence(Client);
-        versionMessageReply = getVersionMessageReply(Client);
+        await this.setPresence(Client);
+        versionMessageReply = this.getVersionMessageReply(Client);
 
         return true;
     }
@@ -43,175 +45,171 @@ class Create {
         fetchCommands(Client.AxisUtility.get().commands.MessageCommands);
         fetchCommands(Client.AxisUtility.get().commands.InteractionCommands);
     }
-}
 
-module.exports = new Create();
+    getConfig(location) {
+        return Yml.parse(MakeConfig(location, {
+            messageCommands: {
+                version: {
+                    enabled: true
+                },
+                stop: {
+                    enabled: true
+                },
+                help: {
+                    enabled: true
+                }
+            },
+            interactionCommands: {
+                version: {
+                    enabled: true
+                },
+                stop: {
+                    enabled: true
+                },
+                help: {
+                    enabled: true
+                }
+            },
+            setPresence: true,
+            version: {
+                message: '**{username} v{version}**\nBased on Axis bot v{version}.\nhttps://github.com/FalloutStudios/Axis',
+                linkButtons: [
+                    {
+                        name: 'View on Github',
+                        link: 'https://github.com/FalloutStudios/Axis'
+                    },
+                    {
+                        name: 'Submit an issue',
+                        link: 'https://github.com/FalloutStudios/Axis/issues'
+                    },
+                    {
+                        name: 'View wiki',
+                        link: 'https://github.com/FalloutStudios/Axis/wiki'
+                    }
+                ]
+            }
+        }));
+    }
 
-// functions
-// Set commands
-function setCommands() {
-    let registerCommands = [];
-
-    setCommandVersion();
-    setCommandStop();
-    setCommandHelp();
-
-    return registerCommands;
-
-    // Version Command
-    function setCommandVersion() {
-        if(options?.messageCommands.version.enabled)
-            registerCommands = registerCommands.concat([
-                new MessageCommandBuilder()
-                    .setName('version')
-                    .setDescription('Displays the current version of your Axis bot.')
-                    .setExecute((args, message, Client) => SafeMessage.reply(message, versionMessageReply))
-            ]);
-        if(options?.interactionCommands.version.enabled)
-            registerCommands = registerCommands.concat([
-                new InteractionCommandBuilder()
-                    .setAllowExecuteViaDm(true)
-                    .setCommand(SlashCommandBuilder => SlashCommandBuilder
+    setCommands() {
+        let registerCommands = [];
+    
+        // Version Command
+        const setCommandVersion = () => {
+            if(options?.messageCommands.version.enabled)
+                registerCommands = registerCommands.concat([
+                    new MessageCommandBuilder()
                         .setName('version')
                         .setDescription('Displays the current version of your Axis bot.')
-                    )
-                    .setExecute((interaction, Client) => SafeMessage.reply(interaction, versionMessageReply))
-            ])
-    }
-
-    // Help Command
-    function setCommandHelp() {
-        if(options?.messageCommands.help.enabled)
-            registerCommands = registerCommands.concat([
-                new MessageCommandBuilder()
-                    .setName('help')
-                    .setDescription('Get command help')
-                    .addArgument('filter', false, 'Filter commands')
-                    .setExecute(async (args, message, Client) => getHelpMessage(args, message, Client))
-            ]);
-        if(options?.interactionCommands.help.enabled)
-            registerCommands = registerCommands.concat([
-                new InteractionCommandBuilder()
-                    .setCommand(SlashCommandBuilder => SlashCommandBuilder
+                        .setExecute((args, message, Client) => SafeMessage.reply(message, versionMessageReply))
+                ]);
+            if(options?.interactionCommands.version.enabled)
+                registerCommands = registerCommands.concat([
+                    new InteractionCommandBuilder()
+                        .setAllowExecuteViaDm(true)
+                        .setCommand(SlashCommandBuilder => SlashCommandBuilder
+                            .setName('version')
+                            .setDescription('Displays the current version of your Axis bot.')
+                        )
+                        .setExecute((interaction, Client) => SafeMessage.reply(interaction, versionMessageReply))
+                ])
+        }
+    
+        // Help Command
+        const setCommandHelp = () => {
+            if(options?.messageCommands.help.enabled)
+                registerCommands = registerCommands.concat([
+                    new MessageCommandBuilder()
                         .setName('help')
                         .setDescription('Get command help')
-                        .addStringOption(filter => filter
-                            .setName('filter')
-                            .setRequired(false)
-                            .setDescription('Filter commands')
+                        .addArgument('filter', false, 'Filter commands')
+                        .setExecute(async (args, message, Client) => getHelpMessage(args, message, Client))
+                ]);
+            if(options?.interactionCommands.help.enabled)
+                registerCommands = registerCommands.concat([
+                    new InteractionCommandBuilder()
+                        .setCommand(SlashCommandBuilder => SlashCommandBuilder
+                            .setName('help')
+                            .setDescription('Get command help')
+                            .addStringOption(filter => filter
+                                .setName('filter')
+                                .setRequired(false)
+                                .setDescription('Filter commands')
+                            )
                         )
-                    )
-                    .setExecute(async (interaction, Client) => getHelpInteraction(interaction, Client))
-            ])
-    }
-
-    // Stop Command
-    function setCommandStop() {
-        if(options?.messageCommands.stop.enabled)
-            registerCommands = registerCommands.concat([
-                new MessageCommandBuilder()
-                    .setName('stop')
-                    .setDescription('Stop the bot')
-                    .setExecute(async (args, message, Client) => { await SafeMessage.reply(message, StopMessage(Client)); process.exit(0); })
-            ]);
-        if(options?.interactionCommands.stop.enabled)
-            registerCommands = registerCommands.concat([
-                new InteractionCommandBuilder()
-                    .setCommand(SlashCommandBuilder => SlashCommandBuilder
+                        .setExecute(async (interaction, Client) => getHelpInteraction(interaction, Client))
+                ])
+        }
+    
+        // Stop Command
+        const setCommandStop = () => {
+            if(options?.messageCommands.stop.enabled)
+                registerCommands = registerCommands.concat([
+                    new MessageCommandBuilder()
                         .setName('stop')
                         .setDescription('Stop the bot')
-                    )
-                    .setExecute(async (interaction, Client) => { await SafeInteract.reply(interaction, StopMessage(Client)); process.exit(0); })
-            ]);
-    }
-}
-// Generate config
-function getConfig(location) {
-    return Yml.parse(MakeConfig(location, {
-        messageCommands: {
-            version: {
-                enabled: true
-            },
-            stop: {
-                enabled: true
-            },
-            help: {
-                enabled: true
-            }
-        },
-        interactionCommands: {
-            version: {
-                enabled: true
-            },
-            stop: {
-                enabled: true
-            },
-            help: {
-                enabled: true
-            }
-        },
-        setPresence: true,
-        version: {
-            message: '**{username} v{version}**\nBased on Axis bot v{version}.\nhttps://github.com/FalloutStudios/Axis',
-            linkButtons: [
-                {
-                    name: 'View on Github',
-                    link: 'https://github.com/FalloutStudios/Axis'
-                },
-                {
-                    name: 'Submit an issue',
-                    link: 'https://github.com/FalloutStudios/Axis/issues'
-                },
-                {
-                    name: 'View wiki',
-                    link: 'https://github.com/FalloutStudios/Axis/wiki'
-                }
-            ]
+                        .setExecute(async (args, message, Client) => { await SafeMessage.reply(message, this.StopMessage(Client)); process.exit(0); })
+                ]);
+            if(options?.interactionCommands.stop.enabled)
+                registerCommands = registerCommands.concat([
+                    new InteractionCommandBuilder()
+                        .setCommand(SlashCommandBuilder => SlashCommandBuilder
+                            .setName('stop')
+                            .setDescription('Stop the bot')
+                        )
+                        .setExecute(async (interaction, Client) => { await SafeInteract.reply(interaction, this.StopMessage(Client)); process.exit(0); })
+                ]);
         }
-    }));
-}
 
-// Presence
-async function setPresence(Client) {
-    log.log('Configuring bot presence...');
-
-    const config = Client.AxisUtility.get().config;
-    return options?.setPresence ? Client.user.setPresence({
-        status: Util.getRandomKey(config.presence.status),
-        activities: [{
-            name: Util.getRandomKey(config.presence.activityName),
-            type: Util.getRandomKey(config.presence.type).toUpperCase()
-        }]
-    }) : null;
-}
-
-// Version command
-function getVersionMessageReply(Client) {
-    const buttons = new MessageActionRow();
-
-    for (const button of options.version.linkButtons) {
-        buttons.addComponents(
-            new MessageButton()
-                .setStyle("LINK")
-                .setLabel(button.name)
-                .setURL(button.link)
-        );
+        setCommandVersion();
+        setCommandStop();
+        setCommandHelp();
+    
+        return registerCommands;
     }
 
-    let strMessage = Util.getRandomKey(options.version.message);
-    strMessage = Util.replaceAll(strMessage, '{username}', Client.user.username);
-    strMessage = Util.replaceAll(strMessage, '{tag}', Client.user.tag);
-    strMessage = Util.replaceAll(strMessage, '{version}', Version);
+    async setPresence(Client) {
+        log.log('Configuring bot presence...');
+    
+        const config = Client.AxisUtility.get().config;
+        return options?.setPresence ? Client.user.setPresence({
+            status: Util.getRandomKey(config.presence.status),
+            activities: [{
+                name: Util.getRandomKey(config.presence.activityName),
+                type: Util.getRandomKey(config.presence.type).toUpperCase()
+            }]
+        }) : null;
+    }
 
-    return { content: strMessage, components: [buttons] };
+    getVersionMessageReply(Client) {
+        const buttons = new MessageActionRow();
+    
+        for (const button of options.version.linkButtons) {
+            buttons.addComponents(
+                new MessageButton()
+                    .setStyle("LINK")
+                    .setLabel(button.name)
+                    .setURL(button.link)
+            );
+        }
+    
+        let strMessage = Util.getRandomKey(options.version.message);
+        strMessage = Util.replaceAll(strMessage, '{username}', Client.user.username);
+        strMessage = Util.replaceAll(strMessage, '{tag}', Client.user.tag);
+        strMessage = Util.replaceAll(strMessage, '{version}', Version);
+    
+        return { content: strMessage, components: [buttons] };
+    }
+
+    StopMessage(Client) {
+        log.warn("Stopping...");
+        return Util.getRandomKey(Client.AxisUtility.get().language.stop);
+    }
 }
 
-// Stop command
-function StopMessage(Client) {
-    log.warn("Stopping...");
-    return Util.getRandomKey(Client.AxisUtility.get().language.stop);
-}
+module.exports = new AxisCommands();
 
+// functions
 // Help command
 const commands = { MessageCommands: {}, InteractionCommands: {}};
 function fetchCommands(object) {
