@@ -11,8 +11,8 @@ const Fs = require('fs');
 module.exports = async (Client, location) => {
     const log = Client.AxisUtility.get().logger;
     const config = Client.AxisUtility.get().config;
-    const scripts = {};
-    const commands = { MessageCommands: [], InteractionCommands: [] };
+    let scripts = {};
+    let commands = { MessageCommands: [], InteractionCommands: [] };
 
     // Load all scripts
     if(!Fs.existsSync(location)) Fs.mkdirSync(location, { recursive: true });
@@ -23,10 +23,10 @@ module.exports = async (Client, location) => {
     for (const file of modulesList) {
         const path = Path.join(location , file);
         const importModule = require(path);
+        const name = Util.replaceAll(Path.parse(file).name, ' ', '_').toLowerCase().split('.').shift();
 
         try {
             // Name of the script
-            const name = Util.replaceAll(Path.parse(file).name, ' ', '_').toLowerCase().split('.').shift();
             if(!name || !DataTypeValidator.moduleName(name)) throw new Error('Invalid Script Name: Name must be all lowercase without a special characters');
 
             // Check supported version
@@ -35,7 +35,7 @@ module.exports = async (Client, location) => {
             // Import script
             scripts[name] = importModule;
             scripts[name]['_information'] = {file: file, name: name, path: path};
-            if (!await Promise.resolve(scripts[name].onStart(Client))) { delete scripts[name]; throw new Error(`Couldn't start script ${file}. Returned false`); }
+            if (!await Promise.resolve(scripts[name].onStart(Client))) { throw new Error(`Couldn't start script ${file}. Returned false`); }
 
             // Register Commands
             loadCommands(scripts[name], commands);
@@ -43,6 +43,7 @@ module.exports = async (Client, location) => {
         } catch (err) {
             log.error(`Coudln't load ${file}: ${err.message}`, file);
             log.error(err, file);
+            delete scripts[name];
         }
     }
 
