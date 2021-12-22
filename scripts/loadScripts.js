@@ -70,13 +70,14 @@ function loadCommands(script, commands) {
 }
 function parseMessageCommand(command, commands) {
     if(!command.name || !DataTypeValidator.moduleName(command.name)) throw new Error(`Invalid command name: ${command.name}`);
-    if(!command.execute || !DataTypeValidator.function(command.execute)) throw new Error(`Invalid command execute function: ${command.execute}`);
+    if(typeof command.execute !== 'function' || !DataTypeValidator.function(command.execute)) throw new Error(`Invalid command execute function: ${command.execute}`);
     
     commands.MessageCommands.push(command);
 }
 function parseInteractionCommand(command, commands) {
     if(!command.command || !Object.keys(command.command).length) throw new Error(`Invalid command 'command': ${command.command}`);
-    if(!command.execute || !DataTypeValidator.function(command.execute)) throw new Error(`Invalid command execute function: ${command.execute}`);
+    if(typeof command.execute !== 'function' || !DataTypeValidator.function(command.execute)) throw new Error(`Invalid command execute function: ${command.execute}`);
 
+    command.command = command.command.toJSON();
     commands.InteractionCommands.push(command);
 }
