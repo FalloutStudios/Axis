@@ -11,8 +11,8 @@ const Fs = require('fs');
 module.exports = async (Client, location) => {
     const log = Client.AxisUtility.get().logger;
     const config = Client.AxisUtility.get().config;
-    let scripts = {};
-    let commands = { MessageCommands: [], InteractionCommands: [] };
+    const scripts = {};
+    const commands = { MessageCommands: [], InteractionCommands: [] };
 
     // Load all scripts
     if(!Fs.existsSync(location)) Fs.mkdirSync(location, { recursive: true });
