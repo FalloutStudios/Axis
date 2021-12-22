@@ -1,5 +1,5 @@
-const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts/builders/');
-const { SafeMessage, SafeInteract } = require('../scripts/safeActions/');
+const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts/builders');
+const { SafeMessage, SafeInteract } = require('../scripts/safeActions');
 const CommandPermission = require('../scripts/commandPermissions');
 const InteractionPaginationEmbed = require('discordjs-button-pagination');
 const { Pagination } = require("discordjs-button-embed-pagination");
@@ -18,7 +18,7 @@ const argTypes = {
 let options = null;
 let versionMessageReply = "";
 
-class Create {
+class AxisCommands {
     constructor() {
         options = this.getConfig('./config/axis.yml');
 
@@ -207,7 +207,7 @@ class Create {
     }
 }
 
-module.exports = new Create();
+module.exports = new AxisCommands();
 
 // functions
 // Help command
