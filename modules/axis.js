@@ -33,7 +33,6 @@ class AxisCommands {
         SafeInteract.setLogger(log);
 
         log.log('Axis default command module has started!');
-        log.log('Configuring bot presence...');
         
         await this.setPresence(Client);
         versionMessageReply = this.getVersionMessageReply(Client);
