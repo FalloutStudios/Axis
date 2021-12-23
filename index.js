@@ -15,12 +15,12 @@
 // Modules
 const Util = require('fallout-utility');
 const Path = require('path');
-const { Config, Language } = require('./scripts/config/');
+const { Config, Language } = require('./scripts/config');
 const Discord = require('discord.js');
 
 // Local actions
 const ScriptLoader = require('./scripts/loadScripts');
-const { SafeMessage, SafeInteract } = require('./scripts/safeActions/');
+const { SafeMessage, SafeInteract } = require('./scripts/safeActions');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
 

@@ -38,7 +38,7 @@ module.exports = class InteractionCommandBuilder {
     setCommand(command) {
         if(!(DataTypeValidator.function(command) || DataTypeValidator.object(command))) throw new TypeError('Invalid argument: `command` must be a function');
 
-        this.command = typeof command === 'object' ? command : command(new SlashCommandBuilder(this)).toJSON();
+        this.command = typeof command === 'object' ? command : command(new SlashCommandBuilder(this));
         this.name = this.command.name;
         return this;
     }
