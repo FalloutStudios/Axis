@@ -80,7 +80,7 @@ module.exports = {
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response 
      */
-    async reactRemove (message, reactionId, verboseError = true) {
+    async reactionRemove (message, reactionId, verboseError = true) {
         try{
             return await message.reactions.cache.get(reactionId)?.remove().catch( err => { log.error(verboseError ? err : err?.message); });
         } catch (err) {
