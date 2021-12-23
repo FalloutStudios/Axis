@@ -12,14 +12,14 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} channel - The channel for message to send
+     * @param {Object} destination - The message destination (channel, user, ...)
      * @param {*} message - The message to send
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise message response
      */
-    async send (channel, message, verboseError = true) {
+    async send (destination, message, verboseError = true) {
         try {
-            return await channel.send(message).catch(err => { log.error(verboseError ? err : err?.message); });
+            return await destination.send(message).catch(err => { log.error(verboseError ? err : err?.message); });
         } catch (err) {
             log.error(verboseError ? err : err?.message);
             return false;
@@ -67,6 +67,37 @@ module.exports = {
     async react (message, reaction, verboseError = true) {
         try {
             return await message.react(reaction).catch( err => { log.error(verboseError ? err : err?.message); });
+        } catch (err) {
+            log.error(verboseError ? err : err?.message);
+            return false;
+        }
+    },
+
+    /**
+     * 
+     * @param {Object} message - The message to delete a reaction
+     * @param {string} reactionId - The reactionId (emoji id) to delete
+     * @param {boolean} [verboseError=true] - Whether to send full error message
+     * @returns {Promise<void>} Promise response 
+     */
+    async reactRemove (message, reactionId, verboseError = true) {
+        try{
+            return await message.reactions.cache.get(reactionId)?.remove().catch( err => { log.error(verboseError ? err : err?.message); });
+        } catch (err) {
+            log.error(verboseError ? err : err?.message);
+            return false;
+        }
+    },
+
+    /**
+     * 
+     * @param {Object} message - The message to delete all reactions
+     * @param {boolean} [verboseError=true] - Whether to send full error message
+     * @returns {Promise<void>} Promise response
+     */
+    async reactionRemoveAll(message, verboseError = true) {
+        try {
+            return await message.reactions.removeAll().catch( err => { log.error(verboseError ? err : err?.message); });
         } catch (err) {
             log.error(verboseError ? err : err?.message);
             return false;
