@@ -1,4 +1,4 @@
 module.exports = {
-    InteractionCommandBuilder: require('./interactionCommandBuilder.js'),
-    MessageCommandBuilder: require('./messageCommandBuilder.js'),
+    InteractionCommandBuilder: require('./interactionCommandBuilder'),
+    MessageCommandBuilder: require('./messageCommandBuilder'),
 }
