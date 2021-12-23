@@ -22,7 +22,7 @@ class AxisCommands {
     constructor() {
         options = this.getConfig('./config/axis.yml');
 
-        this.versions = ['1.5.1', '1.5.2'];
+        this.versions = ['1.6.0'];
         this.commands = this.setCommands();
     }
 
