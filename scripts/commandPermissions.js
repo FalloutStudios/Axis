@@ -14,7 +14,6 @@ module.exports = (command, member, list) => {
     if(!list.enabled) return true;
     
     const findPermissions = list.commands.find(x => x.command === command);
-
     if(findPermissions && Object.keys(findPermissions).length) {
         switch(findPermissions) {
             case !findPermissions?.permissions:
