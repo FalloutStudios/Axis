@@ -15,7 +15,14 @@ module.exports = (command, member, list) => {
     
     const findPermissions = list.commands.find(x => x.command === command);
     if(findPermissions?.lenght) {
-        if(member && findPermissions?.permissions && member.permissions.has(findPermissions.permissions)) return true;
+        switch(findPermissions) {
+            case !findPermissions?.permissions:
+                throw new Error(`No permissions set for command: ${command}`);
+            case typeof findPermissions?.permissions !== 'object':
+                throw new Error(`Permissions for command: ${command} is not an object`);
+        }
+        
+        if(member && member.permissions.has(findPermissions.permissions)) return true;
         return false;
     }
 
