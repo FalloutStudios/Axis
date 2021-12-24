@@ -76,35 +76,23 @@ permissions:
     # Enable message command permissions
     enabled: true
 
-    # Permission keys
-    permissions:
-      admin: ['ADMINISTRATOR']
-      moderator: ['BAN_MEMBERS','KICK_MEMBERS']
-
-    # Restrict commands for admin only (This is the command name)
-    adminOnlyCommands: ['stop']
-
-    # Command for moderator with kick and ban perms (This is the command name)
-    moderatorOnlyCommands: []
+    # Commands
+    commands:
+      - command: 'stop'
+        permissions: ['ADMINISTRATOR']
   
   # Slash commands permissions
   interactionCommands:
     # Enable slash commands permissions
     enabled: true
 
-    # Permission keys
-    permissions:
-      admin: ['ADMINISTRATOR']
-      moderator: ['BAN_MEMBERS','KICK_MEMBERS']
-
     # Register slash commands
     registerSlashCommands: true
 
-    # Restrict commands for admin only (This is the command name)
-    adminOnlyCommands: ['stop']
-
-    # Command for moderator with kick and ban perms (This is the command name)
-    moderatorOnlyCommands: []
+    # Commands
+    commands:
+      - command: 'stop'
+        permissions: ['ADMINISTRATOR']
 
 # Ignored channels based on IDs
 blacklistChannels:            
