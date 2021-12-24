@@ -1,27 +1,4 @@
-const { Permissions } = require('discord.js');
-
 module.exports = {
-    /**
-     * 
-     * @param {Object} member - Guild member object
-     * @param {Object} permissions - Discord permissions flags
-     * @returns {boolean} Returns if member is administrator
-     */
-    admin(member, permissions = Permissions.FLAGS.ADMINISTRATOR) {
-        if(member && member.permissions.has(permissions)) return true;
-        return false;
-    },
-
-    /**
-     * @param {Object} member - Guild member object
-     * @param {Object} permissions - Discord permissions flags
-     * @returns {boolean} Returns if member is moderator
-    */
-    moderator(member, permissions = [Permissions.FLAGS.BAN_MEMBERS, Permissions.FLAGS.KICK_MEMBERS]) {
-        if(member && member.permissions.has(permissions)) return true;
-        return false;
-    },
-
     /**
      * @param {String} channelId - Channel ID
      * @param {Object} blacklistChannels - list of channels to blacklist
