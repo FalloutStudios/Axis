@@ -11,7 +11,7 @@ const MemberPermission = require('./memberPermissions');
  * @returns 
  */
 module.exports = (command, member, list) => {
-    if(!list.enable) return true;
+    if(!list.enabled) return true;
     if(has(list.adminOnlyCommands, command) && !MemberPermission.admin(member, list?.permissions.admin ? list.permissions.admin : null)) return false;
     if(has(list.moderatorOnlyCommands, command) && !MemberPermission.moderator(member, list?.permissions.moderator ? list.permissions.moderator : null)) return false;
 

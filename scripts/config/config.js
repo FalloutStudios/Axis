@@ -74,7 +74,7 @@ permissions:
   # Message commands permissions
   messageCommands:
     # Enable message command permissions
-    enable: true
+    enabled: true
 
     # Permission keys
     permissions:
@@ -90,7 +90,7 @@ permissions:
   # Slash commands permissions
   interactionCommands:
     # Enable slash commands permissions
-    enable: true
+    enabled: true
 
     # Permission keys
     permissions:
