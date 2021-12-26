@@ -9,9 +9,9 @@ module.exports = {
     */
     isIgnoredChannel(channelId, blacklistChannels) {
         if(blacklistChannels.enabled && (
-            !blacklistChannels.convertToWhitelist && blacklistChannels.channels.includes(channelId.toString())
+            !blacklistChannels.convertToWhitelist && blacklistChannels.channels.find(chnl => chnl == channelId)
             || 
-            blacklistChannels.enabled && blacklistChannels.convertToWhitelist && !blacklistChannels.channels.includes(channelId.toString())
+            blacklistChannels.enabled && blacklistChannels.convertToWhitelist && !blacklistChannels.channels.find(chnl => chnl == channelId)
         )) { return true; }
 
         return false;
