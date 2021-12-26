@@ -73,9 +73,9 @@ function generateConfig() {
 
 embedColor: '#19AFFF'  # Colors for embed messages
 commandPrefix: '!'  # Prefix for commands
-owner: 'Ghexter'  # Who owns this bot
+owner: 'FalloutStudios'  # Who owns this bot
 
-guildId: # Only register slash commands for the given guild.
+guildId: '' # Only register slash commands for the given guild.
 
 # Command permissions
 permissions:

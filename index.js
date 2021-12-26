@@ -12,6 +12,9 @@
     FunctionNames: camelCase
 **/
 
+var configPath = './config/Bot/config.yml';
+var languagePath = './config/Bot/language.yml';
+
 // Modules
 const Util = require('fallout-utility');
 const Path = require('path');
@@ -29,8 +32,8 @@ const log = new Util.Logger('Main');
 const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 
 // Config & Language
-let config = new Config('./config/config.yml').parse().commands().prefill().getConfig();
-let lang = new Language(config.language).parse().getLanguage();
+let config = new Config(configPath).parse().commands().prefill().getConfig();
+let lang = new Language(config?.language ? config.language : languagePath).parse().getLanguage();
 
 
 // Client
@@ -66,7 +69,7 @@ class AxisUtility {
         const args = Util.getCommand(message.content.trim(), this.get().config.commandPrefix).args;
 
         // If the command exists
-        if(!cmd) return;
+        if(!cmd) return false;
 
         // Check permission
         if(!CommandPermission(command, message.member, this.get().config.permissions.messageCommands)) {
@@ -74,7 +77,7 @@ class AxisUtility {
         }
 
         // Execute
-        await this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${this.get().config.commandPrefix}${command}`));
+        return this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${this.get().config.commandPrefix}${command}`));
     }
 
     /**
@@ -87,7 +90,7 @@ class AxisUtility {
         const cmd = interaction.isCommand() ? commands.InteractionCommands.find(property => property.name === interaction.commandName) : null;
         
         // If command exists
-        if(!cmd) return;
+        if(!cmd) return false;
 
         // Check configurations
         if(MemberPermission.isIgnoredChannel(interaction.channelId, this.get().config.blacklistChannels) || !cmd.allowExecViaDm && !interaction?.member) { 
@@ -99,7 +102,7 @@ class AxisUtility {
             return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.get().language.noPerms), ephemeral: true });
         }
 
-        await this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err, `/${interaction.commandName}`));
+        return this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err, `/${interaction.commandName}`));
     }
 
     /**
@@ -114,7 +117,7 @@ class AxisUtility {
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
         log.warn(`${message.author.username} executed ${this.get().config.commandPrefix}${command.name}`, 'MessageCommand');
-        await command.execute(args, message, Client);
+        return command.execute(args, message, Client);
     }
 
     /**
@@ -128,7 +131,7 @@ class AxisUtility {
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
         log.warn(`${ (interaction?.user.username ? interaction.user.username + ' ' : '') }executed /${interaction.commandName}`, 'InteractionCommand');
-        await command.execute(interaction, Client);
+        return command.execute(interaction, Client);
     }
 
     /**
@@ -187,7 +190,7 @@ class AxisUtility {
              * @returns {void}
              */
             config() {
-                config = new Config('./config/config.yml').parse().testmode().getConfig();
+                config = new Config(configPath).parse().testmode().getConfig();
             },
 
             /**
