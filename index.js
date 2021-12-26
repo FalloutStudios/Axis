@@ -29,7 +29,7 @@ const log = new Util.Logger('Main');
 const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 
 // Config
-let config = new Config('./config/config.yml').parse().testmode().prefill().getConfig();
+let config = new Config('./config/config.yml').parse().commands().prefill().getConfig();
 
 // Language
 let lang = new Language(config.language).parse().getLanguage();
