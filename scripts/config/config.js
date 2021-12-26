@@ -38,7 +38,7 @@ module.exports = class Config {
      * @returns {Object} returns modified config
      */
     commands() {
-        if(commands.opts().logging && (commands.opts().logging.toLowerCase() == 'false' || commands.opts().logging.toLowerCase() == 'true')) {
+        if(typeof commands.opts().logging === 'string' && (commands.opts().logging.toLowerCase() == 'false' || commands.opts().logging.toLowerCase() == 'true')) {
             var logging = { status: commands.opts().logging.toLowerCase() == 'true' ? true : false };
         }
 
