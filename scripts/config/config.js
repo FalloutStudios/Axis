@@ -149,7 +149,7 @@ client:
     - 'GUILD_MESSAGE_REACTIONS'
 
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
-language: 'config/language.yml'   # Langage file 
+language: 'config/Bot/language.yml'   # Langage file 
 modulesFolder: 'modules'  # Define where's your modules (Changing this might cause problems to other modules)
 
 version: ${Version}    # Version (don't modify this value)`;
