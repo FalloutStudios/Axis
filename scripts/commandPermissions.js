@@ -22,8 +22,7 @@ module.exports = (command, member, list) => {
                 throw new Error(`Permissions for command: ${command} is not an object`);
         }
         
-        if(member && member.permissions.has(findPermissions.permissions)) return true;
-        return false;
+        return member && member.permissions.has(findPermissions.permissions) ? true : false;
     }
 
     return true;
