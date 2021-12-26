@@ -6,7 +6,8 @@ const Version = require('../version');
 const { ask } = require('fallout-utility');
 
 const commands = new Commander.Command;
-    commands.option('-t, --testmode');
+    commands.option('-t, --testmode', 'Use "discordtoken" environment as a token');
+    commands.option('-L, --logging <value>', 'Toggle log file (True/False)', true);
     commands.parse();
 
 module.exports = class Config {
@@ -35,8 +36,13 @@ module.exports = class Config {
     /**
      * @returns {Object} returns modified config
      */
-    testmode() {
+    commands() {
+        if(commands.opts().logging && (commands.opts().logging.toLowerCase() == 'false' || commands.opts().logging.toLowerCase() == 'true')) {
+            var logging = { status: commands.opts().logging.toLowerCase() == 'true' ? true : false };
+        }
+
         this.config.token = commands.opts().testmode ? process.env['discordtoken'] : this.config.token;
+        this.config.logging.enabled = logging ? logging.status : this.config.logging.enabled;
 
         return this;
     }
