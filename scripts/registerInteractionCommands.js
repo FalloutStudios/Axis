@@ -47,7 +47,7 @@ module.exports = async (Client, commands, guild = null, force = false) => {
             log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a guild.`);
         }
 
-        MakeConfig(deployFile, 'false');
+        MakeConfig(deployFile, 'false', true);
     } catch (err) {
         log.error(err);
     }
