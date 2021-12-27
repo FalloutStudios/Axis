@@ -53,38 +53,38 @@ class AxisCommands {
     getConfig(location) {
         return Yml.parse(MakeConfig(location, `messageCommands:
   version:
-      enabled: true
+    enabled: true
   stop:
-      enabled: false
+    enabled: false
   help:
-      enabled: true
-  interactionCommands:
+    enabled: true
+interactionCommands:
   version:
-      enabled: true
+    enabled: true
   stop:
-      enabled: false
+    enabled: false
   help:
-      enabled: true
-  setPresence: true
-  version:
+    enabled: true
+setPresence: true
+version:
   message: |-
       **{username} v{version}**
       Based on Axis bot v{version}.
       https://github.com/FalloutStudios/Axis
   linkButtons:
-      - name: View on Github
+    - name: View on Github
       link: https://github.com/FalloutStudios/Axis
-      - name: Submit an issue
+    - name: Submit an issue
       link: https://github.com/FalloutStudios/Axis/issues
-      - name: View wiki
+    - name: View wiki
       link: https://github.com/FalloutStudios/Axis/wiki
 
-  # Only change this value if you know what you're doing.
-  #     not setting a value uses the default
-  # 0 - means infinite event listeners can be used
-  #     changing this to infinite or exceeding to the default value
-  #     can cause memory leaks.
-  maxClientEventListeners:`));
+# Only change this value if you know what you're doing.
+#     not setting a value uses the default
+# 0 - means infinite event listeners can be used
+#     changing this to infinite or exceeding to the default value
+#     can cause memory leaks.
+maxClientEventListeners:`));
     }
 
     setCommands() {
