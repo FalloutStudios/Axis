@@ -37,6 +37,11 @@ class AxisCommands {
         await this.setPresence(Client);
         versionMessageReply = this.getVersionMessageReply(Client);
 
+        if(options?.maxClientEventListeners || options?.maxClientEventListeners === 0) {
+            log.warn(`Max client event listeners set to ${(options.maxClientEventListeners !== 0 ? options.maxClientEventListeners : 'infinite')}`);
+            Client.setMaxListeners(options.maxClientEventListeners);
+        }
+
         return true;
     }
     
@@ -46,48 +51,40 @@ class AxisCommands {
     }
 
     getConfig(location) {
-        return Yml.parse(MakeConfig(location, {
-            messageCommands: {
-                version: {
-                    enabled: true
-                },
-                stop: {
-                    enabled: true
-                },
-                help: {
-                    enabled: true
-                }
-            },
-            interactionCommands: {
-                version: {
-                    enabled: true
-                },
-                stop: {
-                    enabled: true
-                },
-                help: {
-                    enabled: true
-                }
-            },
-            setPresence: true,
-            version: {
-                message: '**{username} v{version}**\nBased on Axis bot v{version}.\nhttps://github.com/FalloutStudios/Axis',
-                linkButtons: [
-                    {
-                        name: 'View on Github',
-                        link: 'https://github.com/FalloutStudios/Axis'
-                    },
-                    {
-                        name: 'Submit an issue',
-                        link: 'https://github.com/FalloutStudios/Axis/issues'
-                    },
-                    {
-                        name: 'View wiki',
-                        link: 'https://github.com/FalloutStudios/Axis/wiki'
-                    }
-                ]
-            }
-        }));
+        return Yml.parse(MakeConfig(location, `messageCommands:
+  version:
+      enabled: true
+  stop:
+      enabled: false
+  help:
+      enabled: true
+  interactionCommands:
+  version:
+      enabled: true
+  stop:
+      enabled: false
+  help:
+      enabled: true
+  setPresence: true
+  version:
+  message: |-
+      **{username} v{version}**
+      Based on Axis bot v{version}.
+      https://github.com/FalloutStudios/Axis
+  linkButtons:
+      - name: View on Github
+      link: https://github.com/FalloutStudios/Axis
+      - name: Submit an issue
+      link: https://github.com/FalloutStudios/Axis/issues
+      - name: View wiki
+      link: https://github.com/FalloutStudios/Axis/wiki
+
+  # Only change this value if you know what you're doing.
+  #     not setting a value uses the default
+  # 0 - means infinite event listeners can be used
+  #     changing this to infinite or exceeding to the default value
+  #     can cause memory leaks.
+  maxClientEventListeners:`));
     }
 
     setCommands() {
