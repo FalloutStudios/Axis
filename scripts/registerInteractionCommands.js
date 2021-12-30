@@ -40,11 +40,25 @@ module.exports = async (Client, commands, guild = null, force = false) => {
             );
             log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`);
         } else {
-            await rest.put(
-                Routes.applicationGuildCommands(Client.user.id, guild),
-                { body: commands }
-            );
-            log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a guild.`);
+            switch(typeof guild) {
+                case 'number': throw new TypeError('Guild ID must be a string or object of guild id strings');
+                case 'string':
+                    await rest.put(
+                        Routes.applicationGuildCommands(Client.user.id, guild),
+                        { body: commands }
+                    );
+                    log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a guild.`);
+                    break;
+                case 'object':
+                    for(const guildId of guild) {
+                        if(typeof guildId != 'string') throw new TypeError('Guild ID must be a string');
+                        await rest.put(
+                            Routes.applicationGuildCommands(Client.user.id, guildId),
+                            { body: commands }
+                        );
+                        log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a guild ${guildId}.`);
+                    }
+            }
         }
 
         MakeConfig(deployFile, 'false', true);
