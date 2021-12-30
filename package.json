@@ -1,4 +1,17 @@
 {
+  "name": "axis",
+  "main": "index.js",
+  "license": "MIT",
+  "version": "1.6.0",
+  "author": "FalloutStudios",
+  "homepage": "https://github.com/FalloutStudios/Axis#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FalloutStudios/Axis.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FalloutStudios/Axis/issues"
+  },
   "scripts": {
     "start": "node index.js",
     "test": "node index.js --testmode"
@@ -8,8 +21,7 @@
     "npm": ">=7.24.2"
   },
   "engineStrict": true,
-  "license": "MIT",
-  "version": "1.6.0",
+  "devDependencies": {},
   "dependencies": {
     "@discordjs/rest": "^0.2.0-canary.0",
     "commander": "^8.3.0",
