@@ -9,6 +9,7 @@ const Version = require('../scripts/version');
 const MakeConfig = require('../scripts/makeConfig');
 const Yml = require('yaml');
 
+// Configs
 let log = new Util.Logger('Axis');
 const interactionTimeout = 20000;
 const argTypes = {
@@ -18,6 +19,7 @@ const argTypes = {
 let options = null;
 let versionMessageReply = "";
 
+// Main class
 class AxisCommands {
     constructor() {
         options = this.getConfig('./config/Axis.js/config.yml');
@@ -27,12 +29,13 @@ class AxisCommands {
     }
 
     async onStart(Client) {
+        // Change logger
         log = Client.AxisUtility.get().logger;
 
         SafeMessage.setLogger(log);
         SafeInteract.setLogger(log);
 
-        log.log('Axis default command module has started!');
+        log.log('Axis command module has starting!');
         
         await this.setPresence(Client);
         versionMessageReply = this.getVersionMessageReply(Client);
@@ -46,18 +49,23 @@ class AxisCommands {
     }
     
     onLoad(Client) {
+        log.warn("Axis command module has loaded!");
+
         fetchCommands(Client.AxisUtility.get().commands.MessageCommands);
         fetchCommands(Client.AxisUtility.get().commands.InteractionCommands);
     }
 
     getConfig(location) {
-        return Yml.parse(MakeConfig(location, `messageCommands:
+        return Yml.parse(MakeConfig(location, `# Toggle message commands
+messageCommands:
   version:
     enabled: true
   stop:
     enabled: false
   help:
     enabled: true
+
+# Toggle interaction commands
 interactionCommands:
   version:
     enabled: true
@@ -65,12 +73,23 @@ interactionCommands:
     enabled: false
   help:
     enabled: true
-setPresence: true
+
+# Set bot presence
+presence:
+  enabled: true  # Enable presence
+  status: ['online']  # Status of bot (online, idle, dnd, offline)  [this can be a string or an object for random value]
+  type: ['playing']  # Type of status (playing, listening, watching, streaming) or enter a custom status  [this can be a string or an object for random value]
+  activityName: ['Minecraft']  # Name your activity [this can be a string or an object for random value]
+
+# Version command response
 version:
+  # The message to display when the version command is used
   message: |-
       **{username} v{version}**
       Based on Axis bot v{version}.
       https://github.com/FalloutStudios/Axis
+
+  # Buttons to display in the version command
   linkButtons:
     - name: View on Github
       link: https://github.com/FalloutStudios/Axis
@@ -167,12 +186,11 @@ maxClientEventListeners:`));
     async setPresence(Client) {
         log.log('Configuring bot presence...');
     
-        const config = Client.AxisUtility.get().config;
-        return options?.setPresence ? Client.user.setPresence({
-            status: Util.getRandomKey(config.presence.status),
+        return options?.presence.enabled ? Client.user.setPresence({
+            status: Util.getRandomKey(options.presence.status),
             activities: [{
-                name: Util.getRandomKey(config.presence.activityName),
-                type: Util.getRandomKey(config.presence.type).toUpperCase()
+                name: Util.getRandomKey(options.presence.activityName),
+                type: Util.getRandomKey(options.presence.type)
             }]
         }) : null;
     }
