@@ -9,6 +9,7 @@
   },
   "engineStrict": true,
   "license": "MIT",
+  "version": "1.6.0",
   "dependencies": {
     "@discordjs/rest": "^0.1.0-canary.0",
     "commander": "^8.3.0",
