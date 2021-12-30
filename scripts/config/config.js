@@ -110,16 +110,10 @@ blacklistChannels:
   channels: []
   convertToWhitelist: false  # Convert channels to whitelisted channels
 
-# Custom bot presence
-presence:
-  enabled: true  # Enable presence
-  status: ['online']  # Status of bot (online, idle, dnd, offline)  [this can be a string or an object for random value]
-  type: ['playing']  # Type of status (playing, listening, watching, streaming) or enter a custom status  [this can be a string or an object for random value]
-  activityName: ['Minecraft']  # Name your activity [this can be a string or an object for random value]
-
-
-# Danger Zone!
-# Edit this values below if you know what you're doing
+# ==========================================================
+#                       Danger Zone!                          
+#    Edit this values below if you know what you're doing
+# ==========================================================
 
 # Logging
 logging:
