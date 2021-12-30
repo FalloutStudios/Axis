@@ -308,7 +308,7 @@ function makePages(visibleCommands, allCommands, client, language, prefix, embed
         // Create embed
         if(!embeds[current]) {
             embeds.push(new MessageEmbed()
-                .setAuthor(Util.getRandomKey(language.help.title), client.user.displayAvatarURL())
+                .setAuthor({ name: Util.getRandomKey(language.help.title), iconURL: client.user.displayAvatarURL() })
                 .setDescription(Util.getRandomKey(language.help.description))
                 .setColor(embedColor)
                 .setTimestamp());
