@@ -15,19 +15,20 @@
 var configPath = './config/Bot/config.yml';
 var languagePath = './config/Bot/language.yml';
 
+
 // Modules
 const Util = require('fallout-utility');
 const Path = require('path');
-const { Config, Language } = require('./scripts/config');
 const Discord = require('discord.js');
 
-// Local actions
+// Local modules
+const { Config, Language } = require('./scripts/config');
 const ScriptLoader = require('./scripts/loadScripts');
 const { SafeMessage, SafeInteract } = require('./scripts/safeActions');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
 
-// Configurations
+// Utils
 const log = new Util.Logger('Main');
 const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 
@@ -44,6 +45,7 @@ var scripts = {};
 var commands = { MessageCommands: [], InteractionCommands: [] };
 var intents = config.client.intents;
 
+
 // Logging
 if(config.logging.enabled) {
     log.logFile(config.logging.logFilePath);
@@ -55,6 +57,7 @@ if(config.logging.enabled) {
 
 // Startup
 require('./scripts/startup')(log);
+
 
 // AxisUtility
 class AxisUtility {
@@ -203,6 +206,7 @@ class AxisUtility {
     }
 }
 
+
 // Client start
 Client.login(config.token);
 Client.AxisUtility = new AxisUtility();
@@ -230,6 +234,7 @@ Client.on('ready', async () => {
         }
     });
 });
+
 
 // Errors and warnings
 if(config.processErrors) {
