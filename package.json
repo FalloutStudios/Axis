@@ -28,7 +28,7 @@
     "discord.js": "^13.5.0",
     "discordjs-button-embed-pagination": "^4.0.1",
     "discordjs-button-pagination": "^2.0.1",
-    "fallout-utility": "^1.2.0",
+    "fallout-utility": "^1.2.5",
     "yaml": "^1.10.2"
   }
 }
