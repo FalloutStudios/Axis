@@ -70,7 +70,7 @@ interactionCommands:
   version:
     enabled: true
   stop:
-    enabled: false
+    enabled: true
   help:
     enabled: true
 
