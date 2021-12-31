@@ -12,8 +12,8 @@
     FunctionNames: camelCase
 **/
 
-var configPath = './config/Bot/config.yml';
-var languagePath = './config/Bot/language.yml';
+const configPath = './config/Bot/config.yml';
+const languagePath = './config/Bot/language.yml';
 
 
 // Modules
@@ -23,10 +23,10 @@ const Discord = require('discord.js');
 
 // Local modules
 const { Config, Language } = require('./scripts/config');
-const ScriptLoader = require('./scripts/loadScripts');
 const { SafeMessage, SafeInteract } = require('./scripts/safeActions');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
+const ScriptLoader = require('./scripts/loadScripts');
 
 // Utils
 const log = new Util.Logger('Main');
