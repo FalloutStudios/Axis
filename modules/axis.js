@@ -9,6 +9,7 @@ const Version = require('../scripts/version');
 const MakeConfig = require('../scripts/makeConfig');
 const Yml = require('yaml');
 
+// Configs
 let log = new Util.Logger('Axis');
 const interactionTimeout = 20000;
 const argTypes = {
@@ -18,76 +19,91 @@ const argTypes = {
 let options = null;
 let versionMessageReply = "";
 
+// Main class
 class AxisCommands {
     constructor() {
-        options = this.getConfig('./config/axis.yml');
+        options = this.getConfig('./config/Axis.js/config.yml');
 
-        this.versions = ['1.5.1', '1.5.2'];
+        this.versions = ['1.6.0'];
         this.commands = this.setCommands();
     }
 
     async onStart(Client) {
+        // Change logger
         log = Client.AxisUtility.get().logger;
 
         SafeMessage.setLogger(log);
         SafeInteract.setLogger(log);
 
-        log.log('Axis default command module has started!');
+        log.log('Axis command module has starting!');
         
         await this.setPresence(Client);
         versionMessageReply = this.getVersionMessageReply(Client);
+
+        if(options?.maxClientEventListeners || options?.maxClientEventListeners === 0) {
+            log.warn(`Max client event listeners set to ${(options.maxClientEventListeners !== 0 ? options.maxClientEventListeners : 'infinite')}`);
+            Client.setMaxListeners(options.maxClientEventListeners);
+        }
 
         return true;
     }
     
     onLoad(Client) {
+        log.warn("Axis command module has loaded!");
+
         fetchCommands(Client.AxisUtility.get().commands.MessageCommands);
         fetchCommands(Client.AxisUtility.get().commands.InteractionCommands);
     }
 
     getConfig(location) {
-        return Yml.parse(MakeConfig(location, {
-            messageCommands: {
-                version: {
-                    enabled: true
-                },
-                stop: {
-                    enabled: true
-                },
-                help: {
-                    enabled: true
-                }
-            },
-            interactionCommands: {
-                version: {
-                    enabled: true
-                },
-                stop: {
-                    enabled: true
-                },
-                help: {
-                    enabled: true
-                }
-            },
-            setPresence: true,
-            version: {
-                message: '**{username} v{version}**\nBased on Axis bot v{version}.\nhttps://github.com/FalloutStudios/Axis',
-                linkButtons: [
-                    {
-                        name: 'View on Github',
-                        link: 'https://github.com/FalloutStudios/Axis'
-                    },
-                    {
-                        name: 'Submit an issue',
-                        link: 'https://github.com/FalloutStudios/Axis/issues'
-                    },
-                    {
-                        name: 'View wiki',
-                        link: 'https://github.com/FalloutStudios/Axis/wiki'
-                    }
-                ]
-            }
-        }));
+        return Yml.parse(MakeConfig(location, `# Toggle message commands
+messageCommands:
+  version:
+    enabled: true
+  stop:
+    enabled: false
+  help:
+    enabled: true
+
+# Toggle interaction commands
+interactionCommands:
+  version:
+    enabled: true
+  stop:
+    enabled: false
+  help:
+    enabled: true
+
+# Set bot presence
+presence:
+  enabled: true  # Enable presence
+  status: ['online']  # Status of bot (online, idle, dnd, offline)  [this can be a string or an object for random value]
+  type: ['playing']  # Type of status (playing, listening, watching, streaming) or enter a custom status  [this can be a string or an object for random value]
+  activityName: ['Minecraft']  # Name your activity [this can be a string or an object for random value]
+
+# Version command response
+version:
+  # The message to display when the version command is used
+  message: |-
+      **{username} v{version}**
+      Based on Axis bot v{version}.
+      https://github.com/FalloutStudios/Axis
+
+  # Buttons to display in the version command
+  linkButtons:
+    - name: View on Github
+      link: https://github.com/FalloutStudios/Axis
+    - name: Submit an issue
+      link: https://github.com/FalloutStudios/Axis/issues
+    - name: View wiki
+      link: https://github.com/FalloutStudios/Axis/wiki
+
+# Only change this value if you know what you're doing.
+#     not setting a value uses the default
+# 0 - means infinite event listeners can be used
+#     changing this to infinite or exceeding to the default value
+#     can cause memory leaks.
+maxClientEventListeners:`));
     }
 
     setCommands() {
@@ -170,12 +186,11 @@ class AxisCommands {
     async setPresence(Client) {
         log.log('Configuring bot presence...');
     
-        const config = Client.AxisUtility.get().config;
-        return options?.setPresence ? Client.user.setPresence({
-            status: Util.getRandomKey(config.presence.status),
+        return options?.presence.enabled ? Client.user.setPresence({
+            status: Util.getRandomKey(options.presence.status),
             activities: [{
-                name: Util.getRandomKey(config.presence.activityName),
-                type: Util.getRandomKey(config.presence.type).toUpperCase()
+                name: Util.getRandomKey(options.presence.activityName),
+                type: Util.getRandomKey(options.presence.type)
             }]
         }) : null;
     }
@@ -293,7 +308,7 @@ function makePages(visibleCommands, allCommands, client, language, prefix, embed
         // Create embed
         if(!embeds[current]) {
             embeds.push(new MessageEmbed()
-                .setAuthor(Util.getRandomKey(language.help.title), client.user.displayAvatarURL())
+                .setAuthor({ name: Util.getRandomKey(language.help.title), iconURL: client.user.displayAvatarURL() })
                 .setDescription(Util.getRandomKey(language.help.description))
                 .setColor(embedColor)
                 .setTimestamp());

@@ -3,10 +3,12 @@ const Yml = require('yaml');
 const MakeConfig = require('../makeConfig');
 const Commander = require('commander');
 const Version = require('../version');
-const { ask } = require('fallout-utility');
+const { input } = require('fallout-utility');
 
 const commands = new Commander.Command;
-    commands.option('-t, --testmode');
+    commands.option('-t, --testmode', 'Use "discordtoken" environment as a token');
+    commands.option('-L, --logging <value>', 'Toggle log file (True/False)', true);
+    commands.option('-l, --logFilePath <logFilePath>', 'Log file path', './logs/latest.log');
     commands.parse();
 
 module.exports = class Config {
@@ -35,8 +37,14 @@ module.exports = class Config {
     /**
      * @returns {Object} returns modified config
      */
-    testmode() {
+    commands() {
+        if(typeof commands.opts().logging === 'string' && (commands.opts().logging.toLowerCase() == 'false' || commands.opts().logging.toLowerCase() == 'true')) {
+            var logging = { status: commands.opts().logging.toLowerCase() == 'true' ? true : false };
+        }
+
         this.config.token = commands.opts().testmode ? process.env['discordtoken'] : this.config.token;
+        this.config.logging.enabled = logging ? logging.status : this.config.logging.enabled;
+        this.config.logging.logFilePath = commands.opts().logFilePath ? commands.opts().logFilePath : this.config.logging.logFilePath;
 
         return this;
     }
@@ -46,7 +54,7 @@ module.exports = class Config {
      */
     prefill() {
         this.config.token = this.config.token === 'TOKEN' ? null : this.config.token;
-        this.config.token = !this.config.token || this.config.token == null ? ask('Bot Token >>> ') : this.config.token;
+        this.config.token = !this.config.token || this.config.token == null ? input({ text: 'Bot Token >>> ', echo: '*', repeat: true }) : this.config.token;
 
         return this;
     }
@@ -65,46 +73,34 @@ function generateConfig() {
 
 embedColor: '#19AFFF'  # Colors for embed messages
 commandPrefix: '!'  # Prefix for commands
-owner: 'Ghexter'  # Who owns this bot
+owner: 'FalloutStudios'  # Who owns this bot
 
-guildId: # Only register slash commands for the given guild.
+guildId: '' # Only register slash commands for the given guild.
 
 # Command permissions
 permissions:
   # Message commands permissions
   messageCommands:
     # Enable message command permissions
-    enable: true
+    enabled: true
 
-    # Permission keys
-    permissions:
-      admin: ['ADMINISTRATOR']
-      moderator: ['BAN_MEMBERS','KICK_MEMBERS']
-
-    # Restrict commands for admin only (This is the command name)
-    adminOnlyCommands: ['stop']
-
-    # Command for moderator with kick and ban perms (This is the command name)
-    moderatorOnlyCommands: []
+    # Commands
+    commands:
+      - command: 'stop'
+        permissions: ['ADMINISTRATOR']
   
   # Slash commands permissions
   interactionCommands:
     # Enable slash commands permissions
-    enable: true
-
-    # Permission keys
-    permissions:
-      admin: ['ADMINISTRATOR']
-      moderator: ['BAN_MEMBERS','KICK_MEMBERS']
+    enabled: true
 
     # Register slash commands
     registerSlashCommands: true
 
-    # Restrict commands for admin only (This is the command name)
-    adminOnlyCommands: ['stop']
-
-    # Command for moderator with kick and ban perms (This is the command name)
-    moderatorOnlyCommands: []
+    # Commands
+    commands:
+      - command: 'stop'
+        permissions: ['ADMINISTRATOR']
 
 # Ignored channels based on IDs
 blacklistChannels:            
@@ -114,16 +110,10 @@ blacklistChannels:
   channels: []
   convertToWhitelist: false  # Convert channels to whitelisted channels
 
-# Custom bot presence
-presence:
-  enabled: true  # Enable presence
-  status: ['online']  # Status of bot (online, idle, dnd, offline)  [this can be a string or an object for random value]
-  type: ['playing']  # Type of status (playing, listening, watching, streaming) or enter a custom status  [this can be a string or an object for random value]
-  activityName: ['Minecraft']  # Name your activity [this can be a string or an object for random value]
-
-
-# Danger Zone!
-# Edit this values below if you know what you're doing
+# ==========================================================
+#                       Danger Zone!                          
+#    Edit this values below if you know what you're doing
+# ==========================================================
 
 # Logging
 logging:
@@ -153,7 +143,7 @@ client:
     - 'GUILD_MESSAGE_REACTIONS'
 
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
-language: 'config/language.yml'   # Langage file 
+language: 'config/Bot/language.yml'   # Langage file 
 modulesFolder: 'modules'  # Define where's your modules (Changing this might cause problems to other modules)
 
 version: ${Version}    # Version (don't modify this value)`;

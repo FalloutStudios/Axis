@@ -23,9 +23,7 @@ module.exports = async (Client, commands, guild = null, force = false) => {
     if(Fs.existsSync(deployFile) && !force && !guild) {
         const deploy = Fs.readFileSync(deployFile).toString().trim();
 
-        if(deploy == 'false') {
-            return log.warn('Deployment file found, skipping register commands');
-        }
+        if(deploy == 'false') return log.warn('Deployment file found, skipping register commands');
     }
 
     commands = fetchCommands(commands);
@@ -33,7 +31,6 @@ module.exports = async (Client, commands, guild = null, force = false) => {
     // Send
     const rest = new REST({ version: '9' }).setToken(config.token);
     try {
-        if(!Object.keys(commands).length) { return log.warn('No interaction commands found.'); }
         if(!guild){
             await rest.put(
                 Routes.applicationCommands(Client.user.id),
@@ -41,14 +38,26 @@ module.exports = async (Client, commands, guild = null, force = false) => {
             );
             log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`);
         } else {
-            await rest.put(
-                Routes.applicationGuildCommands(Client.user.id, guild),
-                { body: commands }
-            );
-            log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a guild.`);
+            switch(typeof guild) {
+                case 'number': throw new TypeError('Guild ID must be a string or object of guild id strings');
+                case 'string':
+                    guild = [guild];
+                    break;
+                case 'object':
+                    break;
+            }
+
+            for(const guildId of guild) {
+                if(typeof guildId != 'string') throw new TypeError('Guild ID must be a string');
+                await rest.put(
+                    Routes.applicationGuildCommands(Client.user.id, guildId),
+                    { body: commands }
+                );
+                log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a guild ${guildId}.`);
+            }
         }
 
-        MakeConfig(deployFile, 'false');
+        MakeConfig(deployFile, 'false', true);
     } catch (err) {
         log.error(err);
     }

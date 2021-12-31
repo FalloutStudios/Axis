@@ -30,7 +30,7 @@ module.exports = async (Client, location) => {
             if(!name || !DataTypeValidator.moduleName(name)) throw new Error('Invalid Script Name: Name must be all lowercase without a special characters');
 
             // Check supported version
-            if (importModule?.versions && !importModule.versions.find(version => version == config.version)) { throw new Error(`${file} (${name}) does not support Axis version ${config.version}`); }
+            if (!importModule.versions.find(version => version == config.version)) { throw new Error(`${file} (${name}) does not support Axis version ${config.version}`); }
 
             // Import script
             scripts[name] = importModule;

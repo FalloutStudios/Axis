@@ -12,27 +12,29 @@
     FunctionNames: camelCase
 **/
 
+const configPath = './config/Bot/config.yml';
+const languagePath = './config/Bot/language.yml';
+
+
 // Modules
 const Util = require('fallout-utility');
 const Path = require('path');
-const { Config, Language } = require('./scripts/config');
 const Discord = require('discord.js');
 
-// Local actions
-const ScriptLoader = require('./scripts/loadScripts');
+// Local modules
+const { Config, Language } = require('./scripts/config');
 const { SafeMessage, SafeInteract } = require('./scripts/safeActions');
 const CommandPermission = require('./scripts/commandPermissions');
 const MemberPermission = require('./scripts/memberPermissions');
+const ScriptLoader = require('./scripts/loadScripts');
 
-// Configurations
+// Utils
 const log = new Util.Logger('Main');
 const registerInteractionCommmands = require('./scripts/registerInteractionCommands');
 
-// Config
-let config = new Config('./config/config.yml').parse().testmode().prefill().getConfig();
-
-// Language
-let lang = new Language(config.language).parse().getLanguage();
+// Config & Language
+let config = new Config(configPath).parse().commands().prefill().getConfig();
+let lang = new Language(config?.language ? config.language : languagePath).parse().getLanguage();
 
 
 // Client
@@ -42,6 +44,7 @@ const Client = new Discord.Client(config.client);
 var scripts = {};
 var commands = { MessageCommands: [], InteractionCommands: [] };
 var intents = config.client.intents;
+
 
 // Logging
 if(config.logging.enabled) {
@@ -54,6 +57,7 @@ if(config.logging.enabled) {
 
 // Startup
 require('./scripts/startup')(log);
+
 
 // AxisUtility
 class AxisUtility {
@@ -68,7 +72,7 @@ class AxisUtility {
         const args = Util.getCommand(message.content.trim(), this.get().config.commandPrefix).args;
 
         // If the command exists
-        if(!cmd) return;
+        if(!cmd) return false;
 
         // Check permission
         if(!CommandPermission(command, message.member, this.get().config.permissions.messageCommands)) {
@@ -76,7 +80,7 @@ class AxisUtility {
         }
 
         // Execute
-        await this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${this.get().config.commandPrefix}${command}`));
+        return this.executeMessageCommand(command, message, args).catch(async err => log.error(err, `${this.get().config.commandPrefix}${command}`));
     }
 
     /**
@@ -89,7 +93,7 @@ class AxisUtility {
         const cmd = interaction.isCommand() ? commands.InteractionCommands.find(property => property.name === interaction.commandName) : null;
         
         // If command exists
-        if(!cmd) return;
+        if(!cmd) return false;
 
         // Check configurations
         if(MemberPermission.isIgnoredChannel(interaction.channelId, this.get().config.blacklistChannels) || !cmd.allowExecViaDm && !interaction?.member) { 
@@ -101,7 +105,7 @@ class AxisUtility {
             return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.get().language.noPerms), ephemeral: true });
         }
 
-        await this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err, `/${interaction.commandName}`));
+        return this.executeInteractionCommand(interaction.commandName, interaction).catch(err => log.error(err, `/${interaction.commandName}`));
     }
 
     /**
@@ -116,7 +120,7 @@ class AxisUtility {
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
         log.warn(`${message.author.username} executed ${this.get().config.commandPrefix}${command.name}`, 'MessageCommand');
-        await command.execute(args, message, Client);
+        return command.execute(args, message, Client);
     }
 
     /**
@@ -130,7 +134,7 @@ class AxisUtility {
         if(!command) throw new Error(`Command \`${name}\` does not exist`);
 
         log.warn(`${ (interaction?.user.username ? interaction.user.username + ' ' : '') }executed /${interaction.commandName}`, 'InteractionCommand');
-        await command.execute(interaction, Client);
+        return command.execute(interaction, Client);
     }
 
     /**
@@ -189,7 +193,7 @@ class AxisUtility {
              * @returns {void}
              */
             config() {
-                config = new Config('./config/config.yml').parse().testmode().getConfig();
+                config = new Config(configPath).parse().testmode().getConfig();
             },
 
             /**
@@ -201,6 +205,7 @@ class AxisUtility {
         }
     }
 }
+
 
 // Client start
 Client.login(config.token);
@@ -229,6 +234,7 @@ Client.on('ready', async () => {
         }
     });
 });
+
 
 // Errors and warnings
 if(config.processErrors) {
