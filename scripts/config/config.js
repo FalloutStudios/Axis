@@ -3,7 +3,7 @@ const Yml = require('yaml');
 const MakeConfig = require('../makeConfig');
 const Commander = require('commander');
 const Version = require('../version');
-const { ask } = require('fallout-utility');
+const { input } = require('fallout-utility');
 
 const commands = new Commander.Command;
     commands.option('-t, --testmode', 'Use "discordtoken" environment as a token');
@@ -54,7 +54,7 @@ module.exports = class Config {
      */
     prefill() {
         this.config.token = this.config.token === 'TOKEN' ? null : this.config.token;
-        this.config.token = !this.config.token || this.config.token == null ? ask('Bot Token >>> ') : this.config.token;
+        this.config.token = !this.config.token || this.config.token == null ? input({ text: 'Bot Token >>> ', echo: '*', repeat: true }) : this.config.token;
 
         return this;
     }
