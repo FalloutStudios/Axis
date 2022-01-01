@@ -78,7 +78,7 @@ interactionCommands:
 presence:
   enabled: true  # Enable presence
   status: ['online']  # Status of bot (online, idle, dnd, offline)  [this can be a string or an object for random value]
-  type: ['playing']  # Type of status (playing, listening, watching, streaming) or enter a custom status  [this can be a string or an object for random value]
+  type: ['playing']  # Type of status (PLAYING, LISTENING, WATCHING, STREAMING) or enter a custom status  [this can be a string or an object for random value]
   activityName: ['Minecraft']  # Name your activity [this can be a string or an object for random value]
 
 # Version command response
