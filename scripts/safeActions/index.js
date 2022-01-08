@@ -1,4 +1,4 @@
 module.exports = {
-    SafeMessage: require('./safeMessage'),
-    SafeInteract: require('./safeInteract')
+    SafeMessage: require('./SafeMessage'),
+    SafeInteract: require('./SafeInteract')
 }
