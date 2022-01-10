@@ -339,9 +339,9 @@ async function getHelpMessage(args, message, Client) {
     let embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.get().language, Client.AxisUtility.get().config.commandPrefix, Client.AxisUtility.get().config.embedColor);
     
     if(embeds.length == 1) {
-        await SafeMessage.send(message.channel, { embeds: embeds });
+        return SafeMessage.send(message.channel, { embeds: embeds });
     } else {
-        await Pagination({ message: message, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
+        return Pagination({ message: message, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
     }
 }
 async function getHelpInteraction(interaction, Client) {
@@ -355,8 +355,8 @@ async function getHelpInteraction(interaction, Client) {
     // Send response
     await SafeInteract.deferReply(interaction);
     if(embeds.length == 1) { 
-        await SafeInteract.editReply(interaction, { embeds: embeds });
+        return SafeInteract.editReply(interaction, { embeds: embeds });
     } else {
-        await Pagination({ interaction: interaction, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
+        return Pagination({ interaction: interaction, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
     }
 }
