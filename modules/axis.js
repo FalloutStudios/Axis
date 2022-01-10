@@ -304,7 +304,7 @@ function ifNewPage(i, intLimit) {
 function makePages(visibleCommands, allCommands, client, language, prefix, embedColor) {
     // Create embeds
     let embeds = [];
-    let limit = 1;
+    let limit = 5;
     let increment = -1;
     let current = 0;
     
