@@ -1,8 +1,7 @@
 const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts/builders');
 const { SafeMessage, SafeInteract } = require('../scripts/safeActions');
 const CommandPermission = require('../scripts/commandPermissions');
-const InteractionPaginationEmbed = require('discordjs-button-pagination');
-const { Pagination } = require("discordjs-button-embed-pagination");
+const Pagination = require('@acegoal07/discordjs-pagination');
 const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
 const Util = require('fallout-utility');
 const Version = require('../scripts/version');
@@ -16,6 +15,16 @@ const argTypes = {
     required: "<%arg%%values%>",
     optional: "[%arg%%values%]"
 }
+const helpButtons = [
+    new MessageButton()
+        .setCustomId("previousbtn")
+        .setLabel("Previous")
+        .setStyle("PRIMARY"),
+    new MessageButton()
+        .setCustomId("nextbtn")
+        .setLabel("Next")
+        .setStyle("SUCCESS"),
+];
 let options = null;
 let versionMessageReply = "";
 
@@ -295,7 +304,7 @@ function ifNewPage(i, intLimit) {
 function makePages(visibleCommands, allCommands, client, language, prefix, embedColor) {
     // Create embeds
     let embeds = [];
-    let limit = 5;
+    let limit = 1;
     let increment = -1;
     let current = 0;
     
@@ -331,33 +340,7 @@ async function getHelpMessage(args, message, Client) {
     if(embeds.length == 1) {
         await SafeMessage.send(message.channel, { embeds: embeds });
     } else {
-        await new Pagination(message.channel, embeds, "Page", interactionTimeout, [
-            {
-                style: "SECONDARY",
-                label: "Start",
-                emoji: ""
-            },
-            {
-                style: "PRIMARY",
-                label: "Previous",
-                emoji: ""
-            },
-            {
-                style: "DANGER",
-                label: "Cancel",
-                emoji: ""
-            },
-            {
-                style: "SUCCESS",
-                label: "Next",
-                emoji: ""
-            },
-            {
-                style: "SECONDARY",
-                label: "Last",
-                emoji: ""
-            },
-        ]).paginate().catch(err => log.error(err));
+        await Pagination({ message: message, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
     }
 }
 async function getHelpInteraction(interaction, Client) {
@@ -367,24 +350,12 @@ async function getHelpInteraction(interaction, Client) {
     
     // Create embeds
     let embeds = makePages(visibleCommands, commands.InteractionCommands, Client, Client.AxisUtility.get().language, '/', Client.AxisUtility.get().config.embedColor);
-    
-    // Create buttons
-    const buttons = [
-        new MessageButton()
-            .setCustomId("previousbtn")
-            .setLabel("Previous")
-            .setStyle("PRIMARY"),
-        new MessageButton()
-            .setCustomId("nextbtn")
-            .setLabel("Next")
-            .setStyle("SUCCESS")
-    ];
 
     // Send response
     await SafeInteract.deferReply(interaction);
     if(embeds.length == 1) { 
         await SafeInteract.editReply(interaction, { embeds: embeds });
     } else {
-        await InteractionPaginationEmbed(interaction, embeds, buttons, interactionTimeout).catch( err => log.error(err));
+        await Pagination({ interaction: interaction, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
     }
 }
