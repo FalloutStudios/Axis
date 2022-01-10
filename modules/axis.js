@@ -234,7 +234,7 @@ module.exports = new AxisCommands();
 
 // functions
 // Help command
-const commands = { MessageCommands: {}, InteractionCommands: {}};
+const commands = { MessageCommands: {}, InteractionCommands: {} };
 function fetchCommands(object) {
     for (const command of object) {
         if(command.type === 'MessageCommand') {
@@ -329,6 +329,7 @@ function makePages(visibleCommands, allCommands, client, language, prefix, embed
 
     return embeds;
 }
+
 async function getHelpMessage(args, message, Client) {
     let filter = args.join(' ');
     let visibleCommands = Object.keys(commands.MessageCommands);
