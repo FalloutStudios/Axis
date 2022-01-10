@@ -1,4 +1,4 @@
 module.exports = {
-    Config: require('./config'),
-    Language: require('./language'),
+    Config: require('./Config'),
+    Language: require('./Language'),
 }

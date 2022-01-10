@@ -1,8 +1,7 @@
 const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts/builders');
 const { SafeMessage, SafeInteract } = require('../scripts/safeActions');
 const CommandPermission = require('../scripts/commandPermissions');
-const InteractionPaginationEmbed = require('discordjs-button-pagination');
-const { Pagination } = require("discordjs-button-embed-pagination");
+const Pagination = require('@acegoal07/discordjs-pagination');
 const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
 const Util = require('fallout-utility');
 const Version = require('../scripts/version');
@@ -16,6 +15,16 @@ const argTypes = {
     required: "<%arg%%values%>",
     optional: "[%arg%%values%]"
 }
+const helpButtons = [
+    new MessageButton()
+        .setCustomId("previousbtn")
+        .setLabel("Previous")
+        .setStyle("PRIMARY"),
+    new MessageButton()
+        .setCustomId("nextbtn")
+        .setLabel("Next")
+        .setStyle("SUCCESS"),
+];
 let options = null;
 let versionMessageReply = "";
 
@@ -24,7 +33,7 @@ class AxisCommands {
     constructor() {
         options = this.getConfig('./config/Axis.js/config.yml');
 
-        this.versions = ['1.6.0'];
+        this.versions = ['1.6.1'];
         this.commands = this.setCommands();
     }
 
@@ -225,7 +234,7 @@ module.exports = new AxisCommands();
 
 // functions
 // Help command
-const commands = { MessageCommands: {}, InteractionCommands: {}};
+const commands = { MessageCommands: {}, InteractionCommands: {} };
 function fetchCommands(object) {
     for (const command of object) {
         if(command.type === 'MessageCommand') {
@@ -320,71 +329,34 @@ function makePages(visibleCommands, allCommands, client, language, prefix, embed
 
     return embeds;
 }
+
 async function getHelpMessage(args, message, Client) {
-    let filter = args.join(' ');
+    const filter = args.join(' ');
     let visibleCommands = Object.keys(commands.MessageCommands);
         visibleCommands = filterVisibleCommands(visibleCommands, filter, message.member, Client.AxisUtility.get().config.permissions.messageCommands);
     
     // Create embeds
-    let embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.get().language, Client.AxisUtility.get().config.commandPrefix, Client.AxisUtility.get().config.embedColor);
+    const embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.get().language, Client.AxisUtility.get().config.commandPrefix, Client.AxisUtility.get().config.embedColor);
     
     if(embeds.length == 1) {
-        await SafeMessage.send(message.channel, { embeds: embeds });
+        return SafeMessage.send(message.channel, { embeds: embeds });
     } else {
-        await new Pagination(message.channel, embeds, "Page", interactionTimeout, [
-            {
-                style: "SECONDARY",
-                label: "Start",
-                emoji: ""
-            },
-            {
-                style: "PRIMARY",
-                label: "Previous",
-                emoji: ""
-            },
-            {
-                style: "DANGER",
-                label: "Cancel",
-                emoji: ""
-            },
-            {
-                style: "SUCCESS",
-                label: "Next",
-                emoji: ""
-            },
-            {
-                style: "SECONDARY",
-                label: "Last",
-                emoji: ""
-            },
-        ]).paginate().catch(err => log.error(err));
+        return Pagination({ message: message, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
     }
 }
 async function getHelpInteraction(interaction, Client) {
-    let filter = !interaction.options.getString('filter') ? '' : interaction.options.getString('filter');
+    const filter = !interaction.options.getString('filter') ? '' : interaction.options.getString('filter');
     let visibleCommands = Object.keys(commands.InteractionCommands);
         visibleCommands = filterVisibleCommands(visibleCommands, filter, interaction.member, Client.AxisUtility.get().config.permissions.interactionCommands);
     
     // Create embeds
-    let embeds = makePages(visibleCommands, commands.InteractionCommands, Client, Client.AxisUtility.get().language, '/', Client.AxisUtility.get().config.embedColor);
-    
-    // Create buttons
-    const buttons = [
-        new MessageButton()
-            .setCustomId("previousbtn")
-            .setLabel("Previous")
-            .setStyle("PRIMARY"),
-        new MessageButton()
-            .setCustomId("nextbtn")
-            .setLabel("Next")
-            .setStyle("SUCCESS")
-    ];
+    const embeds = makePages(visibleCommands, commands.InteractionCommands, Client, Client.AxisUtility.get().language, '/', Client.AxisUtility.get().config.embedColor);
 
     // Send response
     await SafeInteract.deferReply(interaction);
     if(embeds.length == 1) { 
-        await SafeInteract.editReply(interaction, { embeds: embeds });
+        return SafeInteract.editReply(interaction, { embeds: embeds });
     } else {
-        await InteractionPaginationEmbed(interaction, embeds, buttons, interactionTimeout).catch( err => log.error(err));
+        return Pagination({ interaction: interaction, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
     }
 }
