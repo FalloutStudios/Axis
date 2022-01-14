@@ -9,8 +9,8 @@ const Fs = require('fs');
 * @returns {Object} - returns an object with the loaded scripts
 */
 module.exports = async (Client, location) => {
-    const log = Client.AxisUtility.get().logger;
-    const config = Client.AxisUtility.get().config;
+    const log = Client.AxisUtility.logger;
+    const config = Client.AxisUtility.config;
     const scripts = {};
     const commands = { MessageCommands: [], InteractionCommands: [] };
 
