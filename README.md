@@ -23,7 +23,7 @@ Run `npm install` to install all dependencies then `node index.js` to run the bo
 
 ## Bugs
 
-To report bugs, Create an issue with a full stack trace so that we can easily identify its inconsistency.
+To report bugs, Create an issue and attach the log file or the error stack trace. `make sure no sensitive informations are logged such as tokens when including the log file.`
 
 ## Improvements
 
