@@ -23,9 +23,7 @@
   "engineStrict": true,
   "dependencies": {
     "@acegoal07/discordjs-pagination": "^1.1.5",
-    "@discordjs/rest": "^0.2.0-canary.0",
     "commander": "^8.3.0",
-    "discord-api-types": "^0.26.1",
     "discord.js": "^13.5.1",
     "fallout-utility": "^1.2.5",
     "yaml": "^1.10.2"
