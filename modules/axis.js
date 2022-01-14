@@ -39,7 +39,7 @@ class AxisCommands {
 
     async onStart(Client) {
         // Change logger
-        log = Client.AxisUtility.get().logger;
+        log = Client.AxisUtility.logger;
 
         SafeMessage.setLogger(log);
         SafeInteract.setLogger(log);
@@ -60,8 +60,8 @@ class AxisCommands {
     onLoad(Client) {
         log.warn("Axis command module has loaded!");
 
-        fetchCommands(Client.AxisUtility.get().commands.MessageCommands);
-        fetchCommands(Client.AxisUtility.get().commands.InteractionCommands);
+        fetchCommands(Client.AxisUtility.commands.MessageCommands);
+        fetchCommands(Client.AxisUtility.commands.InteractionCommands);
     }
 
     getConfig(location) {
@@ -226,7 +226,7 @@ maxClientEventListeners:`));
 
     StopMessage(Client) {
         log.warn("Stopping...");
-        return Util.getRandomKey(Client.AxisUtility.get().language.stop);
+        return Util.getRandomKey(Client.AxisUtility.language.stop);
     }
 }
 
@@ -333,10 +333,10 @@ function makePages(visibleCommands, allCommands, client, language, prefix, embed
 async function getHelpMessage(args, message, Client) {
     const filter = args.join(' ');
     let visibleCommands = Object.keys(commands.MessageCommands);
-        visibleCommands = filterVisibleCommands(visibleCommands, filter, message.member, Client.AxisUtility.get().config.permissions.messageCommands);
+        visibleCommands = filterVisibleCommands(visibleCommands, filter, message.member, Client.AxisUtility.config.permissions.messageCommands);
     
     // Create embeds
-    const embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.get().language, Client.AxisUtility.get().config.commandPrefix, Client.AxisUtility.get().config.embedColor);
+    const embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.language, Client.AxisUtility.config.commandPrefix, Client.AxisUtility.config.embedColor);
     
     if(embeds.length == 1) {
         return SafeMessage.send(message.channel, { embeds: embeds });
@@ -347,10 +347,10 @@ async function getHelpMessage(args, message, Client) {
 async function getHelpInteraction(interaction, Client) {
     const filter = !interaction.options.getString('filter') ? '' : interaction.options.getString('filter');
     let visibleCommands = Object.keys(commands.InteractionCommands);
-        visibleCommands = filterVisibleCommands(visibleCommands, filter, interaction.member, Client.AxisUtility.get().config.permissions.interactionCommands);
+        visibleCommands = filterVisibleCommands(visibleCommands, filter, interaction.member, Client.AxisUtility.config.permissions.interactionCommands);
     
     // Create embeds
-    const embeds = makePages(visibleCommands, commands.InteractionCommands, Client, Client.AxisUtility.get().language, '/', Client.AxisUtility.get().config.embedColor);
+    const embeds = makePages(visibleCommands, commands.InteractionCommands, Client, Client.AxisUtility.language, '/', Client.AxisUtility.config.embedColor);
 
     // Send response
     await SafeInteract.deferReply(interaction);
