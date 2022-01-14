@@ -1,5 +1,3 @@
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
 const Fs = require('fs');
 const MakeConfig = require('./makeConfig');
 
@@ -29,13 +27,9 @@ module.exports = async (Client, commands, force = false) => {
     commands = fetchCommands(commands);
 
     // Send
-    const rest = new REST({ version: '9' }).setToken(config.token);
     try {
         if(!config.guildId){
-            await rest.put(
-                Routes.applicationCommands(Client.user.id),
-                { body: commands }
-            );
+            await Client.application.commands.set(commands);
             log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a global scale.`);
         } else {
             let guild = config.guildId;
@@ -50,10 +44,7 @@ module.exports = async (Client, commands, force = false) => {
 
             for(const guildId of guild) {
                 if(typeof guildId != 'string') throw new TypeError('Guild ID must be a string');
-                await rest.put(
-                    Routes.applicationGuildCommands(Client.user.id, guildId),
-                    { body: commands }
-                );
+                await Client.application.commands.set(commands, guildId);
                 log.warn(`${ Object.keys(commands).length } application commands were successfully registered on a guild ${guildId}.`);
             }
         }
