@@ -59,10 +59,10 @@ Client.on('ready', async () => {
     log.warn('Client connected!', 'Status');
     log.warn(`\nInvite: ${ Client.AxisUtility.createInvite(Client) }\n`, 'Invite');
 
-    // Register interaction commands
+    // Load modules
     await Client.AxisUtility.loadModules(config.modulesFolder);
 
-    // On command execution
+    // commands execution
     Client.on('interactionCreate', async interaction => Client.AxisUtility.interactionCommand(interaction));
     Client.on('messageCreate', async message => {
         if(config.messageLogging.enabled && (!config.messageLogging.ignoreBotSystem || config.messageLogging.ignoreBotSystem && !(message.author.bot || message.author.system))) log.log(`${message.author.username}: ${message.content}`, 'Message');

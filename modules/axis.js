@@ -237,10 +237,15 @@ module.exports = new AxisCommands();
 const commands = { MessageCommands: {}, InteractionCommands: {} };
 function fetchCommands(object) {
     for (const command of object) {
-        if(command.type === 'MessageCommand') {
-            fetchMessageCommand(command);
-        } else if(command.type === 'InteractionCommand') {
-            fetchInteractionCommand(command);
+        switch (command.type) {
+            case 'MessageCommand':
+                fetchMessageCommand(command);
+                break;
+            case 'InteractionCommand':
+                fetchInteractionCommand(command);
+                break;
+            default:
+                throw new Error('Invalid command type: ' + command.type);
         }
     }
 }
@@ -292,7 +297,7 @@ function filterVisibleCommands(allCommands, filter, member, commandsPerms) {
         if(!CommandPermission(elmt, member, commandsPerms)) return false;
 
         // Filter
-        if(filter && filter.length > 0) { return elmt.toLowerCase().indexOf(filter.toLowerCase()) !== -1; }
+        if(filter && filter.length > 0) return elmt.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
         return true;
     });
 
@@ -338,7 +343,7 @@ async function getHelpMessage(args, message, Client) {
     // Create embeds
     const embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.language, Client.AxisUtility.config.commandPrefix, Client.AxisUtility.config.embedColor);
     
-    if(embeds.length == 1) {
+    if(embeds.length <= 1) {
         return SafeMessage.send(message.channel, { embeds: embeds });
     } else {
         return Pagination({ message: message, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
@@ -354,7 +359,7 @@ async function getHelpInteraction(interaction, Client) {
 
     // Send response
     await SafeInteract.deferReply(interaction);
-    if(embeds.length == 1) { 
+    if(embeds.length <= 1) { 
         return SafeInteract.editReply(interaction, { embeds: embeds });
     } else {
         return Pagination({ interaction: interaction, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
