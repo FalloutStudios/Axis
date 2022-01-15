@@ -29,10 +29,18 @@ const { SafeMessage, SafeInteract } = require('./scripts/safeActions');
 const log = new Util.Logger('Main');
 
 // Config & Language
-const { Config, Language } = require('./scripts/config');
-let config = new Config(configPath).parse().commands().prefill().getConfig();
-let lang = new Language(config?.language ? config.language : languagePath).parse().getLanguage();
-
+try {
+    const { Config, Language } = require('./scripts/config');
+    var config = new Config(configPath).parse().commands().prefill().getConfig();
+    var lang = new Language(config?.language ? config.language : languagePath).parse().getLanguage();
+} catch (err) {
+    log.error('\n============== This is not logged! ==============\n');
+    log.error('An error occured while loading the config or language files.');
+    log.error('Please check the config and language files and try again.');
+    log.error(err);
+    log.error('\n================================================\n');
+    process.exit(1);
+}
 
 // Client
 const Client = new Discord.Client(config.client);

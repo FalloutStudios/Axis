@@ -1,18 +1,24 @@
 // Modules
-const { loopString } = require('fallout-utility');
+const { loopString, limitText } = require('fallout-utility');
 const Version = require('./version');
 
 // Export
 module.exports = (log) => {
-    log.log(' ▄▄▄      ▒██   ██▒ ██▓  ██████ ');
-    log.log('▒████▄    ▒▒ █ █ ▒░▓██▒▒██    ▒ ');
-    log.log('▒██  ▀█▄  ░░  █   ░▒██▒░ ▓██▄   ');
-    log.log('░██▄▄▄▄██  ░ █ █ ▒ ░██░  ▒   ██▒');
-    log.log(' ▓█   ▓██▒▒██▒ ▒██▒░██░▒██████▒▒');
-    log.log(' ▒▒   ▓▒█░▒▒ ░ ░▓ ░░▓  ▒ ▒▓▒ ▒ ░');
-    log.log('  ▒   ▒▒ ░░░   ░▒ ░ ▒ ░░ ░▒  ░ ░');
-    log.log('  ░   ▒    ░    ░   ▒ ░░  ░  ░  ');
-    log.log('      ░  ░ ░    ░   ░        ░  ');
+    const logo = [' ▄▄▄      ▒██   ██▒ ██▓  ██████ ',
+                  '▒████▄    ▒▒ █ █ ▒░▓██▒▒██    ▒ ',
+                  '▒██  ▀█▄  ░░  █   ░▒██▒░ ▓██▄   ',
+                  '░██▄▄▄▄██  ░ █ █ ▒ ░██░  ▒   ██▒',
+                  ' ▓█   ▓██▒▒██▒ ▒██▒░██░▒██████▒▒',
+                  ' ▒▒   ▓▒█░▒▒ ░ ░▓ ░░▓  ▒ ▒▓▒ ▒ ░',
+                  '  ▒   ▒▒ ░░░   ░▒ ░ ▒ ░░ ░▒  ░ ░',
+                  '  ░   ▒    ░    ░   ▒ ░░  ░  ░  ',
+                  '      ░  ░ ░    ░   ░        ░  ']
+    
+    for (const line of logo) {
+        log.log(limitText(line, process.stdout.columns - 16, ''));
+    }
+
+    log.log(process.stdout.columns);
 
     const length = 32;
     const version = 'v' + Version;
