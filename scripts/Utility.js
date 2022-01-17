@@ -15,6 +15,8 @@ module.exports = class AxisUtility {
      * @param {Object[]} options.config - Bot config.yml
      * @param {Object[]} options.language - Language config.yml
      * @param {Object[]} options.Client - Client object
+     * @param {Object[]} options.commands - Commands
+     * @param {Object[]} options.scripts - Scripts
      */
     constructor(options = { logger: new Util.Logger('AxisUtility'), config: null, language: null, Client: null, scripts: [], commands: { MessageCommands: [], InteractionCommands: [] } }) {
         if(!options.config) throw new TypeError('No config provided');
