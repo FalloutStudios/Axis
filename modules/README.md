@@ -8,7 +8,7 @@ const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts
 // Builder
 class Create {
     constructor() {
-        this.versions = ['1.6.0','1.6.1'];  // Specify the versions that this command is compatible with
+        this.versions = ['1.6.2'];  // Specify the versions that this command is compatible with
         this.commands = [
             // Creating a message command
             new MessageCommandBuilder()
@@ -39,7 +39,7 @@ class Create {
 
     // This will be executed when the module is loaded
     onLoad(Client) {
-        console.log(`Loaded test module with Axis v${Client.AxisUtility.getConfig().version}`);
+        console.log(`Loaded test module with Axis v${Client.AxisUtility.config.version}`);
     }
 }
 

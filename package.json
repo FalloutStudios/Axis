@@ -2,7 +2,7 @@
   "name": "axis",
   "main": "index.js",
   "license": "MIT",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "author": "FalloutStudios",
   "homepage": "https://github.com/FalloutStudios/Axis#readme",
   "repository": {
@@ -17,17 +17,19 @@
     "test": "node index.js --testmode"
   },
   "engines": {
-    "node": "16.6.0 || 16.13.0",
+    "node": "^16.6.0",
     "npm": ">=7.24.2"
   },
   "engineStrict": true,
   "dependencies": {
-    "@acegoal07/discordjs-pagination": "^1.1.5",
-    "@discordjs/rest": "^0.2.0-canary.0",
+    "@acegoal07/discordjs-pagination": "^1.1.6",
+    "bufferutil": "^4.0.6",
     "commander": "^8.3.0",
-    "discord-api-types": "^0.26.1",
-    "discord.js": "^13.5.1",
-    "fallout-utility": "^1.2.5",
-    "yaml": "^1.10.2"
+    "discord.js": "^13.6.0",
+    "erlpack": "github:discord/erlpack",
+    "fallout-utility": "^1.2.7",
+    "utf-8-validate": "^5.0.8",
+    "yaml": "^1.10.2",
+    "zlib-sync": "^0.1.7"
   }
 }

@@ -33,13 +33,13 @@ class AxisCommands {
     constructor() {
         options = this.getConfig('./config/Axis.js/config.yml');
 
-        this.versions = ['1.6.1'];
+        this.versions = ['1.6.2'];
         this.commands = this.setCommands();
     }
 
     async onStart(Client) {
         // Change logger
-        log = Client.AxisUtility.get().logger;
+        log = Client.AxisUtility.logger;
 
         SafeMessage.setLogger(log);
         SafeInteract.setLogger(log);
@@ -60,8 +60,8 @@ class AxisCommands {
     onLoad(Client) {
         log.warn("Axis command module has loaded!");
 
-        fetchCommands(Client.AxisUtility.get().commands.MessageCommands);
-        fetchCommands(Client.AxisUtility.get().commands.InteractionCommands);
+        fetchCommands(Client.AxisUtility.commands.MessageCommands);
+        fetchCommands(Client.AxisUtility.commands.InteractionCommands);
     }
 
     getConfig(location) {
@@ -226,7 +226,7 @@ maxClientEventListeners:`));
 
     StopMessage(Client) {
         log.warn("Stopping...");
-        return Util.getRandomKey(Client.AxisUtility.get().language.stop);
+        return Util.getRandomKey(Client.AxisUtility.language.stop);
     }
 }
 
@@ -237,10 +237,15 @@ module.exports = new AxisCommands();
 const commands = { MessageCommands: {}, InteractionCommands: {} };
 function fetchCommands(object) {
     for (const command of object) {
-        if(command.type === 'MessageCommand') {
-            fetchMessageCommand(command);
-        } else if(command.type === 'InteractionCommand') {
-            fetchInteractionCommand(command);
+        switch (command.type) {
+            case 'MessageCommand':
+                fetchMessageCommand(command);
+                break;
+            case 'InteractionCommand':
+                fetchInteractionCommand(command);
+                break;
+            default:
+                throw new Error('Invalid command type: ' + command.type);
         }
     }
 }
@@ -292,7 +297,7 @@ function filterVisibleCommands(allCommands, filter, member, commandsPerms) {
         if(!CommandPermission(elmt, member, commandsPerms)) return false;
 
         // Filter
-        if(filter && filter.length > 0) { return elmt.toLowerCase().indexOf(filter.toLowerCase()) !== -1; }
+        if(filter && filter.length > 0) return elmt.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
         return true;
     });
 
@@ -333,13 +338,13 @@ function makePages(visibleCommands, allCommands, client, language, prefix, embed
 async function getHelpMessage(args, message, Client) {
     const filter = args.join(' ');
     let visibleCommands = Object.keys(commands.MessageCommands);
-        visibleCommands = filterVisibleCommands(visibleCommands, filter, message.member, Client.AxisUtility.get().config.permissions.messageCommands);
+        visibleCommands = filterVisibleCommands(visibleCommands, filter, message.member, Client.AxisUtility.config.permissions.messageCommands);
     
     // Create embeds
-    const embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.get().language, Client.AxisUtility.get().config.commandPrefix, Client.AxisUtility.get().config.embedColor);
+    const embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.language, Client.AxisUtility.config.commandPrefix, Client.AxisUtility.config.embedColor);
     
-    if(embeds.length == 1) {
-        return SafeMessage.send(message.channel, { embeds: embeds });
+    if(embeds.length <= 1) {
+        return SafeMessage.send(message.channel, { content: ' ', embeds: embeds });
     } else {
         return Pagination({ message: message, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
     }
@@ -347,15 +352,15 @@ async function getHelpMessage(args, message, Client) {
 async function getHelpInteraction(interaction, Client) {
     const filter = !interaction.options.getString('filter') ? '' : interaction.options.getString('filter');
     let visibleCommands = Object.keys(commands.InteractionCommands);
-        visibleCommands = filterVisibleCommands(visibleCommands, filter, interaction.member, Client.AxisUtility.get().config.permissions.interactionCommands);
+        visibleCommands = filterVisibleCommands(visibleCommands, filter, interaction.member, Client.AxisUtility.config.permissions.interactionCommands);
     
     // Create embeds
-    const embeds = makePages(visibleCommands, commands.InteractionCommands, Client, Client.AxisUtility.get().language, '/', Client.AxisUtility.get().config.embedColor);
+    const embeds = makePages(visibleCommands, commands.InteractionCommands, Client, Client.AxisUtility.language, '/', Client.AxisUtility.config.embedColor);
 
     // Send response
     await SafeInteract.deferReply(interaction);
-    if(embeds.length == 1) { 
-        return SafeInteract.editReply(interaction, { embeds: embeds });
+    if(embeds.length <= 1) { 
+        return SafeInteract.editReply(interaction, { content: ' ', embeds: embeds });
     } else {
         return Pagination({ interaction: interaction, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
     }
