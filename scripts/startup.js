@@ -17,9 +17,7 @@ module.exports = (log) => {
     for (const line of logo) {
         log.log(limitText(line, process.stdout.columns - 16, ''));
     }
-
-    log.log(process.stdout.columns);
-
+    
     const length = 32;
     const version = 'v' + Version;
     const bar = loopString((length / 2) - (version.length - 2), '=');

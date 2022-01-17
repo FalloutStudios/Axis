@@ -1,0 +1,78 @@
+token: TOKEN # Bot token
+
+embedColor: '#19AFFF'  # Colors for embed messages
+commandPrefix: '!'  # Prefix for commands
+owner: 'FalloutStudios'  # Who owns this bot
+
+guildId: '' # Only register slash commands for the given guild.
+
+# Command permissions
+permissions:
+  # Message commands permissions
+  messageCommands:
+    # Enable message command permissions
+    enabled: true
+
+    # Commands
+    commands:
+      - command: 'stop'
+        permissions: ['ADMINISTRATOR']
+  
+  # Slash commands permissions
+  interactionCommands:
+    # Enable slash commands permissions
+    enabled: true
+
+    # Register slash commands
+    registerSlashCommands: true
+
+    # Commands
+    commands:
+      - command: 'stop'
+        permissions: ['ADMINISTRATOR']
+
+# Ignored channels based on IDs
+blacklistChannels:            
+  enabled: false  # Enable blacklisted channels
+
+  # List of blacklisted channels
+  channels: []
+  convertToWhitelist: false  # Convert channels to whitelisted channels
+
+# ==========================================================
+#                       Danger Zone!                          
+#    Edit this values below if you know what you're doing
+# ==========================================================
+
+# Logging
+logging:
+  enabled: true # Enable logging
+  logFilePath: './logs/latest.log' # Log file directory
+
+# Message logging (This is is against Discord TOS!!!) use for testing porpuses only
+messageLogging:
+  enabled: false # Enable logging
+  ignoreBotSystem: true # Ignore bot chats
+
+# process errors logging. (Few options can stop some crashes)
+processErrors:
+  clientShardError: true
+  processWarning: true
+  processUnhandledRejection: false
+  processUncaughtException: false
+
+client:
+  # Bot intents
+  intents:
+    - 'GUILDS'
+    - 'GUILD_MEMBERS'
+    - 'GUILD_INVITES'
+    - 'GUILD_VOICE_STATES'
+    - 'GUILD_MESSAGES'
+    - 'GUILD_MESSAGE_REACTIONS'
+
+inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
+language: 'config/Bot/language.yml'   # Langage file 
+modulesFolder: 'modules'  # Define where's your modules (Changing this might cause problems to other modules)
+
+version: ${Version}    # Version (don't modify this value)
