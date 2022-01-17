@@ -344,7 +344,7 @@ async function getHelpMessage(args, message, Client) {
     const embeds = makePages(visibleCommands, commands.MessageCommands, Client, Client.AxisUtility.language, Client.AxisUtility.config.commandPrefix, Client.AxisUtility.config.embedColor);
     
     if(embeds.length <= 1) {
-        return SafeMessage.send(message.channel, { embeds: embeds });
+        return SafeMessage.send(message.channel, { content: ' ', embeds: embeds });
     } else {
         return Pagination({ message: message, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
     }
