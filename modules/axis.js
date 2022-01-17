@@ -360,7 +360,7 @@ async function getHelpInteraction(interaction, Client) {
     // Send response
     await SafeInteract.deferReply(interaction);
     if(embeds.length <= 1) { 
-        return SafeInteract.editReply(interaction, { embeds: embeds });
+        return SafeInteract.editReply(interaction, { content: ' ', embeds: embeds });
     } else {
         return Pagination({ interaction: interaction, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
     }
