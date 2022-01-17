@@ -16,7 +16,7 @@ module.exports = class AxisUtility {
      * @param {Object[]} options.language - Language config.yml
      * @param {Object[]} options.Client - Client object
      */
-    constructor(options = { logger: new Util.Logger('AxisUtility'), config: null, language: null, Client: null }) {
+    constructor(options = { logger: new Util.Logger('AxisUtility'), config: null, language: null, Client: null, scripts: [], commands: { MessageCommands: [], InteractionCommands: [] } }) {
         if(!options.config) throw new TypeError('No config provided');
         if(!options.language) throw new TypeError('No language provided');
         if(!options.Client) throw new TypeError('No client provided');
@@ -24,8 +24,8 @@ module.exports = class AxisUtility {
         this.logger = options.logger;
         this.config = options.config;
         this.language = options.language;
-        this.scripts = {};
-        this.commands = { MessageCommands: [], InteractionCommands: [] };
+        this.scripts = options.scripts?.length ? options.scripts : [];
+        this.commands = options.commands ? options.commands : { MessageCommands: [], InteractionCommands: [] };
         this.Client = options.Client;
     }
 
