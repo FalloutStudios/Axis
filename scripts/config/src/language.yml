@@ -46,7 +46,7 @@ tooSmall:
   - 'So tiny for me'
 
 # For commands
-stop: 
+stop:
   - 'Ok'
   - 'Shut up! I''ll stop now'
   - 'Stopping...'

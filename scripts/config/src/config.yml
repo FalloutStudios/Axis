@@ -17,7 +17,7 @@ permissions:
     commands:
       - command: 'stop'
         permissions: ['ADMINISTRATOR']
-  
+
   # Slash commands permissions
   interactionCommands:
     # Enable slash commands permissions
@@ -32,7 +32,7 @@ permissions:
         permissions: ['ADMINISTRATOR']
 
 # Ignored channels based on IDs
-blacklistChannels:            
+blacklistChannels:
   enabled: false  # Enable blacklisted channels
 
   # List of blacklisted channels
@@ -40,7 +40,7 @@ blacklistChannels:
   convertToWhitelist: false  # Convert channels to whitelisted channels
 
 # ==========================================================
-#                       Danger Zone!                          
+#                       Danger Zone!
 #    Edit this values below if you know what you're doing
 # ==========================================================
 
@@ -72,7 +72,7 @@ client:
     - 'GUILD_MESSAGE_REACTIONS'
 
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
-language: 'config/Bot/language.yml'   # Langage file 
+language: 'config/Bot/language.yml'   # Langage file
 modulesFolder: 'modules'  # Define where's your modules (Changing this might cause problems to other modules)
 
 version: ${Version}    # Version (don't modify this value)
