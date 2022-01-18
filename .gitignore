@@ -105,6 +105,7 @@ dist
 
 # Development config
 deploy.txt
-/config/
 modules/test.js
-plugins/
+
+# Careful! committing this directory if it includes sensitive information such as bot tokens
+/config/
