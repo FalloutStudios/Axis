@@ -26,6 +26,9 @@ permissions:
     # Register slash commands
     registerSlashCommands: true
 
+    # Don't register slash commands if deploy.txt is deleted or set to false
+    ignoreDeployTxt: true
+
     # Commands
     commands:
       - command: 'stop'
