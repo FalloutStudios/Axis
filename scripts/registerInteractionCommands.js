@@ -12,7 +12,7 @@ const deployFile = './deploy.txt';
  * @param {boolean} force - Force register commands without check deploy file
  * @returns {Promise<void>}
  */
-module.exports = async (Client, commands, force) => {
+module.exports = async (Client, commands, force = false) => {
     // Deployment
     const log = Client.AxisUtility.logger;
     const config = Client.AxisUtility.config;
@@ -26,7 +26,7 @@ module.exports = async (Client, commands, force) => {
 
     commands = fetchCommands(commands);
 
-    // Send
+    // Register
     try {
         if(!config.guildId){
             await Client.application.commands.set(commands);
