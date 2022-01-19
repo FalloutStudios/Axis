@@ -118,7 +118,7 @@ module.exports = class AxisUtility {
         this.scripts = scriptsLoader.scripts;
         this.commands = scriptsLoader.commands;
         
-        await registerInteractionCommmands(this.Client, this.commands.InteractionCommands, this.config.guildId, false);
+        await registerInteractionCommmands(this.Client, this.commands.InteractionCommands, this.config.guildId, !this.config.permissions.interactionCommands.registerOnlyOnce);
         
         // Execute .loaded method of every scripts
         for(const script in this.scripts) {
