@@ -118,7 +118,11 @@ module.exports = class AxisUtility {
         this.scripts = scriptsLoader.scripts;
         this.commands = scriptsLoader.commands;
         
-        await registerInteractionCommmands(this.Client, this.commands.InteractionCommands, this.config.guildId, false);
+        if(this.config.permissions.interactionCommands.registerSlashCommands) {
+            await registerInteractionCommmands(this.Client, this.commands.InteractionCommands, !!this.config.permissions.interactionCommands.ignoreDeployTxt);
+        } else {
+            log.warn('RegisterSlashCommands is disabled');
+        }
         
         // Execute .loaded method of every scripts
         for(const script in this.scripts) {

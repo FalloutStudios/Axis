@@ -16,9 +16,9 @@ module.exports = async (Client, commands, force = false) => {
     // Deployment
     const log = Client.AxisUtility.logger;
     const config = Client.AxisUtility.config;
+    const deployOption = config.guildId || force ? false : Fs.existsSync(deployFile);
 
-    if(!config.permissions.interactionCommands.registerSlashCommands) return log.warn('RegisterSlashCommands is disabled');
-    if(Fs.existsSync(deployFile) && !force && !config.guildId) {
+    if (deployOption) {
         const deploy = Fs.readFileSync(deployFile).toString().trim();
 
         if(deploy == 'false') return log.warn('Deployment file found, skipping register commands');
@@ -26,7 +26,7 @@ module.exports = async (Client, commands, force = false) => {
 
     commands = fetchCommands(commands);
 
-    // Send
+    // Register
     try {
         if(!config.guildId){
             await Client.application.commands.set(commands);
