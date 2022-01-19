@@ -13,9 +13,9 @@ module.exports = {
     /**
      * 
      * @param {Object} interaction - The interaction object
-     * @param {(string|Object)} options - Options for defered reply 
+     * @param {Object[]} options - Options for defered reply 
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {Promise<void>} Promise response
+     * @returns {Promise<void>}
      */
     async deferReply(interaction, options, verboseError = true) {
         try {
@@ -28,13 +28,13 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Object} interaction - The interaction to delete reply
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {Promise<void>} Promise response
+     * @returns {Promise<void>}
      */
     async deleteReply(interaction, verboseError = true) {
         try {
-            return await interaction.deleteReply(options).catch( err => { log.error(verboseError ? err : err?.message); });
+            return await interaction.deleteReply().catch( err => { log.error(verboseError ? err : err?.message); });
         } catch (err) {
             log.error(verboseError ? err : err?.message);
             return false;
@@ -46,7 +46,7 @@ module.exports = {
      * @param {Object} interaction - The interaction object
      * @param {*} edit - Edit sent reply
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {Promise<void>} Promise response
+     * @returns {Promise<void>}
      */
     async editReply(interaction, edit, verboseError = true) {
         try {
@@ -59,9 +59,9 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Object} interaction - The interaction to fetch reply
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {Promise<void>} Promise response
+     * @returns {Promise<void>}
      */
     async fetchReply(interaction, verboseError = true) {
         try {
@@ -77,7 +77,7 @@ module.exports = {
      * @param {Object} interaction - The interaction object
      * @param {*} followUp - Send a follow up reply
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {Promise<void>} Promise response
+     * @returns {Promise<void>}
      */
     async followUp(interaction, followUp, verboseError = true) {
         try {
@@ -92,7 +92,7 @@ module.exports = {
      * 
      * @param {Object} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {boolean} response
+     * @returns {boolean}
      */
     inCachedGuild(interaction, verboseError = true) {
         try {
@@ -107,7 +107,7 @@ module.exports = {
      * 
      * @param {Object} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {boolean} response
+     * @returns {boolean}
      */
     inGuild(interaction, verboseError = true) {
         try {
@@ -122,7 +122,7 @@ module.exports = {
      * 
      * @param {Object} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {boolean} response
+     * @returns {boolean}
      */
     inRawGuild(interaction, verboseError = true) {
         try {
@@ -137,7 +137,7 @@ module.exports = {
      * 
      * @param {Object} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {boolean} response
+     * @returns {boolean}
      */
     isApplicationCommand(interaction, verboseError = true) {
         try {
@@ -152,7 +152,7 @@ module.exports = {
      * 
      * @param {Object} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {boolean} response
+     * @returns {boolean}
      */
     isAutocomplete(interaction, verboseError = true) {
         try {
@@ -167,7 +167,7 @@ module.exports = {
      * 
      * @param {Object} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {boolean} response
+     * @returns {boolean}
      */
     isButton(interaction, verboseError = true) {
         try {
@@ -182,7 +182,7 @@ module.exports = {
      * 
      * @param {Object} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {boolean} response
+     * @returns {boolean}
      */
     isCommand(interaction, verboseError = true) {
         try {
@@ -197,7 +197,7 @@ module.exports = {
      * 
      * @param {Object} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {boolean} response
+     * @returns {boolean}
      */
     isContextMenu(interaction, verboseError = true) {
         try{
@@ -212,7 +212,7 @@ module.exports = {
      * 
      * @param {Object} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {boolean} response
+     * @returns {boolean}
      */
     isMessageComponent(interaction, verboseError = true) {
         try{
@@ -227,7 +227,7 @@ module.exports = {
      * 
      * @param {Object} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {boolean} response
+     * @returns {boolean}
      */
     isMessageContextMenu(interaction, verboseError = true) {
         try{
@@ -242,7 +242,7 @@ module.exports = {
      * 
      * @param {Object} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {boolean} response
+     * @returns {boolean}
      */
     isSelectMenu(interaction, verboseError = true) {
         try{
@@ -257,7 +257,7 @@ module.exports = {
      * 
      * @param {Object} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
-     * @returns {boolean} response
+     * @returns {boolean}
      */
     isUserContextMenu(interaction, verboseError = true) {
         try{
