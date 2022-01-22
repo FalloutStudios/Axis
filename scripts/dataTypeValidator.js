@@ -78,6 +78,6 @@ module.exports = {
      * @returns {boolean} - returns true if the value is a valid module name
      */
     moduleName(value) {
-        return this.string(value) && value.match(/^[a-z]+$/);
+        return this.string(value) && value.match(/^[\w-]{1,32}$/);
     }
 }
