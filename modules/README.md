@@ -33,9 +33,8 @@ class Create {
     }
 
     // This will be executed when loading the module
-    onStart(Client) {
-        return true;    // Return true if the module is loaded
-    }
+    // Return true if the module is loaded
+    onStart(Client) { return true; }
 
     // This will be executed when the module is loaded
     onLoad(Client) {
