@@ -90,6 +90,16 @@ presence:
   type: ['PLAYING']  # Type of status (PLAYING, LISTENING, WATCHING, STREAMING) or enter a custom status  [this can be a string or an object for random value]
   activityName: ['Minecraft']  # Name your activity [this can be a string or an object for random value]
 
+# Help command options
+help:
+  fieldCountPerPage: 5  # How many fields per page
+  fieldInline: true  # Whether to display fields inline
+  fieldTemplate: |-
+    {command} — **{description}**
+    \`\`\`
+    {prefix}{usage}
+    \`\`\`
+
 # Version command response
 version:
   # The message to display when the version command is used
@@ -312,7 +322,7 @@ function ifNewPage(i, intLimit) {
 function makePages(visibleCommands, allCommands, client, language, prefix, embedColor) {
     // Create embeds
     let embeds = [];
-    let limit = 5;
+    let limit = options.help.fieldCountPerPage;
     let increment = -1;
     let current = 0;
     
@@ -332,7 +342,7 @@ function makePages(visibleCommands, allCommands, client, language, prefix, embed
         }
 
         // Add command
-        embeds[current].addField(value, '*'+ allCommands[value].description +'*\n```'+ prefix + allCommands[value].display +'```', false);
+        embeds[current].addField(value, Util.replaceAll(Util.replaceAll(Util.replaceAll(Util.replaceAll(options.help.fieldTemplate, '{command}', value), '{usage}', allCommands[value].display), '{prefix}', prefix), '{description}', allCommands[value].description), options.help.fieldInline);
     }
 
     return embeds;
