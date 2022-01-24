@@ -33,7 +33,7 @@ class AxisCommands {
     constructor() {
         options = this.getConfig('./config/Axis.js/config.yml');
 
-        this.versions = ['1.6.2', '1.6.3'];
+        this.versions = ['1.6.2', '1.6.3', '1.6.4'];
         this.commands = this.setCommands();
     }
 
