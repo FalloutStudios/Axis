@@ -2,7 +2,7 @@
   "name": "axis",
   "main": "index.js",
   "license": "MIT",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "author": "FalloutStudios",
   "homepage": "https://github.com/FalloutStudios/Axis#readme",
   "repository": {
@@ -22,7 +22,7 @@
   },
   "engineStrict": true,
   "dependencies": {
-    "@acegoal07/discordjs-pagination": "^1.1.6",
+    "@acegoal07/discordjs-pagination": "^1.2.0",
     "bufferutil": "^4.0.6",
     "commander": "^8.3.0",
     "discord.js": "^13.6.0",
