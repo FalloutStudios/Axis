@@ -217,7 +217,7 @@ maxClientEventListeners:`));
     getVersionMessageReply(Client) {
         const buttons = new MessageActionRow();
     
-        for (const button of options.version.linkButtons) {
+        for (const button of (options.version.linkButtons || [])) {
             buttons.addComponents(
                 new MessageButton()
                     .setStyle("LINK")
