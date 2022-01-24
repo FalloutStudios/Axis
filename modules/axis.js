@@ -221,7 +221,10 @@ maxClientEventListeners:`));
         strMessage = Util.replaceAll(strMessage, '{tag}', Client.user.tag);
         strMessage = Util.replaceAll(strMessage, '{version}', Version);
     
-        return { content: strMessage, components: [buttons] };
+        const _ = { content: strMessage };
+        if(options.version.linkButtons?.length) _.components = [buttons];
+
+        return _;
     }
 
     StopMessage(Client) {
