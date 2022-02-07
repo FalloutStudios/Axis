@@ -41,8 +41,8 @@ module.exports = class AxisUtility {
         const cmd = this.commands.MessageCommands.find(property => property.name === command);
         const args = Util.getCommand(message.content.trim(), this.config.commandPrefix).args;
 
-        // If the command exists
-        if(!cmd) return false;
+        // If the command exists or executed in DM
+        if(!cmd || message.channel.type === 'DM' && !cmd.allowExecViaDm) return false;
 
         // Check permission
         if(!CommandPermission(command, message.member, this.config.permissions.messageCommands)) {

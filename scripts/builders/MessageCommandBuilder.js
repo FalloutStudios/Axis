@@ -1,9 +1,10 @@
-const dataTypeValidator = require('../dataTypeValidator');
+const DataTypeValidator = require('../dataTypeValidator');
 
 module.exports = class MessageCommandBuilder {
     constructor() {
         this.type = 'MessageCommand';
         this.name = null;
+        this.allowExecViaDm = false;
         this.description = null;
         this.arguments = [];
         this.execute = () => { /* function */ };
@@ -14,8 +15,18 @@ module.exports = class MessageCommandBuilder {
      * @param {string} name - The name. Needs to be lowercase and without spaces or special characters.
      */
     setName(name) {
-        if(!dataTypeValidator.moduleName(name)) throw new TypeError('Name must be a lowercase string without special characters and whitespace');
+        if(!DataTypeValidator.moduleName(name)) throw new TypeError('Name must be a lowercase string without special characters and whitespace');
         this.name = name;
+        return this;
+    }
+
+    /**
+     * 
+     * @param {boolean} allow - Set whether the command can be executed via DM. 
+     */
+    setAllowExecuteViaDm(allow) {
+        if(!DataTypeValidator.boolean(allow)) throw new TypeError('Invalid argument: `allow` must be a boolean');
+        this.allowExecViaDm = allow;
         return this;
     }
 
@@ -35,7 +46,7 @@ module.exports = class MessageCommandBuilder {
      * @returns 
      */
     setExecute(execute) {
-        if(!dataTypeValidator.function(execute)) throw new TypeError('Invalid argument: `execute` must be a function');
+        if(!DataTypeValidator.function(execute)) throw new TypeError('Invalid argument: `execute` must be a function');
         this.execute = execute;
         return this;
     }
@@ -49,9 +60,9 @@ module.exports = class MessageCommandBuilder {
      * @returns 
      */
     addArgument(name = '', required = false, description = '', values = []) {
-        if(!dataTypeValidator.moduleName(name)) throw new TypeError('Invalid argument: Argument `name` must be a lowercase string without special characters and whitespace');
-        if(!dataTypeValidator.boolean(required)) throw new TypeError('Invalid argument: `required` must be a boolean');
-        if(!dataTypeValidator.arrayDataTypeProperties(values, 'string')) throw new TypeError('Invalid argument: `values` must be an array of strings');
+        if(!DataTypeValidator.moduleName(name)) throw new TypeError('Invalid argument: Argument `name` must be a lowercase string without special characters and whitespace');
+        if(!DataTypeValidator.boolean(required)) throw new TypeError('Invalid argument: `required` must be a boolean');
+        if(!DataTypeValidator.arrayDataTypeProperties(values, 'string')) throw new TypeError('Invalid argument: `values` must be an array of strings');
 
         this.arguments.push({
             name: name,
