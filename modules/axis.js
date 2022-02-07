@@ -136,6 +136,7 @@ maxClientEventListeners:`));
                     new MessageCommandBuilder()
                         .setName('version')
                         .setDescription('Displays the current version of your Axis bot.')
+                        .setAllowExecuteViaDm(true)
                         .setExecute((args, message, Client) => SafeMessage.reply(message, versionMessageReply))
                 ]);
             if(options?.interactionCommands.version.enabled)
