@@ -94,6 +94,7 @@ presence:
 help:
   fieldCountPerPage: 5  # How many fields per page
   fieldInline: true  # Whether to display fields inline
+  authorIdependentPagination: true # Whether to set pagination usable only by author
   fieldTemplate: |-
     {command} — **{description}**
     \`\`\`
@@ -359,7 +360,7 @@ async function getHelpMessage(args, message, Client) {
     if(embeds.length <= 1) {
         return SafeMessage.send(message.channel, { content: ' ', embeds: embeds });
     } else {
-        return Pagination({ message: message, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
+        return Pagination({ message: message, pageList: embeds, buttonList: helpButtons, timeout: interactionTimeout, authorIdependent: options.help.authorIdependentPagination }).catch(err => log.error(err));
     }
 }
 async function getHelpInteraction(interaction, Client) {
@@ -375,6 +376,6 @@ async function getHelpInteraction(interaction, Client) {
     if(embeds.length <= 1) { 
         return SafeInteract.editReply(interaction, { content: ' ', embeds: embeds });
     } else {
-        return Pagination({ interaction: interaction, pages: embeds, buttonList: helpButtons, timeout: interactionTimeout }).catch(err => log.error(err));
+        return Pagination({ interaction: interaction, pageList: embeds, buttonList: helpButtons, timeout: interactionTimeout, authorIdependent: options.help.authorIdependentPagination }).catch(err => log.error(err));
     }
 }
