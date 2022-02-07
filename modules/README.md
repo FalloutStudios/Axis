@@ -8,7 +8,7 @@ const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts
 // Builder
 class Create {
     constructor() {
-        this.versions = ['1.6.4'];  // Specify the versions that this command is compatible with
+        this.versions = ['1.6.5'];  // Specify the versions that this command is compatible with
         this.commands = [
             // Creating a message command
             new MessageCommandBuilder()

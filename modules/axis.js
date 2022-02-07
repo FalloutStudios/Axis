@@ -361,7 +361,7 @@ async function getHelpMessage(args, message, Client) {
     if(embeds.length <= 1) {
         return SafeMessage.send(message.channel, { content: ' ', embeds: embeds });
     } else {
-        return Pagination({ message: message, pageList: embeds, buttonList: helpButtons, timeout: interactionTimeout, authorIdependent: options.help.authorIdependentPagination }).catch(err => log.error(err));
+        return Pagination({ message: message, pageList: embeds, buttonList: helpButtons, timeout: interactionTimeout, authorIndependent: options.help.authorIdependentPagination }).catch(err => log.error(err));
     }
 }
 async function getHelpInteraction(interaction, Client) {
@@ -377,6 +377,6 @@ async function getHelpInteraction(interaction, Client) {
     if(embeds.length <= 1) { 
         return SafeInteract.editReply(interaction, { content: ' ', embeds: embeds });
     } else {
-        return Pagination({ interaction: interaction, pageList: embeds, buttonList: helpButtons, timeout: interactionTimeout, authorIdependent: options.help.authorIdependentPagination }).catch(err => log.error(err));
+        return Pagination({ interaction: interaction, pageList: embeds, buttonList: helpButtons, timeout: interactionTimeout, authorIndependent: options.help.authorIdependentPagination }).catch(err => log.error(err));
     }
 }
