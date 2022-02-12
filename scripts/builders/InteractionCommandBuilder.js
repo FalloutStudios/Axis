@@ -32,7 +32,7 @@ module.exports = class InteractionCommandBuilder {
 
     /**
      * 
-     * @param {(Object[]|function)} command - Set commands to be executed when the command is called.
+     * @param {(SlashCommandBuilder|function(SlashCommandBuilder))} command - Set commands to be executed when the command is called.
      * @returns 
      */
     setCommand(command) {
