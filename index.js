@@ -101,7 +101,7 @@ if(config.processErrors) {
         log.error(err, 'uncaughtException');
         log.error(origin, 'uncaughtException');
 
-        if(config.processErrors.processUncaughtException) setTimeout(() => process.exit(1), 10);
+        if(!config.processErrors.processUncaughtException) setTimeout(() => process.exit(1), 10);
     });
 
     process.on('warning', warn => log.warn(warn, 'Warning'));
