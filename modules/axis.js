@@ -103,6 +103,11 @@ help:
     {prefix}{usage}
     \`\`\`
 
+# Stop command response
+stop:
+ - 'Goodbye!'
+ - 'Stopping...'
+
 # Version command response
 version:
   # The message to display when the version command is used
@@ -186,7 +191,7 @@ maxClientEventListeners:`));
                     new MessageCommandBuilder()
                         .setName('stop')
                         .setDescription('Stop the bot')
-                        .setExecute(async (args, message, Client) => { await SafeMessage.reply(message, this.StopMessage(Client)); process.exit(0); })
+                        .setExecute(async (args, message, Client) => { await SafeMessage.reply(message, this.StopMessage()); process.exit(0); })
                 ]);
             if(options?.interactionCommands.stop.enabled)
                 registerCommands = registerCommands.concat([
@@ -195,7 +200,7 @@ maxClientEventListeners:`));
                             .setName('stop')
                             .setDescription('Stop the bot')
                         )
-                        .setExecute(async (interaction, Client) => { await SafeInteract.reply(interaction, this.StopMessage(Client)); process.exit(0); })
+                        .setExecute(async (interaction, Client) => { await SafeInteract.reply(interaction, this.StopMessage()); process.exit(0); })
                 ]);
         }
 
@@ -241,7 +246,7 @@ maxClientEventListeners:`));
         return _;
     }
 
-    StopMessage(Client) {
+    StopMessage() {
         log.warn("Stopping...");
         return Util.getRandomKey(options.stop);
     }
