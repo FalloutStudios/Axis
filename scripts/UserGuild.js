@@ -5,6 +5,7 @@ module.exports = class UserGuild {
      */
     constructor(Client) {
         this.Client = Client;
+        process.emitWarning('scripts/UserGuild is deprecated, and will be removed in the future.');
     }
 
     /**

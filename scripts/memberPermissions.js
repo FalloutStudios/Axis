@@ -1,6 +1,6 @@
 module.exports = {
     /**
-     * @param {String} channelId - Channel ID
+     * @param {string} channelId - Channel ID
      * @param {Object} blacklistChannels - list of channels to blacklist
      * @param {string} blacklistChannels.enabled - Returns if blacklist is enabled
      * @param {boolean} blacklistChannels.convertToWhitelist - Convert blacklist to whitelist
@@ -9,9 +9,9 @@ module.exports = {
     */
     isIgnoredChannel(channelId, blacklistChannels) {
         if(blacklistChannels.enabled && (
-            !blacklistChannels.convertToWhitelist && blacklistChannels.channels.find(chnl => chnl == channelId)
+            !blacklistChannels.convertToWhitelist && blacklistChannels.channels.some(chnl => chnl == channelId)
             || 
-            blacklistChannels.enabled && blacklistChannels.convertToWhitelist && !blacklistChannels.channels.find(chnl => chnl == channelId)
+            blacklistChannels.enabled && blacklistChannels.convertToWhitelist && !blacklistChannels.channels.some(chnl => chnl == channelId)
         )) { return true; }
 
         return false;

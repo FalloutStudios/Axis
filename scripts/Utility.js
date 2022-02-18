@@ -1,7 +1,9 @@
 const Util = require('fallout-utility');
 const Path = require('path');
+const Discord = require('discord.js');
 const { Config, Language } = require('./config');
 const { SafeMessage, SafeInteract } = require('./safeActions');
+const { InteractionCommandBuilder, MessageCommandBuilder } = require('./builders');
 const LoadScripts = require('./loadScripts');
 const CommandPermission = require('./commandPermissions');
 const MemberPermissions = require('./memberPermissions');
@@ -11,10 +13,10 @@ module.exports = class AxisUtility {
     /**
      * 
      * @param {Object[]} options - options
-     * @param {string} [options.logger=new Util.Logger()] - Logger object
+     * @param {Util.Logger} [options.logger=Util.Logger()] - Logger
      * @param {Object[]} options.config - Bot config.yml
      * @param {Object[]} options.language - Language config.yml
-     * @param {Object[]} options.Client - Client object
+     * @param {Discord.Client} options.Client - Client
      * @param {Object[]} options.commands - Commands
      * @param {Object[]} options.scripts - Scripts
      */
@@ -34,7 +36,7 @@ module.exports = class AxisUtility {
     /**
      * 
      * @param {string} command - command name
-     * @param {Object} message - message object
+     * @param {Discord.Message} message - message
      * @returns {Promise<void>}
      */
     async messageCommand(command, message) {
@@ -50,12 +52,12 @@ module.exports = class AxisUtility {
         }
 
         // Execute
-        return this.executeMessageCommand(command, message, args).catch(async err => this.logger.error(err, `${this.config.commandPrefix}${command}`));
+        return this.executeMessageCommand(cmd, message, args).catch(async err => this.logger.error(err, `${this.config.commandPrefix}${command}`));
     }
 
     /**
      * 
-     * @param {Object} interaction - Interaction object
+     * @param {Discord.CommandInteraction} interaction - Interaction
      * @returns {Promise<void>}
      */
     async interactionCommand(interaction) {
@@ -75,19 +77,18 @@ module.exports = class AxisUtility {
             return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.language.noPerms), ephemeral: true });
         }
 
-        return this.executeInteractionCommand(interaction.commandName, interaction).catch(err => this.logger.error(err, `/${interaction.commandName}`));
+        return this.executeInteractionCommand(cmd, interaction).catch(err => this.logger.error(err, `/${interaction.commandName}`));
     }
 
     /**
      * 
-     * @param {string} name - command name to execute
-     * @param {Object} message - message object
+     * @param {InteractionCommandBuilder} command - command
+     * @param {Discord.Message} message - message
      * @param {Object} args - command arguments
      * @returns {Promise<void>}
      */
-    async executeMessageCommand(name, message, args) {
-        const command = this.commands.MessageCommands.find(property => property.name === name);
-        if(!command) throw new Error(`Command \`${name}\` does not exist`);
+    async executeMessageCommand(command, message, args) {
+        if(!command) throw new TypeError(`Invalid command`);
 
         this.logger.warn(`${message.author.username} executed ${this.config.commandPrefix}${command.name}`, 'MessageCommand');
         return command.execute(args, message, this.Client);
@@ -95,13 +96,12 @@ module.exports = class AxisUtility {
 
     /**
      * 
-     * @param {string} name - command name to execute
-     * @param {Object} interaction - interaction object
+     * @param {MessageCommandBuilder} command - command name to execute
+     * @param {Discord.CommandInteraction} interaction - interaction
      * @returns {Promise<void>}
      */
-    async executeInteractionCommand(name, interaction) {
-        const command = this.commands.InteractionCommands.find(property => property.name === name);
-        if(!command) throw new Error(`Command \`${name}\` does not exist`);
+    async executeInteractionCommand(command, interaction) {
+        if(!command) throw new TypeError(`Invalid command`);
 
         this.logger.warn(`${ (interaction?.user.username ? interaction.user.username + ' ' : '') }executed /${interaction.commandName}`, 'InteractionCommand');
         return command.execute(interaction, this.Client);
@@ -124,7 +124,7 @@ module.exports = class AxisUtility {
             log.warn('RegisterSlashCommands is disabled');
         }
         
-        // Execute .loaded method of every scripts
+        // Execute loaded method of every scripts
         for(const script in this.scripts) {
             if(!this.scripts[script]?.onLoad) continue;
             await Promise.resolve(this.scripts[script].onLoad(this.Client));
@@ -135,11 +135,10 @@ module.exports = class AxisUtility {
 
     /**
      * 
-     * @param {Object} bot - Client object
      * @returns {string}
      */
-    createInvite(bot) {
-        return Util.replaceAll(this.config.inviteFormat, '%id%', bot.user.id);
+    createInvite() {
+        return Util.replaceAll(this.config.inviteFormat, '%id%', this.Client.user.id);
     }
 
     /**

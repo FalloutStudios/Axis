@@ -1,4 +1,5 @@
 const DataTypeValidator = require('../dataTypeValidator');
+const { Client, Message } = require('discord.js');
 
 module.exports = class MessageCommandBuilder {
     constructor() {
@@ -12,7 +13,7 @@ module.exports = class MessageCommandBuilder {
 
     /**
      * 
-     * @param {string} name - The name. Needs to be lowercase and without spaces or special characters.
+     * @param {string} name - The name. Needs to match `/^[\w-]{1,32}$/`
      */
     setName(name) {
         if(!DataTypeValidator.moduleName(name)) throw new TypeError('Name must be a lowercase string without special characters and whitespace');
@@ -22,7 +23,7 @@ module.exports = class MessageCommandBuilder {
 
     /**
      * 
-     * @param {boolean} allow - Set whether the command can be executed via DM. 
+     * @param {boolean} allow - Set whether the command can be executed via DM when available. 
      */
     setAllowExecuteViaDm(allow) {
         if(!DataTypeValidator.boolean(allow)) throw new TypeError('Invalid argument: `allow` must be a boolean');
@@ -42,7 +43,7 @@ module.exports = class MessageCommandBuilder {
 
     /**
      * 
-     * @param {function} execute - Function to execute when the command is called.
+     * @param {function(Object[], Message, Client)} execute - Function to execute when the command is called.
      * @returns 
      */
     setExecute(execute) {
@@ -56,7 +57,7 @@ module.exports = class MessageCommandBuilder {
      * @param {string} name - Argument lowercase name without special characters and whitespace.
      * @param {boolean} required - Set if the argument is required or not
      * @param {string} description - Description of the argument
-     * @param {Object} values - Array of string values
+     * @param {Object[]} values - Array of string values
      * @returns 
      */
     addArgument(name = '', required = false, description = '', values = []) {

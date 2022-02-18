@@ -1,8 +1,10 @@
-// Modules
-const { loopString, limitText } = require('fallout-utility');
+const { loopString, limitText, Logger} = require('fallout-utility');
 const Version = require('./version');
 
-// Export
+/**
+ * 
+ * @param {Logger} log 
+ */
 module.exports = (log) => {
     const logo = [' ▄▄▄      ▒██   ██▒ ██▓  ██████ ',
                   '▒████▄    ▒▒ █ █ ▒░▓██▒▒██    ▒ ',

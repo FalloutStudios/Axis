@@ -1,10 +1,16 @@
 const { Logger } = require('fallout-utility');
+const {
+    Interaction,
+    InteractionDeferReplyOptions,
+    InteractionReplyOptions,
+    WebhookEditMessageOptions,
+} = require('discord.js');
 let log = new Logger('SafeInteract');
 
 module.exports = {
     /**
      * 
-     * @param {Object[]} logger - Logger instance
+     * @param {Logger} logger - Logger instance
      */
     setLogger(logger) {
         log = logger;
@@ -12,8 +18,8 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
-     * @param {Object[]} options - Options for defered reply 
+     * @param {Interaction} interaction - The interaction object
+     * @param {InteractionDeferReplyOptions} options - Options for defered reply 
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>}
      */
@@ -28,7 +34,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction to delete reply
+     * @param {Interaction} interaction - The interaction to delete reply
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>}
      */
@@ -43,8 +49,8 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
-     * @param {*} edit - Edit sent reply
+     * @param {Interaction} interaction - The interaction object
+     * @param {WebhookEditMessageOptions|string} edit - Edit sent reply
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>}
      */
@@ -59,7 +65,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction to fetch reply
+     * @param {Interaction} interaction - The interaction to fetch reply
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>}
      */
@@ -74,8 +80,8 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
-     * @param {*} followUp - Send a follow up reply
+     * @param {Interaction} interaction - The interaction object
+     * @param {InteractionReplyOptions|string} followUp - Send a follow up reply
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>}
      */
@@ -90,7 +96,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Interaction} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {boolean}
      */
@@ -105,7 +111,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Interaction} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {boolean}
      */
@@ -120,7 +126,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Interaction} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {boolean}
      */
@@ -135,7 +141,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Interaction} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {boolean}
      */
@@ -150,7 +156,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Interaction} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {boolean}
      */
@@ -165,7 +171,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Interaction} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {boolean}
      */
@@ -180,7 +186,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Interaction} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {boolean}
      */
@@ -195,7 +201,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Interaction} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {boolean}
      */
@@ -210,7 +216,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Interaction} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {boolean}
      */
@@ -225,7 +231,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Interaction} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {boolean}
      */
@@ -240,7 +246,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Interaction} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {boolean}
      */
@@ -255,7 +261,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
+     * @param {Interaction} interaction - The interaction object
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {boolean}
      */
@@ -270,8 +276,8 @@ module.exports = {
 
     /**
      * 
-     * @param {Object} interaction - The interaction object
-     * @param {*} reply - The reply to send
+     * @param {Interaction} interaction - The interaction object
+     * @param {InteractionReplyOptions|string} reply - The reply to send
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response
      */
