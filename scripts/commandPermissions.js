@@ -1,9 +1,10 @@
-const MemberPermission = require('./memberPermissions');
+const { InteractionCommandBuilder, MessageCommandBuilder } = require('./builders');
+const { GuildMember } = require('discord.js');
 
 /**
  * 
- * @param {string} command - The command name
- * @param {Object} member - Discord member object
+ * @param {InteractionCommandBuilder.name|MessageCommandBuilder.name} command - The command name
+ * @param {GuildMember} member - Discord member
  * @param {Object[]} list - List of commands with permission levels
  * @param {boolean} list.enable - Whether the permission level is enabled
  * @param {Object} list.adminOnlyCommands - List of commands that are only available to admins

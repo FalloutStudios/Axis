@@ -1,14 +1,16 @@
 const Fs = require('fs');
 const MakeConfig = require('./makeConfig');
+const Discord = require('discord.js');
+const Config = require('./config/Config');
+const InteractionCommandBuilder = require('./builders/InteractionCommandBuilder');
 
 const deployFile = './deploy.txt';
 
 /**
  * 
- * @param {Object} Client - Discord Client instance
- * @param {Object} config - Parsed config object
- * @param {Object} commands - List of slash commands
- * @param {string} guild - register commands to a guild
+ * @param {Discord.Client} Client - Discord Client with AxisUtility
+ * @param {Config.config} config - Parsed config object
+ * @param {InteractionCommandBuilder[]} commands - List of slash commands
  * @param {boolean} force - Force register commands without check deploy file
  * @returns {Promise<void>}
  */

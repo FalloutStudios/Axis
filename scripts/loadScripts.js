@@ -2,10 +2,11 @@ const Path = require('path');
 const Util = require('fallout-utility');
 const DataTypeValidator = require('./dataTypeValidator');
 const Fs = require('fs');
+const Discord = require('discord.js');
 
 /**
 * @param {string} location - The path to scripts
-* @param {Object} Client - Discord client
+* @param {Discord.Client} Client - Discord client
 * @returns {Object} - returns an object with the loaded scripts
 */
 module.exports = async (Client, location) => {
