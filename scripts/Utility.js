@@ -1,7 +1,9 @@
 const Util = require('fallout-utility');
 const Path = require('path');
+const Discord = require('discord.js');
 const { Config, Language } = require('./config');
 const { SafeMessage, SafeInteract } = require('./safeActions');
+const { InteractionCommandBuilder, MessageCommandBuilder } = require('./builders');
 const LoadScripts = require('./loadScripts');
 const CommandPermission = require('./commandPermissions');
 const MemberPermissions = require('./memberPermissions');
@@ -11,10 +13,10 @@ module.exports = class AxisUtility {
     /**
      * 
      * @param {Object[]} options - options
-     * @param {string} [options.logger=new Util.Logger()] - Logger object
+     * @param {Util.Logger} [options.logger=Util.Logger()] - Logger
      * @param {Object[]} options.config - Bot config.yml
      * @param {Object[]} options.language - Language config.yml
-     * @param {Object[]} options.Client - Client object
+     * @param {Discord.Client} options.Client - Client
      * @param {Object[]} options.commands - Commands
      * @param {Object[]} options.scripts - Scripts
      */
@@ -34,7 +36,7 @@ module.exports = class AxisUtility {
     /**
      * 
      * @param {string} command - command name
-     * @param {Object} message - message object
+     * @param {Discord.Message} message - message
      * @returns {Promise<void>}
      */
     async messageCommand(command, message) {
@@ -55,7 +57,7 @@ module.exports = class AxisUtility {
 
     /**
      * 
-     * @param {Object} interaction - Interaction object
+     * @param {Discord.CommandInteraction} interaction - Interaction
      * @returns {Promise<void>}
      */
     async interactionCommand(interaction) {
@@ -81,7 +83,7 @@ module.exports = class AxisUtility {
     /**
      * 
      * @param {string} name - command name to execute
-     * @param {Object} message - message object
+     * @param {Discord.Message} message - message
      * @param {Object} args - command arguments
      * @returns {Promise<void>}
      */
@@ -96,7 +98,7 @@ module.exports = class AxisUtility {
     /**
      * 
      * @param {string} name - command name to execute
-     * @param {Object} interaction - interaction object
+     * @param {Discord.CommandInteraction} interaction - interaction
      * @returns {Promise<void>}
      */
     async executeInteractionCommand(name, interaction) {
@@ -124,7 +126,7 @@ module.exports = class AxisUtility {
             log.warn('RegisterSlashCommands is disabled');
         }
         
-        // Execute .loaded method of every scripts
+        // Execute loaded method of every scripts
         for(const script in this.scripts) {
             if(!this.scripts[script]?.onLoad) continue;
             await Promise.resolve(this.scripts[script].onLoad(this.Client));
@@ -135,11 +137,10 @@ module.exports = class AxisUtility {
 
     /**
      * 
-     * @param {Object} bot - Client object
      * @returns {string}
      */
-    createInvite(bot) {
-        return Util.replaceAll(this.config.inviteFormat, '%id%', bot.user.id);
+    createInvite() {
+        return Util.replaceAll(this.config.inviteFormat, '%id%', this.Client.user.id);
     }
 
     /**
