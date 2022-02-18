@@ -1,5 +1,7 @@
 const DataTypeValidator = require('../dataTypeValidator');
+const { Client, CommandInteraction } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+
 module.exports = class InteractionCommandBuilder {
     constructor() {
         this.type = 'InteractionCommand';
@@ -11,7 +13,7 @@ module.exports = class InteractionCommandBuilder {
     
     /**
      * 
-     * @param {function} execute - Function to execute when the command is called.
+     * @param {function(CommandInteraction, Client)} execute - Function to execute when the command is called.
      * @returns 
      */
     setExecute(execute) {
@@ -22,7 +24,7 @@ module.exports = class InteractionCommandBuilder {
 
     /**
      * 
-     * @param {boolean} allow - Set whether the command can be executed via DM. 
+     * @param {boolean} allow - Set whether the command can be executed via DM when available.
      */
     setAllowExecuteViaDm(allow) {
         if(!DataTypeValidator.boolean(allow)) throw new TypeError('Invalid argument: `allow` must be a boolean');
