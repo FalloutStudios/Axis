@@ -1,4 +1,18 @@
 const { Logger } = require('fallout-utility');
+const {
+    Message,
+    ReplyMessageOptions,
+    MessageOptions,
+    AwaitMessageComponentOptions,
+    AwaitReactionsOptions,
+    MessageComponentCollectorOptions,
+    ReactionCollectorOptions,
+    MessageEditOptions,
+    EmojiIdentifierResolvable,
+    StartThreadOptions,
+    BaseGuildTextChannel,
+    User
+} = require('discord.js');
 let log = new Logger('SafeMessage');
 
 module.exports = {
@@ -14,13 +28,14 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - Message object 
-     * @param {Object[]} [options={}] - Options to pass to the internal collector
+     * @param {Message} message - Message object 
+     * @param {AwaitMessageComponentOptions} [options={}] - Options to pass to the internal collector
+     * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>}
      */
     async awaitMessageComponent(message, options = {}, verboseError = true) {
         try {
-            return await message.channel.awaitMessageComponent(options).catch( err => { log.error(verboseError ? err : err?.message); });
+            return await message.awaitMessageComponent(options).catch( err => { log.error(verboseError ? err : err?.message); });
         } catch(err) {
             log.error(verboseError ? err : err?.message);
             return false;
@@ -29,14 +44,14 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - Message object 
-     * @param {Object[]} [options={}] - Options to pass to the internal collector
+     * @param {Message} message - Message object 
+     * @param {AwaitReactionsOptions} [options={}] - Options to pass to the internal collector
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>}
      */
     async awaitReactions(message, options = {}, verboseError = true) {
         try {
-            return await message.channel.awaitReactions(options).catch( err => { log.error(verboseError ? err : err?.message); });
+            return await message.awaitReactions(options).catch( err => { log.error(verboseError ? err : err?.message); });
         } catch (err) {
             log.error(verboseError ? err : err?.message);
             return false;
@@ -45,13 +60,13 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - Message object 
-     * @param {Object[]} [options={}] - Options to send to the collector
+     * @param {Message} message - Message object 
+     * @param {MessageComponentCollectorOptions} [options={}] - Options to send to the collector
      * @param {boolean} [verboseError=true] - Whether to send full error message
      */
     createMessageComponentCollector(message, options = {}, verboseError = true) {
         try {
-            return message.channel.createMessageComponentCollector(options);
+            return message.createMessageComponentCollector(options);
         } catch (err) {
             log.error(verboseError ? err : err?.message);
             return false;
@@ -60,13 +75,13 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - Message object
-     * @param {Object[]} [options={}] - Options to send to the collector
+     * @param {Message} message - Message object
+     * @param {ReactionCollectorOptions} [options={}] - Options to send to the collector
      * @param {boolean} [verboseError=true] - Whether to send full error message 
      */
     createReactionCollector(message, options = {}, verboseError = true) {
         try {
-            return message.channel.createReactionCollector(options);
+            return message.createReactionCollector(options);
         } catch (err) {
             log.error(verboseError ? err : err?.message);
             return false;
@@ -75,13 +90,13 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - Message object
+     * @param {Message} message - Message object
      * @param {boolean} [verboseError= true] - Whether to send full error message
      * @returns {Promise<void>}
      */
     async crosspost(message, verboseError = true) {
         try {
-            return await message.channel.crosspost().catch( err => { log.error(verboseError ? err : err?.message); });
+            return await message.crosspost().catch( err => { log.error(verboseError ? err : err?.message); });
         } catch (err) {
             log.error(verboseError ? err : err?.message);
             return false;
@@ -90,7 +105,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to delete
+     * @param {Message} message - The message to delete
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response
      */
@@ -105,8 +120,8 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to edit
-     * @param {*} edit - Edited message content
+     * @param {Message} message - The message to edit
+     * @param {MessageEditOptions} edit - Edited message content
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response
      */
@@ -121,13 +136,14 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - Message to compare with
+     * @param {Message} message - Message to compare with message2
+     * @param {Message} message2 - Message to compare with message
      * @param {*} rawMessage - Raw data passed through the WebSocket about this message
      * @param {boolean} [verboseError=true] - Whether to send full error message
      */
-    equals(message, rawMessage, verboseError = true) {
+    equals(message, message2, rawMessage, verboseError = true) {
         try {
-            return message.equals(rawMessage);
+            return message.equals(message2, rawMessage);
         } catch (err) {
             log.error(verboseError ? err : err?.message);
             return false;
@@ -136,7 +152,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - Message object
+     * @param {Message} message - Message object
      * @param {boolean} [force=true] - Whether to skip the cache check and request the API
      * @param {boolean} [verboseError=true] - Whether to send full error message 
      * @returns {Promise<void>}
@@ -152,7 +168,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to fetch reference
+     * @param {Message} message - The message to fetch reference
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response
      */
@@ -167,7 +183,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to fetch webhooks for
+     * @param {Message} message - The message to fetch webhooks for
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response
      */
@@ -182,7 +198,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - Message object
+     * @param {Message} message - Message object
      * @param {boolean} [verboseError=true] - Whether to send full error message
      */
     inGuild(message, verboseError = true) {
@@ -196,7 +212,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to pin
+     * @param {Message} message - The message to pin
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response
      */
@@ -211,8 +227,8 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to add reactions
-     * @param {*} reaction - The reaction to send 
+     * @param {Message} message - The message to add reactions
+     * @param {EmojiIdentifierResolvable} reaction - The reaction to send 
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response
      */
@@ -227,7 +243,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to remove attachments
+     * @param {Message} message - The message to remove attachments
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response
      */
@@ -242,7 +258,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to remove all reactions
+     * @param {Message} message - The message to remove all reactions
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response
      */
@@ -257,7 +273,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to delete a reaction
+     * @param {Message} message - The message to delete a reaction
      * @param {string} reactionId - The reactionId (emoji id) to delete
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise response 
@@ -273,8 +289,8 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to send reply
-     * @param {*} reply - The reply to send
+     * @param {Message} message - The message to send reply
+     * @param {ReplyMessageOptions|string} reply - The reply to send
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise message response
      */
@@ -289,7 +305,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to remove all reactions
+     * @param {Message} message - The message to remove all reactions
      * @param {string} setCustomId - The custom id to resolve against
      * @param {boolean} [verboseError=true] - Whether to send full error message
      */
@@ -304,8 +320,8 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to start New Tread
-     * @param {Object[]} options - Options for starting a thread on this message
+     * @param {Message} message - The message to start New Tread
+     * @param {StartThreadOptions} options - Options for starting a thread on this message
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>}
      */
@@ -320,7 +336,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to start New Tread
+     * @param {Message} message - The message to start New Tread
      * @param {boolean} suppress - If the embeds should be suppressed or not
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>}
@@ -336,7 +352,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to convert to a string
+     * @param {Message} message - The message to convert to a string
      * @param {boolean} [verboseError=true] - Whether to send full error message
      */
     toString(message, verboseError = true) {
@@ -350,7 +366,7 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} message - The message to unpin
+     * @param {Message} message - The message to unpin
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>}
      */
@@ -367,8 +383,8 @@ module.exports = {
 
     /**
      * 
-     * @param {Object[]} destination - The message destination (channel, user, ...)
-     * @param {*} message - The message to send
+     * @param {BaseGuildTextChannel|User} destination - The message destination (channel, user, ...)
+     * @param {MessageOptions|string} message - The message to send
      * @param {boolean} [verboseError=true] - Whether to send full error message
      * @returns {Promise<void>} Promise message response
      */
