@@ -14,7 +14,7 @@ const commands = new Commander.Command;
 
 module.exports = class Config {
     /**
-     * @param {string} location config file location
+     * @param {string} location - config file location
      */
     constructor(location) {
         this.location = location;
@@ -22,12 +22,12 @@ module.exports = class Config {
     }
 
     /**
-     * @returns {Object} returns modified config
+     * @returns {Config}
      */ 
     parse() {
         if(!this.location || this.location == null) throw new Error('No config file path provided');
 
-        const config = Yml.parse(MakeConfig(this.location, generateConfig()));
+        const config = Yml.parse(MakeConfig(this.location, Config.generateConfig()));
 
         if(config.version != Version) throw new Error('Config version isn\'t compatible. Version: ' + config.version + '; Supported: ' + Version);
         this.config = config;
@@ -36,11 +36,12 @@ module.exports = class Config {
     }
 
     /**
-     * @returns {Object} returns modified config
-     */
+     * @returns {Config}
+     */ 
     commands() {
+        let logging;
         if(typeof commands.opts().logging === 'string' && (commands.opts().logging.toLowerCase() == 'false' || commands.opts().logging.toLowerCase() == 'true')) {
-            var logging = { status: commands.opts().logging.toLowerCase() == 'true' ? true : false };
+            logging = { status: commands.opts().logging.toLowerCase() == 'true' ? true : false };
         }
 
         this.config.token = commands.opts().testmode ? process.env['discordtoken'] : this.config.token;
@@ -51,8 +52,8 @@ module.exports = class Config {
     }
 
     /**
-     * @returns {Object} returns modified config
-     */
+     * @returns {Config}
+     */ 
     prefill() {
         this.config.token = this.config.token === 'TOKEN' ? null : this.config.token;
         this.config.token = !this.config.token || this.config.token == null ? input({ text: 'Bot Token >>> ', echo: '*', repeat: true }) : this.config.token;
@@ -61,14 +62,17 @@ module.exports = class Config {
     }
 
     /**
-     * @returns {Object} returns parsed config
-     */
+     * @returns {Config.config}
+     */ 
     getConfig() {
         return this.config;
     }
-}
 
-
-function generateConfig() {
-    return replaceAll(Fs.readFileSync('./scripts/config/src/config.yml', 'utf8'), '${Version}', Version);
+    /**
+     * 
+     * @returns {string} returns parsed config in yaml format
+     */
+    static generateConfig() {
+        return replaceAll(Fs.readFileSync('./scripts/config/src/config.yml', 'utf8'), '${Version}', Version);
+    }
 }
