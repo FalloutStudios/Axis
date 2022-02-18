@@ -52,7 +52,7 @@ module.exports = class AxisUtility {
         }
 
         // Execute
-        return this.executeMessageCommand(command, message, args).catch(async err => this.logger.error(err, `${this.config.commandPrefix}${command}`));
+        return this.executeMessageCommand(cmd, message, args).catch(async err => this.logger.error(err, `${this.config.commandPrefix}${command}`));
     }
 
     /**
@@ -77,19 +77,18 @@ module.exports = class AxisUtility {
             return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.language.noPerms), ephemeral: true });
         }
 
-        return this.executeInteractionCommand(interaction.commandName, interaction).catch(err => this.logger.error(err, `/${interaction.commandName}`));
+        return this.executeInteractionCommand(cmd, interaction).catch(err => this.logger.error(err, `/${interaction.commandName}`));
     }
 
     /**
      * 
-     * @param {string} name - command name to execute
+     * @param {InteractionCommandBuilder} command - command
      * @param {Discord.Message} message - message
      * @param {Object} args - command arguments
      * @returns {Promise<void>}
      */
-    async executeMessageCommand(name, message, args) {
-        const command = this.commands.MessageCommands.find(property => property.name === name);
-        if(!command) throw new Error(`Command \`${name}\` does not exist`);
+    async executeMessageCommand(command, message, args) {
+        if(!command) throw new TypeError(`Invalid command`);
 
         this.logger.warn(`${message.author.username} executed ${this.config.commandPrefix}${command.name}`, 'MessageCommand');
         return command.execute(args, message, this.Client);
@@ -97,13 +96,12 @@ module.exports = class AxisUtility {
 
     /**
      * 
-     * @param {string} name - command name to execute
+     * @param {MessageCommandBuilder} command - command name to execute
      * @param {Discord.CommandInteraction} interaction - interaction
      * @returns {Promise<void>}
      */
-    async executeInteractionCommand(name, interaction) {
-        const command = this.commands.InteractionCommands.find(property => property.name === name);
-        if(!command) throw new Error(`Command \`${name}\` does not exist`);
+    async executeInteractionCommand(command, interaction) {
+        if(!command) throw new TypeError(`Invalid command`);
 
         this.logger.warn(`${ (interaction?.user.username ? interaction.user.username + ' ' : '') }executed /${interaction.commandName}`, 'InteractionCommand');
         return command.execute(interaction, this.Client);
