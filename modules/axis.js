@@ -33,7 +33,7 @@ class AxisCommands {
     constructor() {
         options = this.getConfig('./config/Axis.js/config.yml');
 
-        this.versions = ['1.6.2', '1.6.3', '1.6.4', '1.6.5'];
+        this.versions = ['1.6.2', '1.6.3', '1.6.4', '1.6.5', '1.6.6'];
         this.commands = this.setCommands();
     }
 
@@ -92,6 +92,8 @@ presence:
 
 # Help command options
 help:
+  title: 'Command Help' # Embed author name as title
+  description: 'Here''s a list of the current commands:' # Embed description
   fieldCountPerPage: 5  # How many fields per page
   fieldInline: true  # Whether to display fields inline
   authorIndependentPagination: true # Whether to set pagination usable only by author
@@ -241,7 +243,7 @@ maxClientEventListeners:`));
 
     StopMessage(Client) {
         log.warn("Stopping...");
-        return Util.getRandomKey(Client.AxisUtility.language.stop);
+        return Util.getRandomKey(options.stop);
     }
 }
 
@@ -337,8 +339,8 @@ function makePages(visibleCommands, allCommands, client, language, prefix, embed
         // Create embed
         if(!embeds[current]) {
             embeds.push(new MessageEmbed()
-                .setAuthor({ name: Util.getRandomKey(language.help.title), iconURL: client.user.displayAvatarURL() })
-                .setDescription(Util.getRandomKey(language.help.description))
+                .setAuthor({ name: Util.getRandomKey(options.help.title), iconURL: client.user.displayAvatarURL() })
+                .setDescription(Util.getRandomKey(options.help.description))
                 .setColor(embedColor)
                 .setTimestamp());
         }
