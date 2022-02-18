@@ -45,13 +45,4 @@ tooSmall:
   - 'Too small'
   - 'So tiny for me'
 
-# For commands
-stop:
-  - 'Ok'
-  - 'Shut up! I''ll stop now'
-  - 'Stopping...'
-help:
-  title: 'Command Help'
-  description: 'Here''s a list of the current commands:'
-
 version: ${Version} # Version (don't modify this value)
