@@ -1,6 +1,6 @@
 # Axis 🗡️
 
-<img align="right" src="https://i.imgur.com/yRsHfHi.png" height="140" width="140">
+<img align="right" src="https://i.imgur.com/xQxVisJ.png" height="140" width="140">
 
 ![Latest Release](https://img.shields.io/github/v/release/FalloutStudios/Axis?label=Latest%20Release)
 ![Node.js CI](https://github.com/FalloutStudios/Axis/actions/workflows/node.js.yml/badge.svg?branch=main)
