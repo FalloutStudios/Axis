@@ -40,10 +40,14 @@ module.exports = async (Client, location) => {
 
             // Register Commands
             loadCommands(scripts[name], commands);
+
+            Client.emit('axisLoadModule', scripts[name], null);
             log.log(`Script ${name} has been successfully loaded!`, file);
         } catch (err) {
             log.error(`Coudln't load ${file}: ${err.message}`, file);
             log.error(err, file);
+
+            Client.emit('axisLoadModule', scripts[name], err);
             delete scripts[name];
         }
     }
