@@ -12,6 +12,8 @@
     FunctionNames: camelCase
 **/
 
+require('module-alias/register');
+
 const configPath = './config/Bot/config.yml';
 const languagePath = './config/Bot/language.yml';
 
@@ -19,18 +21,18 @@ const languagePath = './config/Bot/language.yml';
 // Modules
 const Util = require('fallout-utility');
 const Discord = require('discord.js');
-const AxisUtility = require('./scripts/Utility');
-const MemberPermissions = require('./scripts/memberPermissions');
+const AxisUtility = require('@utils/Utility');
+const MemberPermissions = require('@utils/memberPermissions');
 
 // Local modules
-const { SafeMessage, SafeInteract } = require('./scripts/safeActions');
+const { SafeMessage, SafeInteract } = require('@utils/safeActions');
 
 // Utils
 const log = new Util.Logger('Main');
 
 // Config & Language
 try {
-    const { Config, Language } = require('./scripts/config');
+    const { Config, Language } = require('@utils/config');
     var config = new Config(configPath).parse().commands().prefill().getConfig();
     var lang = new Language(config?.language ? config.language : languagePath).parse().getLanguage();
 } catch (err) {
@@ -56,7 +58,7 @@ if(config.logging.enabled) {
 
 
 // Startup
-require('./scripts/startup')(log);
+require('@utils/startup')(log);
 
 
 // Client start

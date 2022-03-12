@@ -1,11 +1,11 @@
-const { InteractionCommandBuilder, MessageCommandBuilder } = require('../scripts/builders');
-const { SafeMessage, SafeInteract } = require('../scripts/safeActions');
-const CommandPermission = require('../scripts/commandPermissions');
+const { InteractionCommandBuilder, MessageCommandBuilder } = require('@utils/builders');
+const { SafeMessage, SafeInteract } = require('@utils/safeActions');
+const CommandPermission = require('@utils/commandPermissions');
 const Pagination = require('@acegoal07/discordjs-pagination');
 const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
 const Util = require('fallout-utility');
-const Version = require('../scripts/version');
-const MakeConfig = require('../scripts/makeConfig');
+const Version = require('@utils/version');
+const MakeConfig = require('@utils/makeConfig');
 const Yml = require('yaml');
 
 // Configs
@@ -33,7 +33,7 @@ class AxisCommands {
     constructor() {
         options = this.getConfig('./config/Axis.js/config.yml');
 
-        this.versions = ['1.6.2', '1.6.3', '1.6.4', '1.6.5', '1.6.6'];
+        this.versions = ['1.7.0'];
         this.commands = this.setCommands();
     }
 
@@ -44,7 +44,7 @@ class AxisCommands {
         SafeMessage.setLogger(log);
         SafeInteract.setLogger(log);
 
-        log.log('Axis command module has starting!');
+        log.log('Axis command module is starting...');
         
         await this.setPresence(Client);
         versionMessageReply = this.getVersionMessageReply(Client);
@@ -381,9 +381,12 @@ async function getHelpInteraction(interaction, Client) {
 
     // Send response
     await SafeInteract.deferReply(interaction);
-    if(embeds.length <= 1) { 
-        return SafeInteract.editReply(interaction, { content: ' ', embeds: embeds });
-    } else {
-        return Pagination({ interaction: interaction, pageList: embeds, buttonList: helpButtons, timeout: interactionTimeout, authorIndependent: options.help.authorIndependentPagination }).catch(err => log.error(err));
-    }
+
+    return Pagination({
+        interaction: interaction,
+        pageList: embeds,
+        buttonList: helpButtons,
+        timeout: interactionTimeout,
+        authorIndependent: options.help.authorIndependentPagination
+    }).catch(err => log.error(err));
 }
