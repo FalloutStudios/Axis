@@ -56,7 +56,8 @@ module.exports = class Config {
      */ 
     prefill() {
         this.config.token = this.config.token === 'TOKEN' ? null : this.config.token;
-        this.config.token = !this.config.token || this.config.token == null ? input({ text: 'Bot Token >>> ', echo: '*', repeat: true }) : this.config.token;
+        this.config.token = Config.envToken(this.config.token) || this.config.token;
+        this.config.token = this.config.token || input({ text: 'Bot Token >>> ', echo: '*', repeat: true });
 
         return this;
     }
