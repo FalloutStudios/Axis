@@ -52,6 +52,7 @@ module.exports = class AxisUtility {
         }
 
         // Execute
+        this.Client.emit('axisMessageCommand', cmd, message);
         return this.executeMessageCommand(cmd, message, args).catch(async err => this.logger.error(err, `${this.config.commandPrefix}${command}`));
     }
 
@@ -77,6 +78,8 @@ module.exports = class AxisUtility {
             return SafeInteract.reply(interaction, { content: Util.getRandomKey(this.language.noPerms), ephemeral: true });
         }
 
+        //Execute
+        this.Client.emit('axisInteractionCommand', cmd, interaction);
         return this.executeInteractionCommand(cmd, interaction).catch(err => this.logger.error(err, `/${interaction.commandName}`));
     }
 
@@ -128,8 +131,10 @@ module.exports = class AxisUtility {
         for(const script in this.scripts) {
             if(!this.scripts[script]?.onLoad) continue;
             await Promise.resolve(this.scripts[script].onLoad(this.Client));
+            this.Client.emit('axisLoadedModule', this.scripts[script]);
         }
 
+        this.Client.emit('axisLoadedModules', this.scripts);
         return scriptsLoader;
     }
 
