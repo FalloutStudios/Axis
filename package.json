@@ -28,8 +28,13 @@
     "discord.js": "^13.6.0",
     "erlpack": "github:discord/erlpack",
     "fallout-utility": "^1.2.7",
-    "utf-8-validate": "^5.0.8",
+    "module-alias": "^2.2.2",
+    "utf-8-validate": "^5.0.9",
     "yaml": "^1.10.2",
     "zlib-sync": "^0.1.7"
+  },
+  "_moduleAliases": {
+    "@root": "./",
+    "@utils": "./scripts"
   }
 }
