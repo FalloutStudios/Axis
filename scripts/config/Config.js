@@ -27,7 +27,7 @@ module.exports = class Config {
     parse() {
         if(!this.location || this.location == null) throw new Error('No config file path provided');
 
-        const config = Yml.parse(MakeConfig(this.location, Config.generateConfig()));
+        const config = Yml.parse(MakeConfig(this.location, Fs.existsSync(this.location) ? Fs.readFileSync(this.location, 'utf8') : Config.generateConfig()));
 
         if(config.version != Version) throw new Error('Config version isn\'t compatible. Version: ' + config.version + '; Supported: ' + Version);
         this.config = config;
@@ -56,7 +56,8 @@ module.exports = class Config {
      */ 
     prefill() {
         this.config.token = this.config.token === 'TOKEN' ? null : this.config.token;
-        this.config.token = !this.config.token || this.config.token == null ? input({ text: 'Bot Token >>> ', echo: '*', repeat: true }) : this.config.token;
+        this.config.token = Config.envToken(this.config.token) || this.config.token;
+        this.config.token = this.config.token || input({ text: 'Bot Token >>> ', echo: '*', repeat: true });
 
         return this;
     }
@@ -73,6 +74,21 @@ module.exports = class Config {
      * @returns {string} returns parsed config in yaml format
      */
     static generateConfig() {
-        return replaceAll(Fs.readFileSync('./scripts/config/src/config.yml', 'utf8'), '${Version}', Version);
+        const config = replaceAll(Fs.readFileSync('./scripts/config/src/config.yml', 'utf8'), '${Version}', Version);
+        const token = input({ text: 'Bot Token >>> ', echo: '*', repeat: true });
+
+        return replaceAll(config, 'TOKEN', token);
+    }
+
+    /**
+     * @returns {string}
+     */
+    static envToken(token) {
+        if (!token) return false;
+
+        const env = token.split(":");
+        if (env.length === 0 || env[0].toLowerCase() !== 'env') return false;
+
+        return process.env[env[1]];
     }
 }

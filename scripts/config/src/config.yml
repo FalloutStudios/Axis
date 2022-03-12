@@ -1,4 +1,7 @@
-token: TOKEN # Bot token
+# You can put your token here directly example: token: TOKEN
+# If you want to use environment variables, just put ENV:tokenenvname example: token: ENV:discordtoken
+# Leave empty to alyways ask for token
+token: TOKEN
 
 embedColor: '#19AFFF'  # Colors for embed messages
 commandPrefix: '!'  # Prefix for commands
@@ -26,8 +29,8 @@ permissions:
     # Register slash commands
     registerSlashCommands: true
 
-    # Don't register slash commands if deploy.txt is deleted or set to false
-    ignoreDeployTxt: false
+    # Don't register slash commands if deploy.txt is deleted or set to true
+    ignoreDeployTxt: true
 
     # Commands
     commands:
@@ -52,7 +55,7 @@ logging:
   enabled: true # Enable logging
   logFilePath: './logs/latest.log' # Log file directory
 
-# Message logging (This is is against Discord TOS!!!) use for testing porpuses only
+# Message logging (This prints messages to the console and log to file if enabled)
 messageLogging:
   enabled: false # Enable logging
   ignoreBotSystem: true # Ignore bot chats
@@ -75,7 +78,7 @@ client:
     - 'GUILD_MESSAGE_REACTIONS'
 
 inviteFormat: https://discord.com/oauth2/authorize?client_id=%id%&permissions=8&scope=bot%20applications.commands   # Invite format for bot
-language: 'config/Bot/language.yml'   # Langage file
-modulesFolder: 'modules'  # Define where's your modules (Changing this might cause problems to other modules)
+language: './config/Bot/language.yml'   # Langage file
+modulesFolder: 'modules'  # Define where's your modules folder (Changing this might cause problems to other modules)
 
 version: ${Version}    # Version (don't modify this value)
