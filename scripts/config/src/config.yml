@@ -16,6 +16,9 @@ permissions:
     # Enable message command permissions
     enabled: true
 
+    # Argument separator
+    commandSeparator: ' '
+
     # Commands
     commands:
       - command: 'stop'
@@ -45,15 +48,15 @@ blacklistChannels:
   channels: []
   convertToWhitelist: false  # Convert channels to whitelisted channels
 
-# ==========================================================
-#                       Danger Zone!
-#    Edit this values below if you know what you're doing
-# ==========================================================
-
 # Logging
 logging:
   enabled: true # Enable logging
   logFilePath: './logs/latest.log' # Log file directory
+
+# ==========================================================
+#                       Danger Zone!
+#    Edit this values below if you know what you're doing
+# ==========================================================
 
 # Message logging (This prints messages to the console and log to file if enabled)
 messageLogging:

@@ -77,11 +77,11 @@ Client.on('ready', async () => {
 
         // Message commands
         if(Util.detectCommand(message.content, config.commandPrefix)){
-            const commandConstructor = Util.getCommand(message.content, config.commandPrefix);
+            const commandConstructor = Util.getCommand(message.content, config.commandPrefix, config.permissions.messageCommands.commandSeparator || ' ');
             const command = commandConstructor.command.toLowerCase();
 
             // Execute command
-            Client.AxisUtility.messageCommand(command, message);
+            Client.AxisUtility.messageCommand(command, commandConstructor.args, message);
         }
     });
 });

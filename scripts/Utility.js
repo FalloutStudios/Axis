@@ -39,9 +39,8 @@ module.exports = class AxisUtility {
      * @param {Discord.Message} message - message
      * @returns {Promise<void>}
      */
-    async messageCommand(command, message) {
+    async messageCommand(command, args, message) {
         const cmd = this.commands.MessageCommands.find(property => property.name === command);
-        const args = Util.getCommand(message.content.trim(), this.config.commandPrefix).args;
 
         // If the command exists or executed in DM
         if(!cmd || message.channel.type === 'DM' && !cmd.allowExecViaDm) return false;
@@ -52,7 +51,7 @@ module.exports = class AxisUtility {
         }
 
         // Execute
-        this.Client.emit('axisMessageCommand', cmd, message);
+        this.Client.emit('axisMessageCommand', cmd, message, args);
         return this.executeMessageCommand(cmd, message, args).catch(async err => this.logger.error(err, `${this.config.commandPrefix}${command}`));
     }
 
