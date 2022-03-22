@@ -16,7 +16,7 @@
     "start": "node index.js",
     "test": "node index.js --testmode",
     "pack:axis": "cd scripts/axis.js && axis pack axis-js.zip",
-    "axisjs:install": "npm run pack:axis && axis i scripts/axis.js/axis-js.zip",
+    "axisjs:install": "npm run pack:axis && axis u axis true && axis i scripts/axis.js/axis-js.zip",
     "axisjs:uninstall": "axis u axis"
   },
   "engines": {
@@ -39,5 +39,8 @@
   "_moduleAliases": {
     "@root": "./",
     "@utils": "./scripts"
+  },
+  "devDependencies": {
+    "axis-module-utility": "^0.1.6"
   }
 }
