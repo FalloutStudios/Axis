@@ -14,7 +14,9 @@
       ],
       "description": "Simple command module for Axis",
       "repository": "https://github.com/FalloutStudios/Axis/blob/main/modules/axis.js",
-      "dependencies": {}
+      "dependencies": {
+        "@acegoal07/discordjs-pagination": "^1.2.3"
+      }
     }
   ]
 }
