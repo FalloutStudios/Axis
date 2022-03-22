@@ -1,7 +1,7 @@
 {
   "name": "axis",
   "main": "index.js",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "version": "1.7.0",
   "author": "FalloutStudios",
   "homepage": "https://github.com/FalloutStudios/Axis#readme",
@@ -14,7 +14,9 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "node index.js --testmode"
+    "test": "node index.js --testmode",
+    "pack:axis": "cd scripts/axis.js && axis pack axis-js.zip",
+    "pack:axis-install": "npm run pack:axis && axis i scripts/axis.js/axis-js.zip"
   },
   "engines": {
     "node": "^16.6.0",

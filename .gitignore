@@ -110,6 +110,8 @@ modules/test.js
 # Axis module util files
 .axiscache/
 package.json.old
+*-old.zip
 
 # Careful! committing this directory if it includes sensitive information such as bot tokens
 /config/
+

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**    ###      ##     ##   ######     ######  
       ## ##      ##   ##      ##     ##     ## 
      ##   ##      ## ##       ##     ##       
@@ -5,11 +7,6 @@
     #########     ## ##       ##           ## 
     ##     ##    ##   ##      ##     ##    ## 
     ##     ##   ##     ##   ######    ######  
-
-    ClassNames: PascalCase
-    PropertyNames: camelCase
-    VariableNames: camelCase (Constants<Imports>: PascalCase )
-    FunctionNames: camelCase
 **/
 
 require('module-alias/register');

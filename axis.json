@@ -1,3 +1,20 @@
 {
-  "modules": []
+  "modules": [
+    {
+      "name": "axis",
+      "version": "1.7.0",
+      "author": "FalloutStudios",
+      "license": "GPL-3.0",
+      "main": "axis.js",
+      "files": [
+        "README.md"
+      ],
+      "supportedVersions": [
+        "1.7.0"
+      ],
+      "description": "Simple command module for Axis",
+      "repository": "https://github.com/FalloutStudios/Axis/blob/main/modules/axis.js",
+      "dependencies": {}
+    }
+  ]
 }
