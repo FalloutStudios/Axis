@@ -16,7 +16,8 @@
     "start": "node index.js",
     "test": "node index.js --testmode",
     "pack:axis": "cd scripts/axis.js && axis pack axis-js.zip",
-    "pack:axis-install": "npm run pack:axis && axis i scripts/axis.js/axis-js.zip"
+    "axisjs:install": "npm run pack:axis && axis i scripts/axis.js/axis-js.zip",
+    "axisjs:uninstall": "axis u axis"
   },
   "engines": {
     "node": "^16.6.0",
